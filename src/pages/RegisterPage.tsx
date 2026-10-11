@@ -3,6 +3,7 @@ import {
   type FormEvent,
   useState,
 } from 'react'
+import { CheckCircle2, Eye, EyeOff, Loader2, UserPlus, XCircle, Info } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { ApiError, apiFetch } from '../api/client'
 import type { ModerationStatus, Role } from '../types'
@@ -85,6 +86,8 @@ function RegisterPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [moderationStatus, setModerationStatus] =
     useState<ModerationStatus | null>(null)
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+  const [isConfirmationVisible, setIsConfirmationVisible] = useState(false)
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
@@ -172,47 +175,57 @@ function RegisterPage() {
 
   if (moderationStatus === 'OK') {
     return (
-      <main>
-        <h1>Votre compte est validé.</h1>
-        <Link to="/login">Se connecter</Link>
+      <main className="page-shell">
+        <section className="status-card card">
+          <div className="status-icon success"><CheckCircle2 aria-hidden="true" size={28} /></div>
+          <p className="alert alert-success" role="status">Votre compte est validé.</p>
+          <Link className="btn btn-primary" to="/login">Se connecter</Link>
+        </section>
       </main>
     )
   }
 
   if (moderationStatus === 'PENDING' || moderationStatus === 'SUSPECT') {
     return (
-      <main>
-        <h1>
+      <main className="page-shell">
+        <section className="status-card card">
+          <div className="status-icon info"><Info aria-hidden="true" size={28} /></div>
+          <p className="alert alert-info" role="status">
           Votre profil est en cours de vérification par un administrateur. Vous
           pourrez vous connecter une fois qu&apos;il sera accepté.
-        </h1>
+          </p>
+        </section>
       </main>
     )
   }
 
   if (moderationStatus === 'REJETE') {
     return (
-      <main>
-        <h1>Votre profil a été refusé.</h1>
+      <main className="page-shell">
+        <section className="status-card card">
+          <div className="status-icon error"><XCircle aria-hidden="true" size={28} /></div>
+          <p className="alert alert-error" role="alert">Votre profil a été refusé.</p>
+        </section>
       </main>
     )
   }
 
-  const renderErrors = (field: keyof RegisterForm) =>
-    fieldErrors[field]?.map((message) => (
-      <p key={message} role="alert">
-        {message}
-      </p>
-    ))
-
   return (
-    <main>
-      <h1>Inscription</h1>
-      {generalError && <p role="alert">{generalError}</p>}
-      <form onSubmit={handleSubmit} noValidate>
-        <div>
+    <main className="page-shell">
+      <section className="form-card card register-card">
+        <div className="auth-heading">
+          <div className="auth-icon"><UserPlus aria-hidden="true" size={26} /></div>
+          <h1>Créer un compte</h1>
+          <p>Rejoignez une communauté de talents et de projets.</p>
+        </div>
+        {generalError && <p className="alert alert-error" role="alert">{generalError}</p>}
+        <form onSubmit={handleSubmit} noValidate>
+          <fieldset>
+            <legend>Compte</legend>
+            <div className="form-grid">
+        <div className="form-group">
           <label htmlFor="username">Nom d’utilisateur</label>
-          <input
+          <input className="form-input"
             id="username"
             name="username"
             type="text"
@@ -220,12 +233,12 @@ function RegisterPage() {
             onChange={handleChange}
             autoComplete="username"
           />
-          {renderErrors('username')}
+          {fieldErrors.username?.map((message) => <p className="form-error" role="alert" key={message}>{message}</p>)}
         </div>
 
-        <div>
+        <div className="form-group">
           <label htmlFor="email">E-mail</label>
-          <input
+          <input className="form-input"
             id="email"
             name="email"
             type="email"
@@ -233,49 +246,60 @@ function RegisterPage() {
             onChange={handleChange}
             autoComplete="email"
           />
-          {renderErrors('email')}
+          {fieldErrors.email?.map((message) => <p className="form-error" role="alert" key={message}>{message}</p>)}
         </div>
 
-        <div>
+        <div className="form-group">
           <label htmlFor="password">Mot de passe</label>
-          <input
+          <div className="input-with-icon">
+          <input className="form-input"
             id="password"
             name="password"
-            type="password"
+            type={isPasswordVisible ? 'text' : 'password'}
             value={form.password}
             onChange={handleChange}
             autoComplete="new-password"
           />
-          {renderErrors('password')}
+          <button className="input-action" type="button" aria-label={isPasswordVisible ? 'Masquer le mot de passe' : 'Afficher le mot de passe'} onClick={() => setIsPasswordVisible((visible) => !visible)}>{isPasswordVisible ? <EyeOff aria-hidden="true" size={18} /> : <Eye aria-hidden="true" size={18} />}</button>
+          </div>
+          {fieldErrors.password?.map((message) => <p className="form-error" role="alert" key={message}>{message}</p>)}
         </div>
 
-        <div>
+        <div className="form-group">
           <label htmlFor="passwordConfirmation">
             Confirmation du mot de passe
           </label>
-          <input
+          <div className="input-with-icon">
+          <input className="form-input"
             id="passwordConfirmation"
             name="passwordConfirmation"
-            type="password"
+            type={isConfirmationVisible ? 'text' : 'password'}
             value={form.passwordConfirmation}
             onChange={handleChange}
             autoComplete="new-password"
           />
-          {renderErrors('passwordConfirmation')}
+          <button className="input-action" type="button" aria-label={isConfirmationVisible ? 'Masquer la confirmation' : 'Afficher la confirmation'} onClick={() => setIsConfirmationVisible((visible) => !visible)}>{isConfirmationVisible ? <EyeOff aria-hidden="true" size={18} /> : <Eye aria-hidden="true" size={18} />}</button>
+          </div>
+          {fieldErrors.passwordConfirmation?.map((message) => <p className="form-error" role="alert" key={message}>{message}</p>)}
         </div>
+            </div>
+          </fieldset>
 
-        <div>
+          <fieldset>
+            <legend>Profil</legend>
+            <div className="form-grid">
+        <div className="form-group">
           <label htmlFor="role">Rôle</label>
-          <select id="role" name="role" value={form.role} onChange={handleChange}>
+          <select className="form-input" id="role" name="role" value={form.role} onChange={handleChange}>
             <option value="FREELANCER">Freelance</option>
             <option value="PROJECT_OWNER">Porteur de projet</option>
           </select>
-          {renderErrors('role')}
+          {fieldErrors.role?.map((message) => <p className="form-error" role="alert" key={message}>{message}</p>)}
         </div>
 
-        <div>
+        <div className="form-group">
           <label htmlFor="title">Titre</label>
-          <input
+          <input className="form-input"
             id="title"
             name="title"
             type="text"
@@ -283,34 +307,36 @@ function RegisterPage() {
             value={form.title}
             onChange={handleChange}
           />
-          {renderErrors('title')}
+          {fieldErrors.title?.map((message) => <p className="form-error" role="alert" key={message}>{message}</p>)}
         </div>
 
-        <div>
+        <div className="form-group form-full">
           <label htmlFor="bio">Biographie</label>
-          <textarea id="bio" name="bio" value={form.bio} onChange={handleChange} />
-          {renderErrors('bio')}
+          <textarea className="form-input" id="bio" name="bio" value={form.bio} onChange={handleChange} />
+          {fieldErrors.bio?.map((message) => <p className="form-error" role="alert" key={message}>{message}</p>)}
         </div>
 
-        <div>
+        <div className="form-group form-full">
           <label htmlFor="skills">Compétences (séparées par des virgules)</label>
-          <input
+          <input className="form-input"
             id="skills"
             name="skills"
             type="text"
             value={form.skills}
             onChange={handleChange}
           />
-          {renderErrors('skills')}
+          <small className="field-hint">Séparées par des virgules</small>
+          {fieldErrors.skills?.map((message) => <p className="form-error" role="alert" key={message}>{message}</p>)}
         </div>
+            </div>
+          </fieldset>
 
-        <button type="submit" disabled={isSubmitting}>
-          {isSubmitting
-            ? 'Vérification de votre profil en cours...'
-            : 'S’inscrire'}
-        </button>
-      </form>
-      <Link to="/login">Déjà un compte ? Se connecter</Link>
+          <button className="btn btn-primary form-submit" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? <><Loader2 className="spin" aria-hidden="true" size={18} />Vérification de votre profil en cours...</> : 'S’inscrire'}
+          </button>
+        </form>
+        <Link className="auth-link" to="/login">Déjà un compte ? Se connecter</Link>
+      </section>
     </main>
   )
 }

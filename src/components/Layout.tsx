@@ -5,7 +5,7 @@ import { clearToken, getToken } from '../auth/tokenStorage'
 
 function Layout() {
   const navigate = useNavigate()
-  const [isAuthenticated, setIsAuthenticated] = useState(() => Boolean(getToken()))
+  const isAuthenticated = Boolean(getToken())
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [hasScrolled, setHasScrolled] = useState(false)
 
@@ -30,7 +30,6 @@ function Layout() {
 
   const handleLogout = () => {
     clearToken()
-    setIsAuthenticated(false)
     closeMenu()
     navigate('/login')
   }

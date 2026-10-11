@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Check, Eye, ShieldCheck, Trash2, X } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { ApiError, apiFetch } from '../api/client'
 import { clearToken, getToken } from '../auth/tokenStorage'
 import type { ModerationStatus, Role } from '../types'
@@ -171,48 +172,48 @@ function AdminModerationPage() {
     }
   }
 
-  const handleLogout = () => {
-    clearToken()
-    navigate('/login', { replace: true })
-  }
-
   if (isLoading) {
-    return <p>Chargement...</p>
+    return <main className="page-shell"><p className="loading-state">Chargement...</p></main>
   }
 
   if (errorMessage && profiles.length === 0) {
     return (
-      <main>
-        <p role="alert">{errorMessage}</p>
-        <button type="button" onClick={handleLogout}>
-          Se déconnecter
-        </button>
+      <main className="page-shell">
+        <section className="status-card card">
+          <p className="alert alert-error" role="alert">{errorMessage}</p>
+        </section>
       </main>
     )
   }
 
   return (
-    <main>
-      <h1>Modération administrateur</h1>
-      {errorMessage && <p role="alert">{errorMessage}</p>}
+    <main className="page-shell admin-page">
+      <div className="admin-heading">
+        <div className="admin-title-icon"><ShieldCheck aria-hidden="true" size={28} /></div>
+        <div><h1>Modération des profils</h1><p>Vérifiez les profils avant leur mise en relation.</p></div>
+      </div>
+      {errorMessage && <p className="alert alert-error" role="alert">{errorMessage}</p>}
 
-      <label htmlFor="status-filter">Filtrer par statut</label>
-      <select
-        id="status-filter"
-        value={selectedStatus}
-        onChange={(event) =>
-          setSelectedStatus(event.target.value as StatusFilter)
-        }
-      >
+      <div className="filter-bar">
+        <div className="form-group">
+          <label htmlFor="status-filter">Filtrer par statut</label>
+          <select className="form-input" id="status-filter" value={selectedStatus} onChange={(event) => setSelectedStatus(event.target.value as StatusFilter)}>
         <option value="SUSPECT_PENDING">Suspects et en attente</option>
         <option value="ALL">Tous les statuts</option>
         <option value="SUSPECT">Suspect</option>
         <option value="PENDING">En attente</option>
         <option value="OK">Validé</option>
         <option value="REJETE">Refusé</option>
-      </select>
+          </select>
+        </div>
+        <span className="profile-count">{visibleProfiles.length} profil(s)</span>
+      </div>
 
-      <table>
+      {visibleProfiles.length === 0 ? (
+        <div className="empty-state card"><ShieldCheck aria-hidden="true" size={30} /><p>Aucun profil à afficher.</p></div>
+      ) : (
+      <div className="table-wrapper">
+      <table className="table">
         <thead>
           <tr>
             <th scope="col">Nom d’utilisateur</th>
@@ -230,56 +231,44 @@ function AdminModerationPage() {
               <td>{profile.email}</td>
               <td>{roleLabels[profile.role]}</td>
               <td>{profile.title}</td>
-              <td>{moderationStatusLabels[profile.moderation_status]}</td>
+              <td><span className={`badge badge-${profile.moderation_status.toLowerCase()}`}>{moderationStatusLabels[profile.moderation_status]}</span></td>
               <td>
-                <button
-                  type="button"
-                  disabled={actionInProgress !== null}
-                  onClick={() => void handleViewDetails(profile.id)}
-                >
+                <div className="action-buttons">
+                <button className="btn btn-secondary btn-small" type="button" disabled={actionInProgress !== null} onClick={() => void handleViewDetails(profile.id)}>
+                  <Eye aria-hidden="true" size={16} />
                   Voir le détail
                 </button>
-                <button
-                  type="button"
-                  disabled={actionInProgress !== null}
-                  onClick={() => void handleApprove(profile.id)}
-                >
+                <button className="btn btn-primary btn-small" type="button" disabled={actionInProgress !== null} onClick={() => void handleApprove(profile.id)}>
+                  <Check aria-hidden="true" size={16} />
                   Accepter
                 </button>
-                <button
-                  type="button"
-                  disabled={actionInProgress !== null}
-                  onClick={() => void handleDelete(profile.id)}
-                >
+                <button className="btn btn-danger btn-small" type="button" disabled={actionInProgress !== null} onClick={() => void handleDelete(profile.id)}>
+                  <Trash2 aria-hidden="true" size={16} />
                   Supprimer
                 </button>
+                </div>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+      </div>
+      )}
 
       {selectedProfile && (
-        <section>
-          <h2>Détail du profil</h2>
+        <section className="card detail-card">
+          <div className="detail-heading"><h2>Détail du profil</h2><button className="icon-button" type="button" aria-label="Fermer le détail" onClick={() => setSelectedProfile(null)}><X aria-hidden="true" size={20} /></button></div>
           <p>Biographie : {selectedProfile.bio}</p>
-          <p>Compétences : {selectedProfile.skills.join(', ')}</p>
+          <p>Compétences :</p>
+          <div className="tag-list">{selectedProfile.skills.map((skill) => <span className="badge badge-neutral" key={skill}>{skill}</span>)}</div>
           <p>
             Tarif horaire :{' '}
             {selectedProfile.hourly_rate === null
               ? 'Non renseigné'
               : selectedProfile.hourly_rate}
           </p>
-          <button type="button" onClick={() => setSelectedProfile(null)}>
-            Fermer le détail
-          </button>
         </section>
       )}
-
-      <button type="button" onClick={handleLogout}>
-        Se déconnecter
-      </button>
-      <Link to="/profile">Mon profil</Link>
     </main>
   )
 }

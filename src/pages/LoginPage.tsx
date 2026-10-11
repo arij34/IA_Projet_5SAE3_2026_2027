@@ -1,4 +1,5 @@
 import { type FormEvent, useState } from 'react'
+import { Eye, EyeOff, Lock, Loader2, LogIn, User as UserIcon } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ApiError, apiFetch } from '../api/client'
 import { setToken } from '../auth/tokenStorage'
@@ -32,6 +33,7 @@ function LoginPage() {
   const [password, setPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -90,39 +92,38 @@ function LoginPage() {
   }
 
   return (
-    <main>
-      <h1>Connexion</h1>
-      {errorMessage && <p role="alert">{errorMessage}</p>}
-      <form onSubmit={handleSubmit} noValidate>
-        <div>
+    <main className="page-shell">
+      <section className="auth-card card">
+        <div className="auth-heading">
+          <div className="auth-icon"><LogIn aria-hidden="true" size={26} /></div>
+          <h1>Connexion</h1>
+          <p>Retrouvez vos projets et vos collaborations.</p>
+        </div>
+        {errorMessage && <p className="alert alert-error" role="alert">{errorMessage}</p>}
+        <form onSubmit={handleSubmit} noValidate>
+          <div className="form-group">
           <label htmlFor="username">Nom d’utilisateur</label>
-          <input
-            id="username"
-            name="username"
-            type="text"
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
-            autoComplete="username"
-          />
-        </div>
-
-        <div>
+          <div className="input-with-icon">
+            <UserIcon aria-hidden="true" size={18} />
+            <input className="form-input" id="username" name="username" type="text" value={username} onChange={(event) => setUsername(event.target.value)} autoComplete="username" />
+          </div>
+          </div>
+          <div className="form-group">
           <label htmlFor="password">Mot de passe</label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            autoComplete="current-password"
-          />
-        </div>
-
-        <button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Connexion en cours...' : 'Se connecter'}
-        </button>
-      </form>
-      <Link to="/register">Pas encore de compte ? S’inscrire</Link>
+          <div className="input-with-icon">
+            <Lock aria-hidden="true" size={18} />
+            <input className="form-input" id="password" name="password" type={isPasswordVisible ? 'text' : 'password'} value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="current-password" />
+            <button className="input-action" type="button" aria-label={isPasswordVisible ? 'Masquer le mot de passe' : 'Afficher le mot de passe'} onClick={() => setIsPasswordVisible((visible) => !visible)}>
+              {isPasswordVisible ? <EyeOff aria-hidden="true" size={18} /> : <Eye aria-hidden="true" size={18} />}
+            </button>
+          </div>
+          </div>
+          <button className="btn btn-primary form-submit" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? <><Loader2 className="spin" aria-hidden="true" size={18} />Connexion en cours...</> : 'Se connecter'}
+          </button>
+        </form>
+        <Link className="auth-link" to="/register">Pas encore de compte ? S’inscrire</Link>
+      </section>
     </main>
   )
 }

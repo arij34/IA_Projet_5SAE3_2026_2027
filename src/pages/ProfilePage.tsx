@@ -1,4 +1,5 @@
 import { type ChangeEvent, type FormEvent, useEffect, useState } from 'react'
+import { Briefcase, Loader2, Mail, User as UserIcon } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ApiError, apiFetch } from '../api/client'
 import { clearToken, getToken } from '../auth/tokenStorage'
@@ -209,56 +210,62 @@ function ProfilePage() {
     }
   }
 
-  const handleLogout = () => {
-    clearToken()
-    navigate('/login', { replace: true })
-  }
-
   if (isLoading) {
-    return <p>Chargement...</p>
+    return <main className="page-shell"><p className="loading-state">Chargement...</p></main>
   }
 
   if (isLoggedOutAfterUpdate) {
     return (
-      <main>
-        <p>
+      <main className="page-shell">
+        <section className="status-card card">
+        <p className="alert alert-info" role="status">
           Votre profil modifié est en cours de vérification (ou a été refusé).
           Vous avez été déconnecté.
         </p>
-        <Link to="/login">Se connecter</Link>
+        <Link className="btn btn-secondary" to="/login">Se connecter</Link>
+        </section>
       </main>
     )
   }
 
   if (user === null || form === null) {
-    return generalError ? <p role="alert">{generalError}</p> : null
+    return generalError ? <main className="page-shell"><p className="alert alert-error" role="alert">{generalError}</p></main> : null
   }
 
   const renderErrors = (field: keyof ProfileForm) =>
     fieldErrors[field]?.map((message) => (
-      <p key={message} role="alert">
+      <p className="form-error" key={message} role="alert">
         {message}
       </p>
     ))
 
   return (
-    <main>
-      <h1>Profil</h1>
-      {generalError && <p role="alert">{generalError}</p>}
-      <section>
-        <h2>Informations du compte</h2>
-        <p>Nom d’utilisateur : {user.username}</p>
-        <p>E-mail : {user.email}</p>
-        <p>Rôle : {roleLabels[user.role]}</p>
-        <p>
-          Statut de modération : {moderationStatusLabels[user.moderation_status]}
-        </p>
-      </section>
-
-      <form onSubmit={handleSubmit}>
+    <main className="page-shell profile-page">
+      <div className="profile-heading">
+        <div className="avatar">{user.username.charAt(0).toUpperCase()}</div>
         <div>
+          <h1>{user.username}</h1>
+          <p>{user.email}</p>
+        </div>
+        <span className={`badge badge-${user.moderation_status.toLowerCase()}`}>
+          {moderationStatusLabels[user.moderation_status]}
+        </span>
+      </div>
+      {generalError && <p className="alert alert-error" role="alert">{generalError}</p>}
+      <div className="profile-grid">
+        <section className="card account-card">
+          <h2>Mes informations</h2>
+          <div className="account-row"><UserIcon aria-hidden="true" size={19} /><span><strong>Nom d’utilisateur</strong>{user.username}</span></div>
+          <div className="account-row"><Mail aria-hidden="true" size={19} /><span><strong>E-mail</strong>{user.email}</span></div>
+          <div className="account-row"><Briefcase aria-hidden="true" size={19} /><span><strong>Rôle</strong>{roleLabels[user.role]}</span></div>
+        </section>
+
+        <section className="card">
+          <h2>Modifier mon profil</h2>
+        <form onSubmit={handleSubmit}>
+        <div className="form-group">
           <label htmlFor="title">Titre</label>
-          <input
+          <input className="form-input"
             id="title"
             name="title"
             type="text"
@@ -269,15 +276,15 @@ function ProfilePage() {
           {renderErrors('title')}
         </div>
 
-        <div>
+        <div className="form-group">
           <label htmlFor="bio">Biographie</label>
-          <textarea id="bio" name="bio" value={form.bio} onChange={handleChange} />
+          <textarea className="form-input" id="bio" name="bio" value={form.bio} onChange={handleChange} />
           {renderErrors('bio')}
         </div>
 
-        <div>
+        <div className="form-group">
           <label htmlFor="skills">Compétences (séparées par des virgules)</label>
-          <input
+          <input className="form-input"
             id="skills"
             name="skills"
             type="text"
@@ -287,9 +294,9 @@ function ProfilePage() {
           {renderErrors('skills')}
         </div>
 
-        <div>
+        <div className="form-group">
           <label htmlFor="hourly_rate">Tarif horaire</label>
-          <input
+          <input className="form-input"
             id="hourly_rate"
             name="hourly_rate"
             type="number"
@@ -301,17 +308,15 @@ function ProfilePage() {
           {renderErrors('hourly_rate')}
         </div>
 
-        <button type="submit" disabled={isSubmitting}>
+        <button className="btn btn-primary form-submit" type="submit" disabled={isSubmitting}>
           {isSubmitting
-            ? 'Enregistrement et vérification en cours...'
+            ? <><Loader2 className="spin" aria-hidden="true" size={18} />Enregistrement et vérification en cours...</>
             : 'Enregistrer'}
         </button>
       </form>
-
-      {successMessage && <p role="status">{successMessage}</p>}
-      <button type="button" onClick={handleLogout}>
-        Se déconnecter
-      </button>
+        {successMessage && <p className="alert alert-success" role="status">{successMessage}</p>}
+        </section>
+      </div>
     </main>
   )
 }
