@@ -33,10 +33,18 @@ def anonymize_text(text, known_names=()):
     result = EMAIL_RE.sub("[EMAIL]", str(text))
     result = URL_RE.sub("[LIEN]", result)
     result = PHONE_RE.sub(_replace_phone, result)
-    for name in known_names:
-        cleaned = (name or "").strip()
-        if len(cleaned) >= 2:
-            result = re.sub(re.escape(cleaned), "[NOM]", result, flags=re.IGNORECASE)
+    cleaned_names = sorted(
+        (
+            cleaned
+            for name in known_names
+            if (cleaned := (name or "").strip()) and len(cleaned) >= 2
+        ),
+        key=len,
+        reverse=True,
+    )
+    for name in cleaned_names:
+        pattern = rf"\b{re.escape(name)}\b"
+        result = re.sub(pattern, "[NOM]", result, flags=re.IGNORECASE)
     return result
 
 

@@ -24,6 +24,11 @@ class AnonymizerTests(SimpleTestCase):
         self.assertNotIn("Arij", result)
         self.assertNotIn("Ben Salah", result)
 
+    def test_known_name_is_only_removed_as_a_whole_word(self):
+        self.assertEqual(anonymize_text("calcul", known_names=["Al"]), "calcul")
+        self.assertEqual(anonymize_text("qualité", known_names=["Ali"]), "qualité")
+        self.assertEqual(anonymize_text("Bonjour Al", known_names=["Al"]), "Bonjour [NOM]")
+
     def test_year_range_is_kept(self):
         result = anonymize_text("Développeur Django 2019-2023")
         self.assertIn("2019-2023", result)

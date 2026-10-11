@@ -52,3 +52,32 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"{self.username} ({self.get_role_display()})"
+
+
+class ModerationLog(models.Model):
+    """Historique des décisions de modération appliquées à un utilisateur."""
+
+    class Decision(models.TextChoices):
+        OK = User.ModerationStatus.OK, "Validé"
+        SUSPECT = User.ModerationStatus.SUSPECT, "Suspect"
+        REJETE = User.ModerationStatus.REJETE, "Rejeté"
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="moderation_logs",
+    )
+    decision = models.CharField(max_length=10, choices=Decision.choices)
+    reason = models.TextField()
+    confidence = models.FloatField(null=True, blank=True)
+    error = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        """Options de stockage et d'affichage de l'historique."""
+
+        ordering = ("-created_at",)
+
+    def __str__(self):
+        """Retourne un libellé lisible du journal."""
+        return f"{self.user.username} - {self.decision}"
