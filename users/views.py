@@ -1,5 +1,3 @@
-import logging
-
 from django.db import transaction
 from django.db.models import OuterRef, Subquery
 from django.utils import timezone
@@ -21,7 +19,6 @@ from .serializers import (
     RegisterSerializer,
 )
 
-logger = logging.getLogger(__name__)
 MODERATION_STATUSES = frozenset(
     (
         User.ModerationStatus.PENDING,
@@ -88,25 +85,8 @@ class MeView(RetrieveUpdateAPIView):
         return self.request.user
 
     def perform_update(self, serializer):
-        """Met à jour le profil et remodère les champs concernés si nécessaire."""
-        user = self.get_object()
-        moderated_fields = ("title", "bio", "skills")
-        profile_changed = any(
-            field in serializer.validated_data
-            and serializer.validated_data[field] != getattr(user, field)
-            for field in moderated_fields
-        )
+        """Met à jour le profil sans lancer d'analyse automatique."""
         serializer.save()
-        if not profile_changed:
-            return
-
-        try:
-            moderate_user_profile(user)
-        except Exception:
-            logger.exception(
-                "Erreur inattendue pendant la modération du profil utilisateur."
-            )
-        user.refresh_from_db()
 
 
 class ModerationListView(APIView):

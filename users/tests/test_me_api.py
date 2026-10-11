@@ -5,6 +5,8 @@ from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APITestCase
 
+from users.models import ModerationLog
+
 
 User = get_user_model()
 
@@ -81,8 +83,8 @@ class MeApiTests(APITestCase):
         self.assertEqual(self.user.bio, "Nouvelle bio")
         self.assertEqual(self.user.skills, ["Django", "DRF"])
 
-    def test_patch_bio_calls_moderation(self):
-        """La modification de la bio relance la modération une fois."""
+    def test_patch_profile_does_not_call_moderation_or_create_log(self):
+        """La modification du profil ne lance pas d'analyse automatique."""
         self.authenticate()
 
         response = self.client.patch(
@@ -92,7 +94,8 @@ class MeApiTests(APITestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.call_llm_mock.assert_called_once()
+        self.call_llm_mock.assert_not_called()
+        self.assertFalse(ModerationLog.objects.filter(user=self.user).exists())
 
     def test_patch_hourly_rate_does_not_call_moderation(self):
         """La modification du tarif seul ne relance pas la modération."""
@@ -106,26 +109,6 @@ class MeApiTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.call_llm_mock.assert_not_called()
-
-    def test_patch_bio_rejected_analysis_does_not_change_status(self):
-        """Une analyse REJETE est journalisée sans changer le statut."""
-        self.call_llm_mock.return_value = (
-            '{"statut": "REJETE", "raison": "Interdit", "confiance": 0.9}'
-        )
-        self.authenticate()
-
-        response = self.client.patch(
-            self.url,
-            {"bio": "Bio interdite"},
-            format="json",
-        )
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.user.refresh_from_db()
-        self.assertEqual(self.user.bio, "Bio interdite")
-        self.assertEqual(self.user.moderation_status, User.ModerationStatus.OK)
-        log = self.user.moderation_logs.latest("created_at")
-        self.assertEqual(log.decision, User.ModerationStatus.REJETE)
 
     def test_patch_ignores_protected_fields(self):
         """PATCH ignore les champs d'identité et de modération protégés."""

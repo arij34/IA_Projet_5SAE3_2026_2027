@@ -7,6 +7,7 @@ from users.models import ModerationLog, User
 from users.services.moderation import (
     MAX_BIO_CHARS,
     MAX_REASON_CHARS,
+    LOW_CONFIDENCE_REASON_SUFFIX,
     moderate_user_profile,
 )
 
@@ -49,6 +50,24 @@ class ModerationServiceTests(TestCase):
         log = moderate_user_profile(self.create_user())
 
         self.assertEqual(log.decision, User.ModerationStatus.SUSPECT)
+        self.assertEqual(
+            log.reason,
+            "Doute" + LOW_CONFIDENCE_REASON_SUFFIX,
+        )
+
+    @patch("users.services.moderation.call_llm")
+    def test_low_confidence_reason_keeps_suffix_with_maximum_length(
+        self, call_llm_mock
+    ):
+        """Une raison longue conserve le suffixe dans la limite de 500 caractères."""
+        call_llm_mock.return_value = (
+            '{"statut": "OK", "raison": "x" * 600, "confiance": 0.6}'
+        ).replace('"x" * 600', '"' + ("x" * 600) + '"')
+
+        log = moderate_user_profile(self.create_user())
+
+        self.assertEqual(len(log.reason), MAX_REASON_CHARS)
+        self.assertTrue(log.reason.endswith(LOW_CONFIDENCE_REASON_SUFFIX))
 
     @patch("users.services.moderation.call_llm")
     def test_suspect_and_rejected_are_preserved(self, call_llm_mock):

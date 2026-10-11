@@ -19,6 +19,9 @@ MAX_BIO_CHARS = 2000
 MAX_SKILLS = 30
 MAX_SKILL_CHARS = 50
 MAX_REASON_CHARS = 500
+LOW_CONFIDENCE_REASON_SUFFIX = (
+    " (confiance inférieure à 70 % : vérification manuelle conseillée)"
+)
 _PLACEHOLDER_RE = re.compile(r"\[[^\[\]]*\]")
 
 
@@ -183,10 +186,18 @@ def moderate_user_profile(user: User) -> ModerationLog | None:
         and confidence < CONFIDENCE_THRESHOLD
     ):
         decision = User.ModerationStatus.SUSPECT
+        reason = (
+            parsed["raison"][
+                : MAX_REASON_CHARS - len(LOW_CONFIDENCE_REASON_SUFFIX)
+            ]
+            + LOW_CONFIDENCE_REASON_SUFFIX
+        )
+    else:
+        reason = parsed["raison"]
 
     return _save_moderation(
         user,
         decision,
-        parsed["raison"],
+        reason,
         confidence,
     )

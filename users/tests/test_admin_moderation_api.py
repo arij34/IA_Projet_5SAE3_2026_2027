@@ -58,7 +58,10 @@ class AdminModerationApiTests(APITestCase):
 
     def test_non_admin_users_are_rejected(self):
         """Les utilisateurs approuvés non administrateurs reçoivent 403."""
-        for user in (self.approved, self.create_user("owner", User.ModerationStatus.OK)):
+        owner = self.create_user("owner", User.ModerationStatus.OK)
+        owner.role = User.Role.PROJECT_OWNER
+        owner.save(update_fields=("role",))
+        for user in (self.approved, owner):
             with self.subTest(role=user.role):
                 self.authenticate_as(user)
                 response = self.client.get(self.base_url)
@@ -221,10 +224,13 @@ class AdminModerationApiTests(APITestCase):
         """Un profil déjà traité ne peut pas être analysé."""
         self.authenticate_as(self.admin)
 
-        response = self.client.post(f"{self.base_url}{self.approved.id}/analyze/")
-
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn("attente", response.data["detail"])
+        for user in (self.suspect, self.rejected, self.approved):
+            with self.subTest(status=user.moderation_status):
+                response = self.client.post(
+                    f"{self.base_url}{user.id}/analyze/"
+                )
+                self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+                self.assertIn("attente", response.data["detail"])
 
     def test_analyze_admin_user_returns_bad_request(self):
         """Un compte ADMIN ne peut pas être analysé."""
@@ -273,3 +279,27 @@ class AdminModerationApiTests(APITestCase):
             User.ModerationStatus.SUSPECT,
         )
         self.assertEqual(response.data["last_analysis"]["confidence"], 0.4)
+
+    @patch("users.services.moderation.call_llm")
+    def test_analyze_twice_creates_two_logs_and_returns_latest_analysis(
+        self, call_llm_mock
+    ):
+        """Deux analyses successives créent deux journaux et exposent la plus récente."""
+        call_llm_mock.side_effect = [
+            '{"statut": "OK", "raison": "Première", "confiance": 0.8}',
+            '{"statut": "OK", "raison": "Seconde", "confiance": 0.9}',
+        ]
+        self.authenticate_as(self.admin)
+
+        first = self.client.post(
+            f"{self.base_url}{self.pending.id}/analyze/"
+        )
+        second = self.client.post(
+            f"{self.base_url}{self.pending.id}/analyze/"
+        )
+        detail = self.client.get(f"{self.base_url}{self.pending.id}/")
+
+        self.assertEqual(first.status_code, status.HTTP_200_OK)
+        self.assertEqual(second.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.pending.moderation_logs.count(), 2)
+        self.assertEqual(detail.data["last_analysis"]["reason"], "Seconde")

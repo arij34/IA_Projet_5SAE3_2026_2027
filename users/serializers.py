@@ -206,7 +206,7 @@ class ModerationDetailSerializer(serializers.ModelSerializer):
 
     def get_last_analysis(self, obj):
         """Retourne la dernière analyse ou null si aucun journal n'existe."""
-        log = obj.moderation_logs.order_by("-created_at").first()
+        log = obj.moderation_logs.order_by("-created_at", "-id").first()
         if log is None:
             return None
         return ModerationLogSerializer(log).data
