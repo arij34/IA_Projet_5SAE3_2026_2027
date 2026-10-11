@@ -36,7 +36,7 @@ class ModerationServiceTests(TestCase):
         log = moderate_user_profile(user)
 
         self.assertEqual(log.decision, User.ModerationStatus.OK)
-        self.assertEqual(user.moderation_status, User.ModerationStatus.OK)
+        self.assertEqual(user.moderation_status, User.ModerationStatus.PENDING)
         self.assertEqual(log.confidence, 0.9)
 
     @patch("users.services.moderation.call_llm")
@@ -160,12 +160,9 @@ class ModerationServiceTests(TestCase):
         self.assertEqual(log.reason, "Contenu interdit")
         self.assertEqual(log.confidence, 0.95)
         self.assertEqual(log.error, "")
-        delta_seconds = abs(
-            (user.moderation_checked_at - log.created_at).total_seconds()
-        )
-        self.assertLess(delta_seconds, 1)
         user.refresh_from_db()
-        self.assertEqual(user.moderation_status, User.ModerationStatus.REJETE)
+        self.assertEqual(user.moderation_status, User.ModerationStatus.PENDING)
+        self.assertIsNone(user.moderation_checked_at)
 
     @patch("users.services.moderation.call_llm")
     def test_invalid_json_creates_suspect_log(self, call_llm_mock):
@@ -178,7 +175,7 @@ class ModerationServiceTests(TestCase):
         self.assertEqual(log.decision, User.ModerationStatus.SUSPECT)
         self.assertEqual(log.error, "LLMResponseError")
         user.refresh_from_db()
-        self.assertEqual(user.moderation_status, User.ModerationStatus.SUSPECT)
+        self.assertEqual(user.moderation_status, User.ModerationStatus.PENDING)
 
     @patch("users.services.moderation.call_llm")
     def test_reason_is_truncated(self, call_llm_mock):

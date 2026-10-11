@@ -1,7 +1,10 @@
+from unittest.mock import patch
+
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from users.ai.exceptions import LLMTimeoutError
 from users.models import ModerationLog
 
 
@@ -170,3 +173,103 @@ class AdminModerationApiTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertTrue(User.objects.filter(pk=self.approved.pk).exists())
+
+    @patch("users.services.moderation.call_llm")
+    def test_admin_can_analyze_pending_user(self, call_llm_mock):
+        """Un administrateur peut analyser un profil en attente."""
+        call_llm_mock.return_value = (
+            '{"statut": "OK", "raison": "Profil cohérent", "confiance": 0.85}'
+        )
+        self.authenticate_as(self.admin)
+
+        response = self.client.post(f"{self.base_url}{self.pending.id}/analyze/")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["decision"], User.ModerationStatus.OK)
+        self.assertEqual(response.data["confidence_percent"], 85)
+        self.assertEqual(response.data["error"], "")
+        self.pending.refresh_from_db()
+        self.assertEqual(
+            self.pending.moderation_status,
+            User.ModerationStatus.PENDING,
+        )
+        self.assertEqual(self.pending.moderation_logs.count(), 1)
+
+    def test_analyze_requires_authentication(self):
+        """Un utilisateur anonyme ne peut pas lancer une analyse."""
+        response = self.client.post(f"{self.base_url}{self.pending.id}/analyze/")
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_non_admin_cannot_analyze(self):
+        """Un utilisateur non administrateur reçoit une interdiction."""
+        self.authenticate_as(self.approved)
+
+        response = self.client.post(f"{self.base_url}{self.pending.id}/analyze/")
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_analyze_unknown_user_returns_not_found(self):
+        """Un identifiant inconnu retourne 404."""
+        self.authenticate_as(self.admin)
+
+        response = self.client.post(f"{self.base_url}999999/analyze/")
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_analyze_non_pending_user_returns_bad_request(self):
+        """Un profil déjà traité ne peut pas être analysé."""
+        self.authenticate_as(self.admin)
+
+        response = self.client.post(f"{self.base_url}{self.approved.id}/analyze/")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("attente", response.data["detail"])
+
+    def test_analyze_admin_user_returns_bad_request(self):
+        """Un compte ADMIN ne peut pas être analysé."""
+        self.authenticate_as(self.admin)
+
+        response = self.client.post(
+            f"{self.base_url}{self.other_admin.id}/analyze/"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("administrateur", response.data["detail"])
+
+    @patch("users.services.moderation.call_llm")
+    def test_llm_error_returns_suspect_without_changing_status(self, call_llm_mock):
+        """Une erreur LLM est journalisée sans modifier le statut."""
+        call_llm_mock.side_effect = LLMTimeoutError("profil privé")
+        self.authenticate_as(self.admin)
+
+        response = self.client.post(f"{self.base_url}{self.pending.id}/analyze/")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["decision"], User.ModerationStatus.SUSPECT)
+        self.assertEqual(response.data["error"], "LLMTimeoutError")
+        self.assertNotIn("profil privé", response.data["error"])
+        self.pending.refresh_from_db()
+        self.assertEqual(
+            self.pending.moderation_status,
+            User.ModerationStatus.PENDING,
+        )
+
+    @patch("users.services.moderation.call_llm")
+    def test_detail_contains_last_analysis(self, call_llm_mock):
+        """Le détail expose la dernière analyse du profil."""
+        call_llm_mock.return_value = (
+            '{"statut": "SUSPECT", "raison": "Doute", "confiance": 0.4}'
+        )
+        self.authenticate_as(self.admin)
+        self.client.post(f"{self.base_url}{self.pending.id}/analyze/")
+
+        response = self.client.get(f"{self.base_url}{self.pending.id}/")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsNotNone(response.data["last_analysis"])
+        self.assertEqual(
+            response.data["last_analysis"]["decision"],
+            User.ModerationStatus.SUSPECT,
+        )
+        self.assertEqual(response.data["last_analysis"]["confidence"], 0.4)

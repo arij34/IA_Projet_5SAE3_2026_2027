@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
+import sys  # noqa: E402
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -157,3 +158,5 @@ LLM_PROVIDER = os.getenv("LLM_PROVIDER", "mock")  # "mock" ou "anthropic"
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
 LLM_MODEL = os.getenv("LLM_MODEL", "claude-haiku-5-5")
 LLM_TIMEOUT_SECONDS = int(os.getenv("LLM_TIMEOUT_SECONDS", "20"))
+if "test" in sys.argv:
+    PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]

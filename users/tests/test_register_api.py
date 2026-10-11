@@ -42,7 +42,11 @@ class RegisterApiTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertNotIn("password", response.data)
-        self.assertEqual(response.data["moderation_status"], User.ModerationStatus.OK)
+        self.assertEqual(
+            response.data["moderation_status"],
+            User.ModerationStatus.PENDING,
+        )
+        self.call_llm_mock.assert_not_called()
         user = User.objects.get(username="nouveau")
         self.assertTrue(user.check_password("MotDePasseFort!123"))
 
@@ -63,11 +67,15 @@ class RegisterApiTests(APITestCase):
         response = self.client.post(self.url, payload, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data["moderation_status"], User.ModerationStatus.OK)
+        self.assertEqual(
+            response.data["moderation_status"],
+            User.ModerationStatus.PENDING,
+        )
         self.assertEqual(
             User.objects.get(username="nouveau").moderation_status,
-            User.ModerationStatus.OK,
+            User.ModerationStatus.PENDING,
         )
+        self.call_llm_mock.assert_not_called()
 
     def test_duplicate_email_is_rejected(self):
         """Une adresse e-mail déjà utilisée est refusée."""
@@ -82,8 +90,8 @@ class RegisterApiTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_registration_moderation_returns_suspect(self):
-        """Une réponse SUSPECT du LLM est reflétée dans la réponse."""
+    def test_registration_does_not_call_moderation_for_suspect_response(self):
+        """Une inscription reste en attente sans appeler le LLM."""
         self.call_llm_mock.return_value = (
             '{"statut": "SUSPECT", "raison": "Doute", "confiance": 0.9}'
         )
@@ -91,10 +99,14 @@ class RegisterApiTests(APITestCase):
         response = self.client.post(self.url, self.valid_payload(), format="json")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data["moderation_status"], User.ModerationStatus.SUSPECT)
+        self.assertEqual(
+            response.data["moderation_status"],
+            User.ModerationStatus.PENDING,
+        )
+        self.call_llm_mock.assert_not_called()
 
-    def test_registration_moderation_returns_rejected(self):
-        """Une réponse REJETE du LLM est reflétée dans la réponse."""
+    def test_registration_does_not_call_moderation_for_rejected_response(self):
+        """Une inscription reste en attente quel que soit le LLM."""
         self.call_llm_mock.return_value = (
             '{"statut": "REJETE", "raison": "Interdit", "confiance": 0.9}'
         )
@@ -102,16 +114,24 @@ class RegisterApiTests(APITestCase):
         response = self.client.post(self.url, self.valid_payload(), format="json")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data["moderation_status"], User.ModerationStatus.REJETE)
+        self.assertEqual(
+            response.data["moderation_status"],
+            User.ModerationStatus.PENDING,
+        )
+        self.call_llm_mock.assert_not_called()
 
-    def test_registration_llm_timeout_returns_suspect(self):
-        """Un timeout LLM conserve une réponse d'inscription normale."""
+    def test_registration_llm_is_not_called(self):
+        """Un timeout configuré ne peut pas affecter l'inscription."""
         self.call_llm_mock.side_effect = LLMTimeoutError()
 
         response = self.client.post(self.url, self.valid_payload(), format="json")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data["moderation_status"], User.ModerationStatus.SUSPECT)
+        self.assertEqual(
+            response.data["moderation_status"],
+            User.ModerationStatus.PENDING,
+        )
+        self.call_llm_mock.assert_not_called()
 
     def test_weak_password_is_rejected(self):
         """Un mot de passe trop faible est refusé par Django."""

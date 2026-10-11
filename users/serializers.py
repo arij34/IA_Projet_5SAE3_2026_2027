@@ -184,6 +184,7 @@ class ModerationDetailSerializer(serializers.ModelSerializer):
     """Sérialise le détail d'un profil et son historique."""
 
     moderation_logs = ModerationLogSerializer(many=True, read_only=True)
+    last_analysis = serializers.SerializerMethodField()
 
     class Meta:
         """Déclare les champs du détail."""
@@ -200,7 +201,15 @@ class ModerationDetailSerializer(serializers.ModelSerializer):
             "hourly_rate",
             "moderation_status",
             "moderation_logs",
+            "last_analysis",
         )
+
+    def get_last_analysis(self, obj):
+        """Retourne la dernière analyse ou null si aucun journal n'existe."""
+        log = obj.moderation_logs.order_by("-created_at").first()
+        if log is None:
+            return None
+        return ModerationLogSerializer(log).data
 
     def validate_skills(self, value):
         """Vérifie que les compétences sont une liste de chaînes."""

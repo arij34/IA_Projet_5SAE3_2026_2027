@@ -107,8 +107,8 @@ class MeApiTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.call_llm_mock.assert_not_called()
 
-    def test_patch_bio_rejected_status_is_saved(self):
-        """Une décision REJETE est persistée après modification de la bio."""
+    def test_patch_bio_rejected_analysis_does_not_change_status(self):
+        """Une analyse REJETE est journalisée sans changer le statut."""
         self.call_llm_mock.return_value = (
             '{"statut": "REJETE", "raison": "Interdit", "confiance": 0.9}'
         )
@@ -123,7 +123,9 @@ class MeApiTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.user.refresh_from_db()
         self.assertEqual(self.user.bio, "Bio interdite")
-        self.assertEqual(self.user.moderation_status, User.ModerationStatus.REJETE)
+        self.assertEqual(self.user.moderation_status, User.ModerationStatus.OK)
+        log = self.user.moderation_logs.latest("created_at")
+        self.assertEqual(log.decision, User.ModerationStatus.REJETE)
 
     def test_patch_ignores_protected_fields(self):
         """PATCH ignore les champs d'identité et de modération protégés."""

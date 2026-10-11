@@ -55,17 +55,10 @@ class RegisterView(CreateAPIView):
     permission_classes = (AllowAny,)
 
     def create(self, request, *args, **kwargs):
-        """Crée le compte puis lance sa modération avant la réponse."""
+        """Crée le compte et le laisse en attente de vérification."""
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        try:
-            moderate_user_profile(user)
-        except Exception:
-            logger.exception(
-                "Erreur inattendue pendant la modération de l'inscription."
-            )
-        user.refresh_from_db()
         return Response(serializer.to_representation(user), status=201)
 
 
@@ -184,3 +177,50 @@ class ModerationApproveView(APIView):
                 confidence=None,
             )
         return Response(ModerationDetailSerializer(user).data)
+
+
+class ModerationAnalyzeView(APIView):
+    """Analyse un profil à la demande d'un administrateur."""
+
+    permission_classes = (IsAdminRole,)
+
+    def post(self, request, pk):
+        """Lance une analyse sans modifier le statut du profil."""
+        user = User.objects.filter(pk=pk).first()
+        if user is None:
+            raise NotFound()
+        if user.role == User.Role.ADMIN:
+            return Response(
+                {"detail": "Un compte administrateur ne peut pas être analysé."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if user.moderation_status != User.ModerationStatus.PENDING:
+            return Response(
+                {
+                    "detail": (
+                        "Seuls les comptes en attente peuvent être analysés."
+                    )
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        log = moderate_user_profile(user)
+        if log is None:
+            return Response(
+                {"detail": "Ce compte ne peut pas être analysé."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        confidence_percent = (
+            None
+            if log.confidence is None
+            else max(0, min(100, int(round(log.confidence * 100))))
+        )
+        return Response(
+            {
+                "decision": log.decision,
+                "reason": log.reason,
+                "confidence_percent": confidence_percent,
+                "analyzed_at": log.created_at,
+                "error": log.error,
+            }
+        )

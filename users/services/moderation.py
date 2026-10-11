@@ -5,7 +5,6 @@ from typing import Any
 from unicodedata import normalize
 
 from django.db import transaction
-from django.utils import timezone
 
 from users.ai.anonymizer import anonymize_fields
 from users.ai.exceptions import LLMError
@@ -127,11 +126,8 @@ def _save_moderation(
     confidence: float | None,
     error: str = "",
 ) -> ModerationLog:
-    """Met à jour l'utilisateur et crée son entrée d'historique atomiquement."""
+    """Crée une entrée d'historique sans modifier le compte utilisateur."""
     with transaction.atomic():
-        user.moderation_status = decision
-        user.moderation_checked_at = timezone.now()
-        user.save(update_fields=("moderation_status", "moderation_checked_at"))
         return ModerationLog.objects.create(
             user=user,
             decision=decision,

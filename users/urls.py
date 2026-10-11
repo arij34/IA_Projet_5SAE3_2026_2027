@@ -6,6 +6,7 @@ from .views import (
     LoginView,
     MeView,
     ModerationApproveView,
+    ModerationAnalyzeView,
     ModerationDetailView,
     ModerationListView,
     RegisterView,
@@ -24,5 +25,10 @@ admin_moderation_urlpatterns = [
         "<int:pk>/approve/",
         ModerationApproveView.as_view(),
         name="moderation-approve",
+    ),
+    path(
+        "<int:pk>/analyze/",
+        ModerationAnalyzeView.as_view(),
+        name="moderation-analyze",
     ),
 ]
