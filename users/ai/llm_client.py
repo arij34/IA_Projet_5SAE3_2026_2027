@@ -7,6 +7,9 @@ Fournisseurs (variable LLM_PROVIDER dans .env) :
 Le LLM n'est jamais appelé depuis React : la clé reste côté serveur.
 """
 import logging
+import re
+from collections import Counter
+from unicodedata import combining, normalize
 
 import requests
 from django.conf import settings
@@ -23,25 +26,160 @@ logger = logging.getLogger(__name__)
 ANTHROPIC_URL = "https://api.anthropic.com/v1/messages"
 ANTHROPIC_VERSION = "2023-06-01"
 MAX_ATTEMPTS = 2  # 1 appel + 1 nouvel essai sur erreur temporaire
+_MOCK_CRITERIA_IDS = (
+    "paiement_hors_plateforme",
+    "promesses_irrealistes",
+    "spam_incoherence",
+    "contenu_interdit",
+    "profil_trop_pauvre",
+)
 
 
 def call_llm(system_prompt: str, user_content: str, max_tokens: int = 500) -> str:
     """Envoie le prompt au LLM et retourne le texte brut de la réponse."""
     provider = getattr(settings, "LLM_PROVIDER", "mock")
     if provider == "mock":
-        return _call_mock(system_prompt)
+        return _call_mock(system_prompt, user_content)
     if provider == "anthropic":
         return _call_anthropic(system_prompt, user_content, max_tokens)
     raise LLMConfigError(f"Fournisseur LLM inconnu : {provider!r}")
 
 
-def _call_mock(system_prompt: str) -> str:
-    """Réponse simulée pour développer sans clé API."""
+def _call_mock(system_prompt: str, user_content: str) -> str:
+    """Produit une réponse simulée réaliste pour chaque type de fonctionnalité."""
     if "statut" in system_prompt.lower():
-        return '{"statut": "OK", "raison": "Réponse simulée (mode mock).", "confiance": 0.5}'
+        return _mock_moderation_response(user_content)
     return (
         '{"score": 60, "points_faibles": ["Bio trop courte (réponse simulée)"], '
         '"suggestions": ["Ajoutez vos réalisations principales (réponse simulée)"]}'
+    )
+
+
+def _mock_moderation_response(user_content: str) -> str:
+    """Analyse les signaux de modération dans le profil transmis au mock."""
+    profile_match = re.search(
+        r"<profil>(.*?)</profil>",
+        user_content,
+        flags=re.IGNORECASE | re.DOTALL,
+    )
+    profile_text = profile_match.group(1) if profile_match else user_content
+    normalized = _fold_text(profile_text)
+    content = re.sub(
+        r"\b(?:titre|biographie|compétences)\s*:\s*",
+        "",
+        normalized,
+        flags=re.IGNORECASE,
+    )
+    repeated_word = any(
+        count > 8 for count in Counter(re.findall(r"\b\w+\b", content)).values()
+    )
+    forbidden = any(
+        phrase in normalized
+        for phrase in ("escroquerie", "arnaque garantie", "contenu pour adultes")
+    )
+    payment = any(
+        phrase in normalized
+        for phrase in (
+            "payez-moi d'abord",
+            "paiement hors plateforme",
+            "virement avant",
+            "whatsapp",
+            "telegram",
+        )
+    )
+    unrealistic = any(
+        phrase in normalized
+        for phrase in (
+            "100 % garanti",
+            "garantie 100",
+            "gagnez de l'argent facilement",
+        )
+    )
+    spam = repeated_word
+    poor = len(content.strip()) < 40
+
+    if forbidden:
+        decision, confidence = "REJETE", 0.95
+        reason = "Contenu interdit détecté : l'IA est très sûre de ce verdict."
+    elif payment or unrealistic or spam:
+        decision, confidence = "SUSPECT", 0.85
+        reason = "Un signal problématique a été détecté : l'IA est assez sûre de ce verdict."
+    elif poor:
+        decision, confidence = "OK", 0.62
+        reason = "Profil très court : peu d'éléments pour juger, l'IA est peu sûre."
+    else:
+        decision, confidence = "OK", 0.88
+        reason = "Aucun signe problématique et profil détaillé : l'IA est très sûre."
+
+    criteria = [
+        (
+            "paiement_hors_plateforme",
+            payment,
+            "Aucune demande de paiement hors plateforme détectée."
+            if not payment
+            else "Un signal de paiement hors plateforme est détecté.",
+        ),
+        (
+            "promesses_irrealistes",
+            unrealistic,
+            "Aucune promesse irréaliste détectée."
+            if not unrealistic
+            else "Une promesse irréaliste est détectée.",
+        ),
+        (
+            "spam_incoherence",
+            spam,
+            "Aucune répétition excessive détectée."
+            if not spam
+            else "Un même mot est répété de façon excessive.",
+        ),
+        (
+            "contenu_interdit",
+            forbidden,
+            "Aucun contenu interdit détecté."
+            if not forbidden
+            else "Un contenu interdit est détecté.",
+        ),
+        (
+            "profil_trop_pauvre",
+            poor,
+            "Le profil contient assez d'éléments."
+            if not poor
+            else "Le profil contient trop peu d'éléments.",
+        ),
+    ]
+    return _json_response(decision, reason, confidence, criteria)
+
+
+def _fold_text(value: str) -> str:
+    """Passe un texte en minuscules sans accents pour les règles du mock."""
+    return "".join(
+        character
+        for character in normalize("NFKD", value.casefold())
+        if not combining(character)
+    )
+
+
+def _json_response(
+    decision: str,
+    reason: str,
+    confidence: float,
+    criteria: list[tuple[str, bool, str]],
+) -> str:
+    """Sérialise la réponse mock de modération."""
+    import json
+
+    return json.dumps(
+        {
+            "statut": decision,
+            "raison": reason,
+            "confiance": confidence,
+            "criteres": [
+                {"id": criterion_id, "probleme": problem, "commentaire": comment}
+                for criterion_id, problem, comment in criteria
+            ],
+        },
+        ensure_ascii=False,
     )
 
 

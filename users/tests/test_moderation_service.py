@@ -168,7 +168,9 @@ class ModerationServiceTests(TestCase):
     def test_log_contains_expected_values(self, call_llm_mock):
         """Le journal contient la décision, la raison et la confiance validées."""
         call_llm_mock.return_value = (
-            '{"statut": "REJETE", "raison": "Contenu interdit", "confiance": 0.95}'
+            '{"statut": "REJETE", "raison": "Contenu interdit", '
+            '"confiance": 0.95, "criteres": [{"id": "contenu_interdit", '
+            '"probleme": true, "commentaire": "Contenu interdit détecté."}]}'
         )
         user = self.create_user()
 
@@ -178,6 +180,16 @@ class ModerationServiceTests(TestCase):
         self.assertEqual(log.user, user)
         self.assertEqual(log.reason, "Contenu interdit")
         self.assertEqual(log.confidence, 0.95)
+        self.assertEqual(
+            log.criteria,
+            [
+                {
+                    "id": "contenu_interdit",
+                    "probleme": True,
+                    "commentaire": "Contenu interdit détecté.",
+                }
+            ],
+        )
         self.assertEqual(log.error, "")
         user.refresh_from_db()
         self.assertEqual(user.moderation_status, User.ModerationStatus.PENDING)

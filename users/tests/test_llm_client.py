@@ -27,6 +27,52 @@ class MockProviderTests(SimpleTestCase):
     def test_advice_prompt_returns_score(self):
         self.assertIn("score", call_llm("Donne des conseils", "profil"))
 
+    def test_payment_profile_is_suspect(self):
+        result = call_llm(
+            "Analyse avec un statut",
+            "<profil>Paiement hors plateforme obligatoire.</profil>",
+        )
+
+        self.assertIn('"statut": "SUSPECT"', result)
+        self.assertIn('"confiance": 0.85', result)
+        self.assertIn('"probleme": true', result)
+
+    def test_forbidden_profile_is_rejected(self):
+        result = call_llm(
+            "Analyse avec un statut",
+            "<profil>Contenu pour adultes interdit.</profil>",
+        )
+
+        self.assertIn('"statut": "REJETE"', result)
+        self.assertIn('"confiance": 0.95', result)
+
+    def test_long_neutral_profile_is_confident(self):
+        result = call_llm(
+            "Analyse avec un statut",
+            "<profil>Développeuse Python avec dix ans d'expérience en applications web.</profil>",
+        )
+
+        self.assertIn('"statut": "OK"', result)
+        self.assertIn('"confiance": 0.88', result)
+
+    def test_short_profile_is_low_confidence(self):
+        result = call_llm(
+            "Analyse avec un statut",
+            "<profil>Python.</profil>",
+        )
+
+        self.assertIn('"statut": "OK"', result)
+        self.assertIn('"confiance": 0.62', result)
+        self.assertIn('"id": "profil_trop_pauvre", "probleme": true', result)
+
+    def test_repeated_word_is_suspect(self):
+        result = call_llm(
+            "Analyse avec un statut",
+            "<profil>" + ("spam " * 9) + "</profil>",
+        )
+
+        self.assertIn('"statut": "SUSPECT"', result)
+
 
 @override_settings(LLM_PROVIDER="anthropic", ANTHROPIC_API_KEY="cle-test", LLM_MODEL="m", LLM_TIMEOUT_SECONDS=5)
 class AnthropicProviderTests(SimpleTestCase):

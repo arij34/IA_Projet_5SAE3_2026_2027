@@ -24,6 +24,7 @@ class ModerationResponseValidatorTests(SimpleTestCase):
             "statut": "OK",
             "raison": "Profil cohérent.",
             "confiance": 0.9,
+            "criteres": [],
         })
 
     def test_invalid_json(self):
@@ -123,10 +124,35 @@ class ModerationResponseValidatorTests(SimpleTestCase):
         self.assertEqual(result["statut"], "OK")
 
     def test_extra_key_is_ignored(self):
-        """Ignore les clés supplémentaires et renvoie exactement trois clés."""
+        """Ignore les clés supplémentaires et renvoie les quatre clés prévues."""
         result = parse_moderation_response(
             '{"statut": "OK", "raison": "Correct.", "confiance": 0.7, '
             '"extra": "ignorée"}'
         )
 
-        self.assertEqual(set(result), {"statut", "raison", "confiance"})
+        self.assertEqual(
+            set(result),
+            {"statut", "raison", "confiance", "criteres"},
+        )
+
+    def test_invalid_criteria_are_ignored(self):
+        """Ignore les critères inconnus ou mal formés."""
+        result = parse_moderation_response(
+            '{"statut": "OK", "raison": "Correct.", "confiance": 0.7, '
+            '"criteres": [{"id": "inconnu", "probleme": true, "commentaire": "x"}, '
+            '{"id": "profil_trop_pauvre", "probleme": "oui", "commentaire": "x"}]}'
+        )
+
+        self.assertEqual(result["criteres"], [])
+
+    def test_valid_criteria_are_kept_and_comments_are_truncated(self):
+        """Conserve les critères valides et tronque leurs commentaires."""
+        comment = "x" * 250
+        result = parse_moderation_response(
+            '{"statut": "OK", "raison": "Correct.", "confiance": 0.7, '
+            f'"criteres": [{{"id": "profil_trop_pauvre", "probleme": true, '
+            f'"commentaire": "{comment}"' + "}]}"
+        )
+
+        self.assertEqual(len(result["criteres"]), 1)
+        self.assertEqual(len(result["criteres"][0]["commentaire"]), 200)

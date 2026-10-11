@@ -70,6 +70,7 @@ class ModerationLog(models.Model):
     decision = models.CharField(max_length=10, choices=Decision.choices)
     reason = models.TextField()
     confidence = models.FloatField(null=True, blank=True)
+    criteria = models.JSONField(default=list, blank=True)
     error = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

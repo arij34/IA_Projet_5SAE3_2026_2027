@@ -1,5 +1,6 @@
 from django.db import transaction
 from django.db.models import OuterRef, Subquery
+from django.conf import settings
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.exceptions import NotFound
@@ -155,6 +156,7 @@ class ModerationApproveView(APIView):
                 decision=User.ModerationStatus.OK,
                 reason=f"Validé manuellement par {request.user.username}",
                 confidence=None,
+                criteria=[],
             )
         return Response(ModerationDetailSerializer(user).data)
 
@@ -199,8 +201,10 @@ class ModerationAnalyzeView(APIView):
             {
                 "decision": log.decision,
                 "reason": log.reason,
+                "criteria": log.criteria,
                 "confidence_percent": confidence_percent,
                 "analyzed_at": log.created_at,
                 "error": log.error,
+                "simulated": getattr(settings, "LLM_PROVIDER", "mock") == "mock",
             }
         )

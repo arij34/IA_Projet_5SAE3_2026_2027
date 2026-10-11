@@ -152,7 +152,14 @@ class ModerationLogSerializer(serializers.ModelSerializer):
         """Déclare les champs de l'historique."""
 
         model = ModerationLog
-        fields = ("decision", "reason", "confidence", "error", "created_at")
+        fields = (
+            "decision",
+            "reason",
+            "confidence",
+            "criteria",
+            "error",
+            "created_at",
+        )
 
 
 class ModerationListSerializer(serializers.ModelSerializer):

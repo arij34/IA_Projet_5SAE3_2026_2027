@@ -127,6 +127,7 @@ def _save_moderation(
     decision: str,
     reason: str,
     confidence: float | None,
+    criteria: list[dict[str, Any]] | None = None,
     error: str = "",
 ) -> ModerationLog:
     """Crée une entrée d'historique sans modifier le compte utilisateur."""
@@ -136,6 +137,7 @@ def _save_moderation(
             decision=decision,
             reason=reason[:MAX_REASON_CHARS],
             confidence=confidence,
+            criteria=criteria or [],
             error=error,
         )
 
@@ -156,6 +158,7 @@ def moderate_user_profile(user: User) -> ModerationLog | None:
             User.ModerationStatus.OK,
             "Profil vide, rien à modérer",
             None,
+            [],
         )
 
     known_names = (user.username, user.first_name, user.last_name)
@@ -176,6 +179,7 @@ def moderate_user_profile(user: User) -> ModerationLog | None:
             User.ModerationStatus.SUSPECT,
             "Vérification automatique indisponible : revue manuelle",
             None,
+            [],
             type(exc).__name__,
         )
 
@@ -200,4 +204,5 @@ def moderate_user_profile(user: User) -> ModerationLog | None:
         decision,
         reason,
         confidence,
+        parsed["criteres"],
     )

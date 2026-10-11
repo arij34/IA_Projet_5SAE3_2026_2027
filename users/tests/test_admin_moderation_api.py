@@ -1,6 +1,7 @@
 from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
+from django.test import override_settings
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -190,6 +191,8 @@ class AdminModerationApiTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["decision"], User.ModerationStatus.OK)
         self.assertEqual(response.data["confidence_percent"], 85)
+        self.assertEqual(response.data["criteria"], [])
+        self.assertTrue(response.data["simulated"])
         self.assertEqual(response.data["error"], "")
         self.pending.refresh_from_db()
         self.assertEqual(
@@ -197,6 +200,20 @@ class AdminModerationApiTests(APITestCase):
             User.ModerationStatus.PENDING,
         )
         self.assertEqual(self.pending.moderation_logs.count(), 1)
+
+    @override_settings(LLM_PROVIDER="anthropic")
+    @patch("users.services.moderation.call_llm")
+    def test_analyze_reports_real_provider(self, call_llm_mock):
+        """L'endpoint indique qu'une analyse n'est pas simulée."""
+        call_llm_mock.return_value = (
+            '{"statut": "OK", "raison": "Profil cohérent", "confiance": 0.85}'
+        )
+        self.authenticate_as(self.admin)
+
+        response = self.client.post(f"{self.base_url}{self.pending.id}/analyze/")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertFalse(response.data["simulated"])
 
     def test_analyze_requires_authentication(self):
         """Un utilisateur anonyme ne peut pas lancer une analyse."""
@@ -279,6 +296,7 @@ class AdminModerationApiTests(APITestCase):
             User.ModerationStatus.SUSPECT,
         )
         self.assertEqual(response.data["last_analysis"]["confidence"], 0.4)
+        self.assertEqual(response.data["last_analysis"]["criteria"], [])
 
     @patch("users.services.moderation.call_llm")
     def test_analyze_twice_creates_two_logs_and_returns_latest_analysis(

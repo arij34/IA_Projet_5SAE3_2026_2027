@@ -6,6 +6,13 @@ from typing import Any
 from .exceptions import LLMResponseError
 
 _ALLOWED_STATUSES = frozenset({"OK", "SUSPECT", "REJETE"})
+_CRITERIA_IDS = (
+    "paiement_hors_plateforme",
+    "promesses_irrealistes",
+    "spam_incoherence",
+    "contenu_interdit",
+    "profil_trop_pauvre",
+)
 _REQUIRED_KEYS = frozenset({"statut", "raison", "confiance"})
 
 
@@ -51,7 +58,38 @@ def parse_moderation_response(raw_text: str) -> dict[str, Any]:
         "statut": status.strip().upper(),
         "raison": reason.strip(),
         "confiance": float(confidence),
+        "criteres": _parse_criteria(response.get("criteres")),
     }
+
+
+def _parse_criteria(value: Any) -> list[dict[str, Any]]:
+    """Conserve les critères valides sans invalider une analyse."""
+    if not isinstance(value, list):
+        return []
+
+    criteria = []
+    for item in value:
+        if not isinstance(item, dict):
+            continue
+        criterion_id = item.get("id")
+        problem = item.get("probleme")
+        comment = item.get("commentaire")
+        if (
+            criterion_id not in _CRITERIA_IDS
+            or not isinstance(problem, bool)
+            or not isinstance(comment, str)
+        ):
+            continue
+        criteria.append(
+            {
+                "id": criterion_id,
+                "probleme": problem,
+                "commentaire": comment[:200],
+            }
+        )
+        if len(criteria) == 5:
+            break
+    return criteria
 
 
 def _extract_json_object(raw_text: str) -> Any:
