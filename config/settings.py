@@ -154,9 +154,11 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 # --- Configuration LLM (valeurs lues dans .env) -----------------------------
 
-LLM_PROVIDER = os.getenv("LLM_PROVIDER", "mock")  # "mock" ou "anthropic"
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "mock")  # "mock", "anthropic" ou "gemini"
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
 LLM_MODEL = os.getenv("LLM_MODEL", "claude-haiku-5-5")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite")
 LLM_TIMEOUT_SECONDS = int(os.getenv("LLM_TIMEOUT_SECONDS", "20"))
 if "test" in sys.argv:
     PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]

@@ -117,3 +117,103 @@ class AnthropicProviderTests(SimpleTestCase):
     def test_unknown_provider(self):
         with self.assertRaises(LLMConfigError):
             call_llm("sys", "user")
+
+
+@override_settings(
+    LLM_PROVIDER="gemini",
+    GEMINI_API_KEY="cle-gemini-test",
+    GEMINI_MODEL="gemini-test",
+    LLM_TIMEOUT_SECONDS=5,
+)
+class GeminiProviderTests(SimpleTestCase):
+    @patch("users.ai.llm_client.requests.post")
+    def test_success_and_request_shape(self, post):
+        post.return_value = fake_response(
+            200,
+            {
+                "candidates": [
+                    {
+                        "content": {
+                            "parts": [{"text": '{"ok": '}, {"text": "true}"}]
+                        }
+                    }
+                ]
+            },
+        )
+
+        self.assertEqual(call_llm("sys", "user"), '{"ok": true}')
+        url = post.call_args.args[0]
+        kwargs = post.call_args.kwargs
+        self.assertEqual(
+            url,
+            "https://generativelanguage.googleapis.com/v1beta/models/"
+            "gemini-test:generateContent",
+        )
+        self.assertEqual(kwargs["headers"]["x-goog-api-key"], "cle-gemini-test")
+        self.assertNotIn("cle-gemini-test", url)
+        self.assertNotIn("cle-gemini-test", kwargs["headers"].get("authorization", ""))
+        self.assertEqual(
+            kwargs["json"],
+            {
+                "systemInstruction": {"parts": [{"text": "sys"}]},
+                "contents": [{"role": "user", "parts": [{"text": "user"}]}],
+                "generationConfig": {
+                    "maxOutputTokens": 1024,
+                    "temperature": 0.2,
+                    "responseMimeType": "application/json",
+                },
+            },
+        )
+
+    @patch("users.ai.llm_client.requests.post")
+    def test_quota(self, post):
+        post.return_value = fake_response(429)
+        with self.assertRaises(LLMQuotaError):
+            call_llm("sys", "user")
+
+    @patch("users.ai.llm_client.requests.post")
+    def test_forbidden(self, post):
+        post.return_value = fake_response(403)
+        with self.assertRaises(LLMConfigError):
+            call_llm("sys", "user")
+
+    @patch("users.ai.llm_client.requests.post")
+    def test_timeout_after_retry(self, post):
+        post.side_effect = requests.Timeout()
+        with self.assertRaises(LLMTimeoutError) as raised:
+            call_llm("sys", "user")
+        self.assertEqual(post.call_count, 2)
+        self.assertNotIn("cle-gemini-test", str(raised.exception))
+
+    @patch("users.ai.llm_client.requests.post")
+    def test_server_error_then_success(self, post):
+        post.side_effect = [
+            fake_response(500),
+            fake_response(
+                200,
+                {"candidates": [{"content": {"parts": [{"text": "ok"}]}}]},
+            ),
+        ]
+        self.assertEqual(call_llm("sys", "user"), "ok")
+        self.assertEqual(post.call_count, 2)
+
+    @patch("users.ai.llm_client.requests.post")
+    def test_missing_candidates(self, post):
+        post.return_value = fake_response(200, {"candidates": []})
+        with self.assertRaises(LLMResponseError):
+            call_llm("sys", "user")
+
+    @patch("users.ai.llm_client.requests.post")
+    def test_blocked_response_without_text(self, post):
+        post.return_value = fake_response(
+            200,
+            {"candidates": [{"finishReason": "SAFETY"}]},
+        )
+        with self.assertRaises(LLMResponseError):
+            call_llm("sys", "user")
+
+    @override_settings(GEMINI_API_KEY="")
+    def test_missing_key(self):
+        with self.assertRaises(LLMConfigError) as raised:
+            call_llm("sys", "user")
+        self.assertNotIn("cle-gemini-test", str(raised.exception))

@@ -178,6 +178,7 @@ class AdminModerationApiTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertTrue(User.objects.filter(pk=self.approved.pk).exists())
 
+    @override_settings(LLM_PROVIDER="mock")
     @patch("users.services.moderation.call_llm")
     def test_admin_can_analyze_pending_user(self, call_llm_mock):
         """Un administrateur peut analyser un profil en attente."""
