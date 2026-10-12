@@ -124,6 +124,9 @@ USE_TZ = True
 # --- Fichiers statiques -----------------------------------------------------
 
 STATIC_URL = "static/"
+PRIVATE_MEDIA_ROOT = Path(
+    os.getenv("PRIVATE_MEDIA_ROOT", str(BASE_DIR / "private_media"))
+)
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -159,6 +162,7 @@ ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
 LLM_MODEL = os.getenv("LLM_MODEL", "claude-haiku-5-5")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite")
+COACH_MODEL_NAME = os.getenv("COACH_MODEL_NAME", "Qwen/Qwen2.5-0.5B-Instruct")
 LLM_TIMEOUT_SECONDS = int(os.getenv("LLM_TIMEOUT_SECONDS", "20"))
 if "test" in sys.argv:
     PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]

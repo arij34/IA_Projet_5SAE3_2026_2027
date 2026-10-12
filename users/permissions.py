@@ -36,3 +36,18 @@ class IsAdminRole(BasePermission):
             and user.role == User.Role.ADMIN
             and user.moderation_status == User.ModerationStatus.OK
         )
+
+
+class IsFreelancerRole(BasePermission):
+    """Autorise uniquement les freelancers authentifiés."""
+
+    message = "Accès réservé aux freelancers."
+
+    def has_permission(self, request, view):
+        """Vérifie que l'utilisateur authentifié possède le rôle freelancer."""
+        user = request.user
+        return bool(
+            user
+            and user.is_authenticated
+            and user.role == User.Role.FREELANCER
+        )

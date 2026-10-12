@@ -1,0 +1,27 @@
+{
+  "baseline": {
+    "params_millions": 494.0,
+    "size_mb": 1976.2,
+    "perplexity": 17.86,
+    "latency_s": 2.95
+  },
+  "quantization_int8": {
+    "size_mb": 1039.0,
+    "perplexity": 74.9,
+    "latency_s": 2.97
+  },
+  "pruning_30": {
+    "sparsity_%": 30.0,
+    "size_mb": 1976.2,
+    "size_gzip_mb": 906.1,
+    "perplexity": 34.18,
+    "latency_s": 3.18
+  },
+  "pruning_50": {
+    "sparsity_%": 50.0,
+    "size_mb": 1976.2,
+    "size_gzip_mb": 816.2,
+    "perplexity": 274.01,
+    "latency_s": 2.98
+  }
+}

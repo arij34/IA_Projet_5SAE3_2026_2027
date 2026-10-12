@@ -1,6 +1,7 @@
 venv/
 .env
 db.sqlite3
+private_media/
 __pycache__/
 *.pyc
 .vscode/

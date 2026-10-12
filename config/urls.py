@@ -17,15 +17,25 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
-from users.urls import admin_moderation_urlpatterns
-from users.views import MeView
+from users.urls import (
+    admin_cv_urlpatterns,
+    admin_moderation_urlpatterns,
+    ai_urlpatterns,
+)
+from users.views import MeView, MyCvView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/auth/", include("users.urls")),
+    path("api/ai/", include((ai_urlpatterns, "ai"))),
     path("api/users/me/", MeView.as_view(), name="me"),
+    path("api/users/me/cv/", MyCvView.as_view(), name="my-cv"),
     path(
         "api/admin/moderation/",
         include((admin_moderation_urlpatterns, "admin-moderation")),
+    ),
+    path(
+        "api/admin/users/",
+        include((admin_cv_urlpatterns, "admin-user-cv")),
     ),
 ]

@@ -1,16 +1,19 @@
 from django.db import transaction
 from django.db.models import OuterRef, Subquery
 from django.conf import settings
+from django.core.exceptions import ValidationError
+from django.http import FileResponse
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import ModerationLog, User
-from .permissions import IsAdminRole, IsApprovedUser
+from .permissions import IsAdminRole, IsApprovedUser, IsFreelancerRole
+from .ai.profile_analysis import analyze_profile
 from .services.moderation import moderate_user_profile
 from .serializers import (
     LoginSerializer,
@@ -18,6 +21,7 @@ from .serializers import (
     ModerationListSerializer,
     ProfileSerializer,
     RegisterSerializer,
+    ProfileAnalysisSerializer,
 )
 
 MODERATION_STATUSES = frozenset(
@@ -88,6 +92,83 @@ class MeView(RetrieveUpdateAPIView):
     def perform_update(self, serializer):
         """Met à jour le profil sans lancer d'analyse automatique."""
         serializer.save()
+
+
+class MyCvView(APIView):
+    """Permet à un utilisateur authentifié de gérer son propre CV privé."""
+
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        """Enregistre ou remplace le CV de l'utilisateur connecté."""
+        uploaded_cv = request.FILES.get("cv")
+        if uploaded_cv is None:
+            return Response(
+                {"detail": "Le fichier CV est obligatoire."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        user = request.user
+        user.cv = uploaded_cv
+        try:
+            user.full_clean()
+            user.save(update_fields=("cv",))
+        except ValidationError as error:
+            return Response(
+                {"cv": error.messages},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        return Response({"has_cv": True}, status=status.HTTP_201_CREATED)
+
+    def get(self, request):
+        """Télécharge le CV privé de l'utilisateur connecté."""
+        user = request.user
+        if not user.cv:
+            raise NotFound("Aucun CV n'est enregistré pour cet utilisateur.")
+        return FileResponse(
+            user.cv.open("rb"),
+            as_attachment=True,
+            filename="cv.pdf",
+            content_type="application/pdf",
+        )
+
+    def delete(self, request):
+        """Supprime le CV de l'utilisateur connecté."""
+        user = request.user
+        if user.cv:
+            user.cv.delete(save=False)
+            user.cv = None
+            user.save(update_fields=("cv",))
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ProfileAnalysisView(APIView):
+    """Expose l'analyse IA du profil du freelancer connecté."""
+
+    permission_classes = (IsApprovedUser, IsFreelancerRole)
+
+    def post(self, request):
+        """Valide le profil et retourne son analyse sans journaliser son contenu."""
+        serializer = ProfileAnalysisSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(analyze_profile(request.user, serializer.validated_data))
+
+
+class AdminUserCvView(APIView):
+    """Permet à un administrateur de télécharger le CV d'un utilisateur."""
+
+    permission_classes = (IsAdminRole,)
+
+    def get(self, request, pk: int):
+        """Télécharge le CV privé de l'utilisateur demandé."""
+        user = User.objects.filter(pk=pk).first()
+        if user is None or not user.cv:
+            raise NotFound("Aucun CV n'est enregistré pour cet utilisateur.")
+        return FileResponse(
+            user.cv.open("rb"),
+            as_attachment=True,
+            filename="cv.pdf",
+            content_type="application/pdf",
+        )
 
 
 class ModerationListView(APIView):
@@ -208,3 +289,4 @@ class ModerationAnalyzeView(APIView):
                 "simulated": getattr(settings, "LLM_PROVIDER", "mock") == "mock",
             }
         )
+from django.http import FileResponse

@@ -126,6 +126,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             "hourly_rate",
             "moderation_status",
             "moderation_checked_at",
+            "has_cv",
         )
         read_only_fields = (
             "id",
@@ -136,6 +137,12 @@ class ProfileSerializer(serializers.ModelSerializer):
             "moderation_checked_at",
         )
 
+    has_cv = serializers.SerializerMethodField()
+
+    def get_has_cv(self, obj: User) -> bool:
+        """Indique uniquement si un CV est enregistré, sans exposer son URL."""
+        return bool(obj.cv)
+
     def validate_hourly_rate(self, value):
         """Refuse un tarif horaire négatif."""
         if value < 0:
@@ -143,6 +150,24 @@ class ProfileSerializer(serializers.ModelSerializer):
                 "Le tarif horaire ne peut pas être négatif."
             )
         return value
+
+
+class ProfileAnalysisSerializer(serializers.Serializer):
+    """Valide les données de profil envoyées au coach IA."""
+
+    title = serializers.CharField(max_length=120)
+    bio = serializers.CharField(max_length=2000)
+    skills = serializers.ListField(
+        child=serializers.CharField(max_length=100),
+        allow_empty=True,
+    )
+    hourly_rate = serializers.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        min_value=0,
+        required=False,
+        allow_null=True,
+    )
 
 
 class ModerationLogSerializer(serializers.ModelSerializer):
@@ -180,7 +205,14 @@ class ModerationListSerializer(serializers.ModelSerializer):
             "moderation_status",
             "moderation_checked_at",
             "last_reason",
+            "has_cv",
         )
+
+    has_cv = serializers.SerializerMethodField()
+
+    def get_has_cv(self, obj: User) -> bool:
+        """Indique si le profil modéré possède un CV."""
+        return bool(obj.cv)
 
     def get_last_reason(self, obj):
         """Retourne la dernière raison ou une chaîne vide."""
@@ -209,7 +241,14 @@ class ModerationDetailSerializer(serializers.ModelSerializer):
             "moderation_status",
             "moderation_logs",
             "last_analysis",
+            "has_cv",
         )
+
+    has_cv = serializers.SerializerMethodField()
+
+    def get_has_cv(self, obj: User) -> bool:
+        """Indique si le profil détaillé possède un CV."""
+        return bool(obj.cv)
 
     def get_last_analysis(self, obj):
         """Retourne la dernière analyse ou null si aucun journal n'existe."""

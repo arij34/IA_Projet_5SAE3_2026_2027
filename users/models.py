@@ -1,5 +1,25 @@
 from django.contrib.auth.models import AbstractUser, UserManager
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 from django.db import models
+from django.utils.deconstruct import deconstructible
+from uuid import uuid4
+
+from .validators import validate_cv_file
+
+
+@deconstructible
+class PrivateMediaStorage(FileSystemStorage):
+    """Stockage local des fichiers privés, hors du stockage public."""
+
+    def __init__(self) -> None:
+        """Configure le stockage avec le répertoire privé des réglages."""
+        super().__init__(location=settings.PRIVATE_MEDIA_ROOT, base_url=None)
+
+
+def cv_upload_to(instance: "User", filename: str) -> str:
+    """Génère un nom aléatoire et sans donnée issue du nom original."""
+    return f"cv/{uuid4().hex}.pdf"
 
 
 class CustomUserManager(UserManager):
@@ -47,10 +67,40 @@ class User(AbstractUser):
         default=ModerationStatus.PENDING,
     )
     moderation_checked_at = models.DateTimeField(null=True, blank=True)
+    cv = models.FileField(
+        "CV",
+        upload_to=cv_upload_to,
+        storage=PrivateMediaStorage(),
+        validators=[validate_cv_file],
+        null=True,
+        blank=True,
+    )
 
     objects = CustomUserManager()
 
-    def __str__(self):
+    def save(self, *args, **kwargs):
+        """Enregistre l'utilisateur et supprime l'ancien CV remplacé."""
+        old_cv_name = None
+        if self.pk:
+            old_cv_name = (
+                type(self).objects.filter(pk=self.pk)
+                .values_list("cv", flat=True)
+                .first()
+            )
+        super().save(*args, **kwargs)
+        if old_cv_name and old_cv_name != self.cv.name:
+            self.cv.storage.delete(old_cv_name)
+
+    def delete(self, *args, **kwargs):
+        """Supprime le CV du stockage avant de supprimer l'utilisateur."""
+        cv_name = self.cv.name
+        storage = self.cv.storage
+        result = super().delete(*args, **kwargs)
+        if cv_name:
+            storage.delete(cv_name)
+        return result
+
+    def __str__(self) -> str:
         return f"{self.username} ({self.get_role_display()})"
 
 
