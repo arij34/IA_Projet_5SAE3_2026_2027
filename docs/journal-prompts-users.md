@@ -627,7 +627,8 @@ réel cette fois : seuls les tests avaient des trous.
   (limite de l'Entrée 1).
 - Le validateur vérifie la forme de la réponse, pas la pertinence des
   conseils : cela reste à évaluer sur de vrais profils.
-- Total de la suite `users` après le complément : **158 tests OK** lors de
+- Total provisoire de la suite `users` après le complément : **158 tests OK**
+  lors de
   la vérification complète du 12/10/2026 (voir l'Entrée 8).
 
 ### Enseignements
@@ -716,14 +717,14 @@ depuis la racine du projet, avec Python 3.12.10 :
 ### Résultat
 
 ```text
-Found 158 test(s).
-Ran 158 tests in 0.725s
+Found 166 test(s).
+Ran 166 tests in 0.770s
 OK
 ```
 
 La base de test en mémoire a été créée puis détruite correctement. Les
 migrations ont également été appliquées avec succès à cette base temporaire.
-La suite couvre notamment :
+La suite automatisée backend couvre notamment :
 
 - les validateurs de modération et du coach ;
 - l'anonymisation, le client LLM et le service de modération ;
@@ -735,5 +736,16 @@ La suite couvre notamment :
 
 Ce résultat est la dernière vérification automatisée connue et remplace le
 total laissé à compléter dans l'Entrée 6. Les appels au LLM restent mockés
-dans les tests Django ; les essais avec Gemini et les essais qualitatifs du
-modèle local sont documentés séparément dans les Entrées 4, 5 et 7.
+dans les tests Django.
+
+Les prompts concernant le tableau de bord React (sidebar, bouton
+« Examiner », suppression, affichage des critères et bandeau d'analyse
+simulée) ont été vérifiés manuellement ; aucun test frontend automatisé
+n'est actuellement inclus dans ce dépôt. De même, les scripts de
+[experiments/compression/](../experiments/compression/) servent à mesurer
+la génération, la quantification, le pruning et le RAG ; ils ne font pas
+partie de la suite `manage.py test users` et ne constituent pas une suite
+de tests automatisés avec assertions.
+
+Les essais avec Gemini et les essais qualitatifs du modèle local sont
+documentés séparément dans les Entrées 4, 5 et 7.
