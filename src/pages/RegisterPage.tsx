@@ -5,7 +5,7 @@ import {
 } from 'react'
 import { CheckCircle2, Eye, EyeOff, Loader2, UserPlus, XCircle, Info } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { ApiError, apiFetch } from '../api/client'
+import { ApiError, apiFetchFormData } from '../api/client'
 import type { ModerationStatus, Role } from '../types'
 
 type RegisterForm = {
@@ -17,6 +17,7 @@ type RegisterForm = {
   title: string
   bio: string
   skills: string
+  cv: File | null
 }
 
 type RegisterPayload = {
@@ -25,8 +26,8 @@ type RegisterPayload = {
   password: string
   role: Exclude<Role, 'ADMIN'>
   title: string
-  bio: string
-  skills: string[]
+  bio?: string
+  skills?: string[]
 }
 
 type RegisterResponse = {
@@ -34,6 +35,8 @@ type RegisterResponse = {
 }
 
 type FieldErrors = Partial<Record<keyof RegisterForm, string[]>>
+
+const MAX_CV_SIZE = 5 * 1024 * 1024
 
 const initialForm: RegisterForm = {
   username: '',
@@ -44,6 +47,7 @@ const initialForm: RegisterForm = {
   title: '',
   bio: '',
   skills: '',
+  cv: null,
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -96,12 +100,45 @@ function RegisterPage() {
     setForm((currentForm) => ({
       ...currentForm,
       [name]: value,
+      ...(name === 'role' && value === 'PROJECT_OWNER' ? { bio: '', skills: '' } : {}),
+      ...(name === 'role' && value === 'PROJECT_OWNER' ? { cv: null } : {}),
     }))
     setFieldErrors((currentErrors) => ({
       ...currentErrors,
       [name]: undefined,
     }))
     setGeneralError(null)
+  }
+
+  const handleCvChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] ?? null
+    setGeneralError(null)
+    setFieldErrors((currentErrors) => ({ ...currentErrors, cv: undefined }))
+
+    if (file !== null && (file.type !== 'application/pdf' || !file.name.toLowerCase().endsWith('.pdf'))) {
+      setForm((currentForm) => ({ ...currentForm, cv: null }))
+      event.target.value = ''
+      setFieldErrors((currentErrors) => ({
+        ...currentErrors,
+        cv: ['Le CV doit être au format PDF.'],
+      }))
+      return
+    }
+    if (file !== null && file.size > MAX_CV_SIZE) {
+      setForm((currentForm) => ({ ...currentForm, cv: null }))
+      event.target.value = ''
+      setFieldErrors((currentErrors) => ({
+        ...currentErrors,
+        cv: ['Le CV ne doit pas dépasser 5 Mo.'],
+      }))
+      return
+    }
+    setForm((currentForm) => ({ ...currentForm, cv: file }))
+  }
+
+  const removeCv = () => {
+    setForm((currentForm) => ({ ...currentForm, cv: null }))
+    setFieldErrors((currentErrors) => ({ ...currentErrors, cv: undefined }))
   }
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -136,19 +173,34 @@ function RegisterPage() {
       password: form.password,
       role: form.role,
       title: form.title.trim(),
-      bio: form.bio.trim(),
-      skills: form.skills
-        .split(',')
-        .map((skill) => skill.trim())
-        .filter((skill) => skill.length > 0),
+      ...(form.role === 'FREELANCER'
+        ? {
+            bio: form.bio.trim(),
+            skills: form.skills.split(',').map((skill) => skill.trim()).filter((skill) => skill.length > 0),
+          }
+        : {}),
+    }
+    const formData = new FormData()
+    formData.append('username', payload.username)
+    formData.append('email', payload.email)
+    formData.append('password', payload.password)
+    formData.append('role', payload.role)
+    formData.append('title', payload.title)
+    if (payload.bio !== undefined) {
+      formData.append('bio', payload.bio)
+    }
+    payload.skills?.forEach((skill) => formData.append('skills', skill))
+    if (form.cv !== null) {
+      formData.append('cv', form.cv)
     }
 
     setIsSubmitting(true)
     try {
-      const response = await apiFetch<RegisterResponse>('/api/auth/register/', {
-        method: 'POST',
-        body: payload,
-      })
+      const response = await apiFetchFormData<RegisterResponse>(
+        '/api/auth/register/',
+        formData,
+        'POST',
+      )
 
       if (!isModerationStatus(response.moderation_status)) {
         setGeneralError('La réponse du serveur est invalide.')
@@ -209,6 +261,8 @@ function RegisterPage() {
       </main>
     )
   }
+
+  const isFreelancer = form.role === 'FREELANCER'
 
   return (
     <main className="page-shell">
@@ -310,13 +364,13 @@ function RegisterPage() {
           {fieldErrors.title?.map((message) => <p className="form-error" role="alert" key={message}>{message}</p>)}
         </div>
 
-        <div className="form-group form-full">
+        {isFreelancer && <div className="form-group form-full">
           <label htmlFor="bio">Biographie</label>
           <textarea className="form-input" id="bio" name="bio" value={form.bio} onChange={handleChange} />
           {fieldErrors.bio?.map((message) => <p className="form-error" role="alert" key={message}>{message}</p>)}
-        </div>
+        </div>}
 
-        <div className="form-group form-full">
+        {isFreelancer && <div className="form-group form-full">
           <label htmlFor="skills">Compétences (séparées par des virgules)</label>
           <input className="form-input"
             id="skills"
@@ -327,7 +381,18 @@ function RegisterPage() {
           />
           <small className="field-hint">Séparées par des virgules</small>
           {fieldErrors.skills?.map((message) => <p className="form-error" role="alert" key={message}>{message}</p>)}
-        </div>
+        </div>}
+
+        {isFreelancer && <div className="form-group form-full">
+          <label htmlFor="cv">Importer mon CV</label>
+          <input className="form-input" id="cv" name="cv" type="file" accept="application/pdf,.pdf" onChange={handleCvChange} />
+          {form.cv !== null && <div className="file-selection">
+            <span>{form.cv.name}</span>
+            <button className="btn btn-secondary" type="button" onClick={removeCv}>Retirer</button>
+          </div>}
+          <small className="field-hint">PDF uniquement, 5 Mo maximum.</small>
+          {fieldErrors.cv?.map((message) => <p className="form-error" role="alert" key={message}>{message}</p>)}
+        </div>}
             </div>
           </fieldset>
 

@@ -2,7 +2,7 @@ const tokenKey = 'freelancy_token'
 
 export function getToken(): string | null {
   try {
-    return localStorage.getItem(tokenKey)
+    return localStorage.getItem(tokenKey) ?? localStorage.getItem('token')
   } catch {
     return null
   }

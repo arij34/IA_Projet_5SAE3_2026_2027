@@ -2,6 +2,7 @@ import { type FormEvent, useState } from 'react'
 import { Eye, EyeOff, Lock, Loader2, LogIn, User as UserIcon } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ApiError, apiFetch } from '../api/client'
+import { useAuth } from '../auth/useAuth'
 import { setToken } from '../auth/tokenStorage'
 import type { ModerationStatus, User } from '../types'
 
@@ -29,6 +30,7 @@ function isModerationStatus(value: unknown): value is ModerationStatus {
 
 function LoginPage() {
   const navigate = useNavigate()
+  const { setUser } = useAuth()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -57,7 +59,8 @@ function LoginPage() {
       })
 
       setToken(response.token)
-      navigate(response.user.role === 'ADMIN' ? '/admin/moderation' : '/profile')
+      setUser(response.user)
+      navigate(response.user.role === 'ADMIN' ? '/admin/users' : '/profile')
     } catch (error: unknown) {
       if (error instanceof ApiError && error.status === 400) {
         setErrorMessage('Identifiants invalides.')
