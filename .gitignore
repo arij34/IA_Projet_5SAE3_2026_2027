@@ -7,3 +7,6 @@ __pycache__/
 .vscode/
 .idea/
 node_modules/
+*.pt
+*.pth
+experiments/compression/results.json
