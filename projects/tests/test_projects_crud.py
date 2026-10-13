@@ -168,6 +168,8 @@ class ProjectCrudTests(TestCase):
     def test_description_change_resets_status_to_draft(self) -> None:
         """Une modification de description remet le projet en brouillon."""
         self.authenticate(self.owner)
+        self.project.status = Project.Status.ANALYZED
+        self.project.save(update_fields=("status",))
 
         response = self.client.patch(
             f"{self.url}{self.project.pk}/",

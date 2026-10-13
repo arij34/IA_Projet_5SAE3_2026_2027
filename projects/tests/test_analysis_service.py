@@ -74,6 +74,19 @@ class ProjectAnalysisTests(TestCase):
         self.assertIsNone(response.data["error"])
         self.assertEqual(ProjectAnalysis.objects.count(), 1)
 
+    @override_settings(PROJECT_LLM_PROVIDER="anthropic")
+    @patch(
+        "projects.services.analysis.call_llm",
+    )
+    def test_anthropic_provider_is_not_simulated(self, call_llm) -> None:
+        """Une analyse Anthropic réussie n'est pas marquée comme simulée."""
+        call_llm.return_value = self.valid_llm_response()
+        response = self.client.post(self.endpoint())
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertFalse(response.data["simulated"])
+        call_llm.assert_called_once()
+
     @patch("projects.services.analysis.call_llm", return_value="pas du json")
     def test_invalid_llm_response_keeps_status_and_records_error(self, call_llm) -> None:
         """Une réponse invalide ne change pas le statut et est historisée."""
@@ -93,6 +106,28 @@ class ProjectAnalysisTests(TestCase):
         response = self.client.post(self.endpoint())
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_missing_token_returns_401(self) -> None:
+        """Un utilisateur non authentifié ne peut pas analyser un projet."""
+        self.client.force_authenticate(user=None)
+
+        response = self.client.post(self.endpoint())
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_freelancer_returns_403(self) -> None:
+        """Un freelance authentifié ne peut pas analyser un projet."""
+        freelancer = get_user_model().objects.create_user(
+            username="analysis-freelancer",
+            email="analysis-freelancer@example.com",
+            password="motdepasse123",
+            role="FREELANCER",
+        )
+        self.client.force_authenticate(user=freelancer)
+
+        response = self.client.post(self.endpoint())
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_published_project_returns_400(self) -> None:
         """Un projet publié ne peut pas être analysé."""
@@ -123,8 +158,39 @@ class ProjectAnalysisTests(TestCase):
         self.assertIn("[LIEN]", sent_text)
         self.assertIn("‹/projet›", sent_text)
         self.assertNotIn("＜/projet＞", sent_text)
-        inner_text = sent_text.split("\n", 1)[1].rsplit("\n", 1)[0]
-        self.assertNotIn("</projet>", inner_text)
+        project_content = sent_text.split("<projet>\n", 1)[1].rsplit(
+            "\n</projet>",
+            1,
+        )[0]
+        self.assertNotIn("<", project_content)
+        self.assertNotIn(">", project_content)
+        self.assertEqual(sent_text.count("</projet>"), 1)
+
+    @patch(
+        "projects.services.analysis.call_llm",
+    )
+    def test_llm_error_after_success_preserves_status_and_previous_analysis(
+        self,
+        call_llm,
+    ) -> None:
+        """Une erreur ultérieure conserve le statut et l'analyse réussie."""
+        call_llm.side_effect = [self.valid_llm_response(), "pas du json"]
+        first_response = self.client.post(self.endpoint())
+        second_response = self.client.post(self.endpoint())
+
+        self.assertEqual(first_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(second_response.status_code, status.HTTP_200_OK)
+        self.project.refresh_from_db()
+        self.assertEqual(self.project.status, Project.Status.ANALYZED)
+        self.assertIsNotNone(first_response.data["result"])
+        self.assertEqual(second_response.data["error"], "Analyse indisponible")
+        analyses = list(ProjectAnalysis.objects.order_by("created_at"))
+        self.assertEqual(len(analyses), 2)
+        self.assertIsNotNone(analyses[0].result)
+        self.assertIsNone(analyses[0].error)
+        self.assertIsNone(analyses[1].result)
+        self.assertEqual(analyses[1].error, "Analyse indisponible")
+        self.assertEqual(call_llm.call_count, 2)
 
     @override_settings(PROJECT_LLM_PROVIDER="mock")
     def test_mock_small_budget_complex_project_is_underestimated(self) -> None:
@@ -160,6 +226,19 @@ class ProjectAnalysisTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["error"], "Analyse indisponible")
         self.assertNotIn("API_KEY", response.data["error"])
+
+    @patch("projects.services.analysis.call_llm", return_value="pas du json")
+    def test_error_does_not_contain_project_text(self, call_llm) -> None:
+        """Le message et l'erreur historisée ne contiennent pas le projet."""
+        response = self.client.post(self.endpoint())
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["error"], "Analyse indisponible")
+        analysis = ProjectAnalysis.objects.get()
+        self.assertNotIn(self.project.name, response.data["error"])
+        self.assertNotIn(self.project.description, response.data["error"])
+        self.assertNotIn(self.project.name, analysis.error)
+        self.assertNotIn(self.project.description, analysis.error)
 
     @override_settings(PROJECT_ANALYSIS_THROTTLE_RATE="1/hour")
     def test_analysis_throttle_returns_429(self) -> None:

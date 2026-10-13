@@ -97,49 +97,61 @@ FORMAT : liste des fichiers créés et des deux fichiers modifiés
 
 ## Entrée 2 : modèle Project et CRUD
 
+## Entrée 2 : modèle Project et CRUD
+
 ### Contexte
 Modèle `Project` (owner, name, description, deadline, estimated_amount,
-status) et endpoints CRUD réservés au porteur de projet.
+status) et endpoints CRUD réservés au porteur de projet. Travail sur la
+branche `project_module`, séparée du module Users.
 
 ### Prompt envoyé à Copilot (résumé)
-CONTEXTE : projet Django/DRF décrit dans .github/copilot-instructions.md.
-Application `projects` (squelette créé). Le modèle User existe déjà
-(#file:users/models.py) avec un champ `role` (PROJECT_OWNER, FREELANCER, ADMIN).
-
-OBJECTIF : créer le modèle Project et son CRUD.
-
-CONTRAINTES :
-- Modèle Project : owner (FK User), name (max 150), description (max 3000),
-  deadline (date), estimated_amount (Decimal > 0), status (DRAFT, ANALYZED,
-  PUBLISHED, DECLINED, défaut DRAFT), created_at, updated_at.
-- Constantes MAX_NAME_CHARS et MAX_DESCRIPTION_CHARS, pas de nombres magiques.
-- Endpoints : POST/GET /api/projects/, GET/PATCH/DELETE /api/projects/<id>/.
-- Pas de PUT. Le client ne peut jamais envoyer `status` ni `owner`.
-- Validation : deadline strictement dans le futur, montant > 0, nom non vide.
-- Seul un PROJECT_OWNER authentifié peut créer. Un porteur ne voit, ne modifie
-  et ne supprime que SES projets (404 sinon, pas 403).
-- Si description, deadline ou estimated_amount change, le statut repasse à DRAFT.
-
-FORMAT : code complet avec docstrings, migration, et tests dans
-projects/tests/test_projects_crud.py : cas valides ET cas d'attaque (FREELANCER
-qui crée, accès au projet d'un autre, `status` envoyé dans le POST, deadline
-passée, montant négatif, changement de description qui remet en DRAFT).
-Ne modifie aucun autre fichier.
-### Résultat généré
-- À COMPLÉTER : fichiers, nombre de tests.
-
-### Relecture : problèmes constatés
-1. À COMPLÉTER
-
-### Prompt d'itération
-- À COMPLÉTER
+(inchangé)
 
 ### Résultat après itération
-- À COMPLÉTER : suite `projects` : N tests OK.
+- Première exécution (12/10/2026) : 10 tests CRUD, 9 OK, 1 échec
+  (`test_description_change_resets_status_to_draft` : 400 au lieu de 200).
+  Suite complète : 237 tests, 4 échecs, tous dans `projects`.
+- Après correction : `python manage.py test projects` : **82 tests OK**.
+  Suite complète : **248 tests OK** (166 de `users` + 82 de `projects`).
+  Aucune régression dans `users`.
+- `check` et `makemigrations --check --dry-run` : aucun problème.
+### Relecture : problèmes constatés
+1. **Test de retour à DRAFT en échec** :
+   `test_description_change_resets_status_to_draft` reçoit 400 au lieu de
+   200 sur le PATCH, donc la règle « une modification de description remet
+   le projet en DRAFT » n'a pas pu être vérifiée. Les 9 autres tests
+   passent (création, liste, PATCH/DELETE, projet d'un autre en 404,
+   freelance refusé, `status` ignoré dans le POST, deadline passée, montant
+   négatif, PUT refusé).
+   Cause : À COMPLÉTER (après `print(response.data)`).
+2. **Trois autres échecs hors périmètre** dans `test_analysis_service.py`
+   (réponse LLM invalide et clé absente : 502 au lieu de 200 ; test de
+   neutralisation des balises trop strict). Ils relèvent des Entrées 4 bis
+   et 5 et sont traités là-bas.
+3. À COMPLÉTER : trous éventuels après relecture des tests (bornes 150/151
+   et 3000/3001, `owner` ignoré, `name` seul ne remet pas en DRAFT, 401
+   sans jeton).
 
-### Limite connue / Enseignements
-- À COMPLÉTER
+### Prompt d'itération
+- À COMPLÉTER : prompt de correction (cause de la 400, puis tests de
+  complément avec la consigne « ne modifie pas le code, signale l'échec »).
 
+### Résultat après itération
+- À COMPLÉTER : tests CRUD N OK, suite `projects` N OK.
+
+### Limite connue
+- Les 4 échecs de la suite sont encore à corriger (1 dans cette entrée,
+  3 dans `test_analysis_service.py`).
+- Fusion avec la branche `users` non faite : conflits possibles dans
+  `settings.py` et `urls.py`.
+- À COMPLÉTER : pas de pagination sur `GET /api/projects/` si c'est le cas.
+
+### Enseignements
+- Les tests exécutés révèlent un échec que la génération ne montrait pas :
+  un résumé de Copilot ne remplace pas l'exécution de la suite.
+- Un test qui échoue en 400 ne dit pas si le défaut est dans le test ou
+  dans le code : il faut lire le corps de la réponse avant de corriger.
+- À COMPLÉTER : une phrase sur la cause réelle une fois trouvée.
 ---
 
 ## Entrée 3 : client LLM et exceptions propres à `projects`
@@ -161,7 +173,14 @@ fusion de branches.
 - Tests avec `requests.post` mocké.
 
 ### Résultat généré
-- À COMPLÉTER
+- - Tests du client : **9 tests, tous OK** (succès, 401/403, 429 sans
+  réessai, 5xx et timeout réessayés une fois, clé absente sans appel
+  réseau, `content` nul, mode mock sans réseau, pas de fuite de la clé ni
+  du texte dans les messages et logs).
+- `git grep "sk-ant"` : aucune clé dans le code. `git grep "claude-"` : aucun
+  nom de modèle dans `projects/` (seule occurrence : `LLM_MODEL` de `users`).
+- `PROJECT_LLM_MODEL` est vide par défaut : sans valeur dans `.env`, le
+  client lève `LLMConfigError` (voulu, à renseigner avant l'essai réel).
 
 ### Relecture : problèmes constatés
 1. À COMPLÉTER
@@ -194,17 +213,51 @@ usage. Validateur autonome (extraction du JSON propre à `projects`).
   JSON qui n'est pas un objet, deux objets JSON.
 
 ### Résultat généré
-- À COMPLÉTER
+- `projects/ai/exceptions.py` (751 octets), `projects/ai/client.py` et
+  `projects/tests/test_llm_client.py`.
+- Tests du client : **9 tests, tous OK** (succès, 401/403, 429 sans
+  réessai, 5xx et timeout réessayés une fois, clé absente sans appel
+  réseau, `content` nul, mode mock sans réseau, absence de fuite de la clé
+  et du texte dans les messages et logs).
+- `git grep "sk-ant"` : aucune clé dans le code (une seule occurrence, dans
+  ce journal).
+- `git grep "claude-" projects/ config/` : aucun nom de modèle dans
+  `projects/`. La seule occurrence est `LLM_MODEL` du module `users`
+  (`settings.py`, ligne 163).
+- `git grep "PROJECT_LLM"` : réglages définis dans `settings.py` avec des
+  valeurs vides par défaut, et `.env.example` avec une clé vide.
+- `git grep "users" projects/` : aucun import de `users.ai`. Les mentions
+  restantes sont le modèle `User`, la permission `IsApprovedUser` et un test.
+- Les messages de log du client (« Nouvelle tentative après une erreur
+  temporaire du LLM ») diffèrent de ceux de `users` (« Erreur 500 du LLM
+  (essai 1/2) ») : preuve que les deux clients sont séparés.
 
 ### Relecture : problèmes constatés
-1. À COMPLÉTER
+1. Aucun défaut trouvé par les contrôles automatiques : indépendance du
+   client, absence de clé en dur, nom du modèle dans les réglages.
+2. Point de vigilance : `PROJECT_LLM_MODEL` est vide par défaut. Sans valeur
+   dans `.env`, le client lève `LLMConfigError`. C'est voulu (pas de modèle
+   en dur), mais à renseigner avant l'essai réel.
+3. À COMPLÉTER : trous trouvés par les cassures volontaires (réessai sur
+   401, clé dans l'URL, clé dans un log, contrôle de clé retiré). Si aucun
+   test ne manque, l'écrire tel quel.
 
 ### Limite connue
-- Le validateur vérifie la forme, pas la pertinence de l'analyse.
-- À COMPLÉTER
+- L'API Claude est payante : le mode `mock` sert aux tests ; le vrai appel
+  est réservé à la démonstration, avec de faux projets.
+- Les tests mockent `requests.post` : ils ne prouvent pas que l'API réelle
+  répond comme prévu (essai réel à faire dans la vérification globale).
+- Appel synchrone : l'attente peut atteindre environ deux fois le timeout.
+- `views.py` dépend de `users.permissions` : l'indépendance porte sur le
+  client LLM, pas sur tout le module.
 
 ### Enseignements
-- À COMPLÉTER
+- Un nom de modèle laissé dans les réglages (et vide par défaut) évite une
+  constante périmée, mais impose de le renseigner avant le premier appel.
+- Des tests avec `requests.post` mocké vérifient le code autour de l'API,
+  pas l'API elle-même.
+- Un `git grep` ciblé (clé, nom de modèle, import de `users`) prouve
+  l'indépendance du module mieux qu'une relecture à l'œil.
 
 ---
 
@@ -216,8 +269,51 @@ usage. Validateur autonome (extraction du JSON propre à `projects`).
 - Tests négatifs ET positif (un texte normal reste inchangé), email en
   caractères pleine largeur.
 
-### Résultat généré / Relecture / Enseignements
-- À COMPLÉTER
+### Résultat généré
+- Tests du validateur : **15 tests, tous OK** (bornes, booléen, Infinity,
+  entier gigantesque, racine non objet, deux objets JSON, clôture ```json
+  et texte autour, énumérations normalisées, éléments vides, entrée non
+  modifiée, budget minimum supérieur au maximum).
+- Écarts relevés : seuls `MAX_ITEMS` et `MAX_ITEM_CHARS` sont des
+  constantes ; aucun test pour une clé manquante, une énumération inconnue
+  ou les bornes 50/51 et 500/501.
+
+### Relecture : problèmes constatés
+1. Le validateur rejette les booléens avant le test numérique, ne laisse
+   pas passer deux objets JSON (amélioration par rapport à `users`, où le
+   premier est retenu) et rejette une liste trop longue au lieu de la
+   couper (les éléments au-delà du maximum sont donc bien contrôlés).
+2. Les bornes de `nb_freelancers`, de la durée et de la confiance ne sont
+   pas des constantes nommées dans `validators.py` (seuls `MAX_ITEMS` et
+   `MAX_ITEM_CHARS` le sont) : À VÉRIFIER, puis à noter comme écart avec
+   la règle « pas de nombres magiques ».
+3. Trous dans les tests : aucun test pour une clé manquante, une
+   énumération inconnue, une liste de 51 éléments ou un élément de 501
+   caractères. À COMPLÉTER après les cassures volontaires.
+
+### Prompt d'itération
+- Prompt de complément « ne modifie pas le validateur, signale l'échec »
+  (clés manquantes, énumération inconnue, bornes 50/51 et 500/501,
+  spécialité incomplète, pas d'extrait de la réponse dans l'erreur).
+
+### Résultat après itération
+- À COMPLÉTER : N tests OK.
+
+### Limite connue
+- Le validateur vérifie la forme, pas la pertinence de l'analyse.
+- Aucun contrôle de cohérence entre champs (par exemple budget estimé et
+  nombre de freelancers), à part budget minimum inférieur ou égal au
+  maximum.
+- Si le modèle renvoie du texte contenant plusieurs objets JSON, la
+  réponse est refusée : le porteur peut relancer l'analyse.
+
+### Enseignements
+- Retenir la leçon de `users` dans le prompt de départ (booléens, nombres
+  spéciaux, deux objets JSON) a évité de refaire les mêmes erreurs : les
+  15 tests passent dès la première génération.
+- Les noms des tests montrent ce qui manque : aucun ne parle d'une clé
+  absente, donc 15 tests verts ne prouvent pas que les 12 clés sont
+  toutes exigées.
 
 ---
 
@@ -232,8 +328,30 @@ usage. Validateur autonome (extraction du JSON propre à `projects`).
 - Throttle DRF.
 
 ### Résultat généré
-- À COMPLÉTER : nombre de tests.
+- ### Résultat généré
+- Modèle `ProjectAnalysis` (migration `0002`), service `analysis.py`,
+  simulateur, endpoint `POST /api/projects/<id>/analyze/`, throttle
+  `ProjectAnalysisThrottle` (taux dans `PROJECT_ANALYSIS_THROTTLE_RATE`).
+- Première exécution : 3 échecs dans `test_analysis_service.py` (réponse
+  invalide et clé absente : 502 au lieu de 200 ; test de neutralisation).
+- Après correction : **9 tests OK** dans ce fichier (N à vérifier avec
+  `git grep -c "def test_"`), suite `projects` : 82 OK.
 
+### Relecture : problèmes constatés
+1. **Spécification, code et tests en désaccord** : le prompt demandait 200
+   avec `error` en cas d'erreur du LLM, le code renvoyait 502. Seule
+   l'exécution des tests l'a révélé. Règle retenue : toute erreur LLM
+   donne 200 avec `error` générique, statut du projet inchangé.
+2. **Test de neutralisation trop strict** : il cherchait `</projet>` dans
+   tout le texte, alors que le service ajoute lui-même cette balise puis
+   `<reference>` (RAG). Le contenu du projet était bien neutralisé
+   (`‹/projet›`).
+3. Valeur de secours `"10/hour"` écrite en dur dans `views.py` (nombre
+   magique).
+4. Projet publié refusé en 400 à l'analyse, alors que publier ou refuser
+   un mauvais état donne 409 : incohérence à trancher.
+5. `simulated` n'est testé qu'en positif : un `simulated = True` en dur
+   passerait les tests.
 ### Relecture : problèmes constatés
 1. À COMPLÉTER
 

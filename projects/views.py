@@ -13,7 +13,7 @@ from rest_framework.throttling import SimpleRateThrottle
 from .models import Project, ProjectAnalysis
 from .permissions import IsProjectOwner
 from .serializers import PublicProjectSerializer, ProjectSerializer
-from .services.analysis import GENERIC_LLM_ERROR, INTERNAL_ERROR, analyze_project
+from .services.analysis import analyze_project
 from users.permissions import IsApprovedUser
 
 
@@ -123,10 +123,6 @@ class ProjectAnalyzeView(generics.GenericAPIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
         payload = analyze_project(project)
-        if payload["error"] == GENERIC_LLM_ERROR:
-            return Response(payload, status=status.HTTP_502_BAD_GATEWAY)
-        if payload["error"] == INTERNAL_ERROR:
-            return Response(payload, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(payload, status=status.HTTP_200_OK)
 
 

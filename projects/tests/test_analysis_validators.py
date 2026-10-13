@@ -45,9 +45,54 @@ class AnalysisValidatorTests(SimpleTestCase):
         self.assertEqual(set(result), set(valid_analysis()))
         self.assertNotIn("extra", result)
 
+    def test_each_required_field_is_rejected_when_missing(self) -> None:
+        """Chaque clé obligatoire est effectivement requise."""
+        for field in valid_analysis():
+            with self.subTest(field=field):
+                analysis = valid_analysis()
+                del analysis[field]
+                self.assert_invalid(json.dumps(analysis))
+
     def test_json_invalid(self) -> None:
         """Un texte qui n'est pas du JSON est rejeté."""
         self.assert_invalid("{not-json")
+
+    def test_unknown_complexity_is_rejected(self) -> None:
+        """Une valeur de complexité inconnue est rejetée."""
+        analysis = valid_analysis()
+        analysis["complexite"] = "EXTREME"
+        self.assert_invalid(json.dumps(analysis))
+
+    def test_fifty_specialities_are_accepted_but_fifty_one_are_rejected(self) -> None:
+        """La liste des spécialités respecte la borne maximale de 50 éléments."""
+        analysis = valid_analysis()
+        analysis["specialites"] = [
+            {"nom": f"Spécialité {index}", "nb": 1}
+            for index in range(50)
+        ]
+        self.assertIsInstance(parse_analysis_response(json.dumps(analysis)), dict)
+
+        analysis["specialites"].append({"nom": "Spécialité 51", "nb": 1})
+        self.assert_invalid(json.dumps(analysis))
+
+    def test_five_hundred_character_item_is_accepted_but_five_hundred_one_is_rejected(
+        self,
+    ) -> None:
+        """Les éléments textuels sont limités à 500 caractères."""
+        analysis = valid_analysis()
+        analysis["risques"] = ["R" * 500]
+        self.assertIsInstance(parse_analysis_response(json.dumps(analysis)), dict)
+
+        analysis["risques"] = ["R" * 501]
+        self.assert_invalid(json.dumps(analysis))
+
+    def test_speciality_requires_name_and_count(self) -> None:
+        """Une spécialité doit contenir un nom et un effectif."""
+        for speciality in ({"nb": 1}, {"nom": "Backend"}):
+            with self.subTest(speciality=speciality):
+                analysis = valid_analysis()
+                analysis["specialites"] = [speciality]
+                self.assert_invalid(json.dumps(analysis))
 
     def test_boundary_values_are_accepted(self) -> None:
         """Les bornes inclusives demandées sont acceptées."""
@@ -154,3 +199,13 @@ class AnalysisValidatorTests(SimpleTestCase):
         original = copy.deepcopy(analysis)
         parse_analysis_response(json.dumps(analysis))
         self.assertEqual(analysis, original)
+
+    def test_error_does_not_include_raw_response(self) -> None:
+        """Le message d'erreur ne révèle aucun extrait de la réponse brute."""
+        raw = '{"complexite":"INCONNUE","secret":"contenu-confidentiel"}'
+
+        with self.assertRaises(LLMResponseError) as context:
+            parse_analysis_response(raw)
+
+        self.assertNotIn("INCONNUE", str(context.exception))
+        self.assertNotIn("contenu-confidentiel", str(context.exception))
