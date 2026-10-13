@@ -9,4 +9,3 @@ __pycache__/
 node_modules/
 *.pt
 *.pth
-experiments/compression/results.json
