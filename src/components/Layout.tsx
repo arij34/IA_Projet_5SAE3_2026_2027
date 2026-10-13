@@ -1,10 +1,12 @@
 import { BriefcaseBusiness, Menu, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { useAuth } from '../auth/useAuth'
 import { clearToken, getToken } from '../auth/tokenStorage'
 
 function Layout() {
   const navigate = useNavigate()
+  const { user, setUser } = useAuth()
   const isAuthenticated = Boolean(getToken())
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [hasScrolled, setHasScrolled] = useState(false)
@@ -30,6 +32,7 @@ function Layout() {
 
   const handleLogout = () => {
     clearToken()
+    setUser(null)
     closeMenu()
     navigate('/login')
   }
@@ -66,6 +69,16 @@ function Layout() {
                 <NavLink className={navClassName} to="/profile" onClick={closeMenu}>
                   Mon profil
                 </NavLink>
+                {user?.role === 'PROJECT_OWNER' && (
+                  <>
+                    <NavLink className={navClassName} to="/gestion-projets" onClick={closeMenu}>
+                      Gestion de projet
+                    </NavLink>
+                    <NavLink className={navClassName} to="/assistant" onClick={closeMenu}>
+                      Assistant
+                    </NavLink>
+                  </>
+                )}
                 <button type="button" onClick={handleLogout}>
                   Se déconnecter
                 </button>
