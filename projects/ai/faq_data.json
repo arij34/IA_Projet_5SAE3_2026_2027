@@ -1,0 +1,82 @@
+[
+  {
+    "id": "analyse-fonctionnement",
+    "question": "Comment fonctionne l'analyse d'un projet ?",
+    "reponse": "L'analyse examine le nom, la description, le montant et la date limite du projet. Elle propose une estimation de durée, de budget, d'équipe, de risques et de faisabilité."
+  },
+  {
+    "id": "analyse-aide-decision",
+    "question": "L'analyse prend-elle la décision à la place du porteur ?",
+    "reponse": "L'IA aide à décider en fournissant des estimations et des points d'attention. Le porteur reste responsable de la décision finale."
+  },
+  {
+    "id": "champ-confiance",
+    "question": "Que signifie la confiance ?",
+    "reponse": "La confiance est une estimation de la qualité des informations disponibles et de la fiabilité de l'évaluation. Une description vague ou incomplète réduit cette valeur."
+  },
+  {
+    "id": "champ-taux-reussite",
+    "question": "Que signifie le taux de réussite ?",
+    "reponse": "Le taux de réussite est une estimation qualitative de la probabilité de mener le projet à bien selon le périmètre, le budget, la durée et les risques identifiés."
+  },
+  {
+    "id": "champ-faisabilite",
+    "question": "Que signifie la faisabilité de la deadline ?",
+    "reponse": "La faisabilité indique si la date limite semble tenable, serrée ou irréaliste au regard des jours restants et de la durée estimée."
+  },
+  {
+    "id": "statut-draft",
+    "question": "Que signifie le statut DRAFT ?",
+    "reponse": "DRAFT signifie que le projet est un brouillon ou qu'une information métier a été modifiée depuis la dernière analyse."
+  },
+  {
+    "id": "statut-analyzed",
+    "question": "Que signifie le statut ANALYZED ?",
+    "reponse": "ANALYZED signifie qu'une analyse valide a été enregistrée pour le projet. Le projet n'est pas encore publié."
+  },
+  {
+    "id": "statut-published",
+    "question": "Que signifie le statut PUBLISHED ?",
+    "reponse": "PUBLISHED signifie que le projet a été accepté par son porteur et est visible dans la liste publique selon les règles de l'application."
+  },
+  {
+    "id": "statut-declined",
+    "question": "Que signifie le statut DECLINED ?",
+    "reponse": "DECLINED signifie que le projet a été refusé par son porteur et qu'il n'est pas publié."
+  },
+  {
+    "id": "publier-projet",
+    "question": "Comment publier un projet ?",
+    "reponse": "Après une analyse réussie, le porteur peut utiliser l'action de publication. La publication est réservée au propriétaire du projet."
+  },
+  {
+    "id": "refuser-projet",
+    "question": "Comment refuser un projet ?",
+    "reponse": "Le porteur peut utiliser l'action de refus depuis son projet. Un projet refusé n'est pas visible dans la liste publique."
+  },
+  {
+    "id": "modifier-projet",
+    "question": "Que se passe-t-il si je modifie mon projet ?",
+    "reponse": "Une modification de la description, de la date limite ou du montant estimé remet le statut à DRAFT. Une nouvelle analyse peut ensuite être demandée."
+  },
+  {
+    "id": "contenu-analyse",
+    "question": "Quels éléments contient l'analyse ?",
+    "reponse": "L'analyse peut contenir la complexité, le score, les facteurs, les durées, les budgets, les spécialités, les phases, les jalons, les risques, les hypothèses et les recommandations."
+  },
+  {
+    "id": "description-vague",
+    "question": "Que se passe-t-il si la description est vague ?",
+    "reponse": "Une description trop vague conduit à une confiance et un taux de réussite plus faibles, ainsi qu'à des questions de clarification et des hypothèses."
+  },
+  {
+    "id": "donnees-ia",
+    "question": "Que fait l'IA avec les données du projet ?",
+    "reponse": "L'IA analyse les informations nécessaires à l'évaluation. Les textes libres sont anonymisés avant un appel à un fournisseur externe lorsque ce mode est utilisé."
+  },
+  {
+    "id": "limites-ia",
+    "question": "L'IA garantit-elle le budget ou la réussite du projet ?",
+    "reponse": "Non. Les résultats sont des estimations et ne garantissent ni le budget, ni la durée, ni la réussite. L'IA aide à décider, le porteur décide."
+  }
+]

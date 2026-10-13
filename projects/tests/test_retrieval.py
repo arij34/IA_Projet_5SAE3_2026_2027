@@ -1,11 +1,16 @@
 """Tests du RAG local des projets."""
 
 import json
+from datetime import date, timedelta
+from decimal import Decimal
 from unittest.mock import patch
 
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from projects.ai.retrieval import _cosine_similarity, retrieve_reference
+from projects.ai.simulator import simulate_analysis
+from projects.models import Project
 from projects.services.analysis import _build_project_text
 
 
@@ -23,6 +28,14 @@ class RetrievalTests(TestCase):
         results = retrieve_reference("rédaction de documentation et articles techniques")
         self.assertTrue(results)
         self.assertEqual(results[0]["nom"], "Rédaction technique")
+
+    def test_different_domains_return_different_references(self) -> None:
+        """Deux domaines distincts ne renvoient pas le même premier métier."""
+        mobile = retrieve_reference("application mobile Android pour smartphone")
+        security = retrieve_reference("audit de cybersécurité et vulnérabilités")
+        self.assertTrue(mobile)
+        self.assertTrue(security)
+        self.assertNotEqual(mobile[0]["nom"], security[0]["nom"])
 
     def test_unrelated_text_returns_no_reference(self) -> None:
         """Un texte sans rapport dépasse aucune référence."""
@@ -65,8 +78,8 @@ class RetrievalTests(TestCase):
             text = _build_project_text(type("ProjectStub", (), {
                 "name": "Projet",
                 "description": "Application mobile",
-                "deadline": type("DateStub", (), {"isoformat": lambda self: "2030-01-01"})(),
-                "estimated_amount": "1000.00",
+                "deadline": date.today() + timedelta(days=30),
+                "estimated_amount": Decimal("1000.00"),
             })())
         self.assertIn("‹ignore›", text)
         self.assertNotIn("<ignore>", text)
@@ -77,48 +90,34 @@ class RetrievalTests(TestCase):
             text = _build_project_text(type("ProjectStub", (), {
                 "name": "Projet",
                 "description": "Texte",
-                "deadline": type("DateStub", (), {"isoformat": lambda self: "2030-01-01"})(),
-                "estimated_amount": "1000.00",
+                "deadline": date.today() + timedelta(days=30),
+                "estimated_amount": Decimal("1000.00"),
             })())
         self.assertNotIn("<reference>", text)
 
     def test_references_used_is_added_by_service(self) -> None:
         """Le service ajoute les références utilisées hors réponse LLM."""
-        with patch("projects.services.analysis.retrieve_reference", return_value=[]), patch(
-            "projects.services.analysis.call_llm",
-            return_value=json.dumps({
-                "budget_min": 1,
-                "budget_max": 2,
-                "devise": "EUR",
-                "nb_freelancers": 1,
-                "specialites": [{"nom": "Web", "nb": 1}],
-                "duree_semaines": 1,
-                "complexite": "FAIBLE",
-                "risques": ["Risque"],
-                "jalons": ["Début", "Fin"],
-                "coherence_budget": "COHERENT",
-                "recommandation": "Continuer.",
-                "confiance": 0.5,
-            }),
-        ):
-            from projects.models import Project
-            from datetime import date
-            from decimal import Decimal
-            from django.contrib.auth import get_user_model
-            user = get_user_model().objects.create_user(
-                username="rag-owner",
-                email="rag-owner@example.com",
-                password="motdepasse123",
-                role="PROJECT_OWNER",
-            )
-            project = Project.objects.create(
-                owner=user,
-                name="Projet",
-                description="Texte",
-                deadline=date(2030, 1, 1),
-                estimated_amount=Decimal("1000"),
-            )
-            from projects.services.analysis import analyze_project
-            result = analyze_project(project)
+        from projects.services.analysis import analyze_project
+
+        user = get_user_model().objects.create_user(
+            username="rag-owner",
+            email="rag-owner@example.com",
+            role="PROJECT_OWNER",
+        )
+        project = Project.objects.create(
+            owner=user,
+            name="Projet",
+            description="Texte",
+            deadline=date.today() + timedelta(days=30),
+            estimated_amount=Decimal("1000"),
+        )
+        with patch("projects.services.analysis.retrieve_reference", return_value=[]):
+            project_text = _build_project_text(project)
+            simulated_result = json.loads(simulate_analysis(project_text))
+            with patch(
+                "projects.services.analysis.call_llm",
+                return_value=json.dumps(simulated_result),
+            ):
+                result = analyze_project(project)
         self.assertIsNone(result["error"], result)
         self.assertEqual(result["result"]["references_used"], [])
