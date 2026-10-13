@@ -8,7 +8,7 @@ from django.test import SimpleTestCase, override_settings
 from projects.ai.client import (
     ANTHROPIC_API_VERSION,
     ANTHROPIC_MESSAGES_URL,
-    REQUEST_TIMEOUT_SECONDS,
+    DEFAULT_REQUEST_TIMEOUT_SECONDS,
     call_llm,
 )
 from projects.ai.exceptions import (
@@ -55,7 +55,29 @@ class LlmClientTests(SimpleTestCase):
             post.call_args.kwargs["headers"]["anthropic-version"],
             ANTHROPIC_API_VERSION,
         )
-        self.assertEqual(post.call_args.kwargs["timeout"], REQUEST_TIMEOUT_SECONDS)
+        self.assertEqual(
+            post.call_args.kwargs["timeout"],
+            DEFAULT_REQUEST_TIMEOUT_SECONDS,
+        )
+        self.assertEqual(post.call_args.kwargs["json"]["max_tokens"], 4096)
+        self.assertEqual(post.call_args.kwargs["json"]["temperature"], 0.2)
+
+    @override_settings(
+        **settings,
+        PROJECT_LLM_MAX_TOKENS=6000,
+        PROJECT_LLM_TEMPERATURE=0.1,
+        PROJECT_LLM_TIMEOUT=60,
+    )
+    @patch("projects.ai.client.requests.post")
+    def test_response_length_settings_are_transmitted(self, post: Mock) -> None:
+        """Les réglages de longueur, température et timeout sont transmis."""
+        post.return_value = anthropic_response()
+
+        call_llm("system", "project data")
+
+        self.assertEqual(post.call_args.kwargs["json"]["max_tokens"], 6000)
+        self.assertEqual(post.call_args.kwargs["json"]["temperature"], 0.1)
+        self.assertEqual(post.call_args.kwargs["timeout"], 60)
 
     @override_settings(**settings)
     @patch("projects.ai.client.requests.post")
@@ -135,6 +157,48 @@ class LlmClientTests(SimpleTestCase):
         )
         self.assertIn('"coherence_budget"', result)
         post.assert_not_called()
+
+    @override_settings(
+        PROJECT_LLM_PROVIDER="gemini",
+        GEMINI_API_KEY="gemini-test-key",
+        GEMINI_MODEL="gemini-test-model",
+    )
+    @patch("users.ai.llm_client._call_gemini")
+    def test_gemini_provider_is_used_for_project_analysis(
+        self,
+        call_gemini: Mock,
+    ) -> None:
+        """L'analyse de projet utilise le client Gemini partagé."""
+        call_gemini.return_value = '{"analysis": "valide"}'
+
+        result = call_llm("system", "project data")
+
+        self.assertEqual(result, '{"analysis": "valide"}')
+        call_gemini.assert_called_once_with(
+            "system",
+            "project data",
+            4096,
+        )
+
+    @override_settings(
+        PROJECT_LLM_PROVIDER="gemini",
+        GEMINI_API_KEY="gemini-test-key",
+        GEMINI_MODEL="gemini-test-model",
+    )
+    @patch("users.ai.llm_client._call_gemini")
+    def test_gemini_error_is_translated_for_project_analysis(
+        self,
+        call_gemini: Mock,
+    ) -> None:
+        """Une erreur Gemini devient une exception projects contrôlée."""
+        from users.ai.exceptions import LLMQuotaError as UsersLLMQuotaError
+
+        call_gemini.side_effect = UsersLLMQuotaError("détail fournisseur")
+
+        with self.assertRaises(LLMQuotaError) as raised:
+            call_llm("system", "project data")
+
+        self.assertEqual(str(raised.exception), "Le quota Gemini est dépassé.")
 
     @override_settings(**settings)
     @patch("projects.ai.client.requests.post")

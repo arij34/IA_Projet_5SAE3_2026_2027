@@ -1,4 +1,4 @@
-"""Client Anthropic isolé pour les fonctionnalités IA de projects."""
+"""Client LLM des fonctionnalités IA de l'application projects."""
 
 import logging
 from typing import Any
@@ -20,9 +20,15 @@ logger = logging.getLogger(__name__)
 
 ANTHROPIC_MESSAGES_URL = "https://api.anthropic.com/v1/messages"
 ANTHROPIC_API_VERSION = "2023-06-01"
-REQUEST_TIMEOUT_SECONDS = 20
-MAX_OUTPUT_TOKENS = 1024
+DEFAULT_MAX_OUTPUT_TOKENS = 4096
+DEFAULT_TEMPERATURE = 0.2
+DEFAULT_REQUEST_TIMEOUT_SECONDS = 45
+# Alias conservé pour les intégrations et tests existants.
+REQUEST_TIMEOUT_SECONDS = DEFAULT_REQUEST_TIMEOUT_SECONDS
 MAX_ATTEMPTS = 2
+CHATBOT_MOCK_RESPONSE = (
+    "Réponse simulée : consultez les sources fournies pour prendre votre décision."
+)
 
 
 def call_llm(system_prompt: str, user_text: str) -> str:
@@ -32,6 +38,15 @@ def call_llm(system_prompt: str, user_text: str) -> str:
         from .simulator import simulate_analysis
 
         return simulate_analysis(user_text)
+    if provider == "gemini":
+        from users.ai.exceptions import LLMError as UsersLLMError
+
+        try:
+            from users.ai.llm_client import _call_gemini
+
+            return _call_gemini(system_prompt, user_text, DEFAULT_MAX_OUTPUT_TOKENS)
+        except UsersLLMError as error:
+            _translate_gemini_error(error)
     if provider != "anthropic":
         raise LLMConfigError("Le fournisseur LLM projects est invalide.")
 
@@ -42,7 +57,16 @@ def call_llm(system_prompt: str, user_text: str) -> str:
 
     payload = {
         "model": model,
-        "max_tokens": MAX_OUTPUT_TOKENS,
+        "max_tokens": getattr(
+            settings,
+            "PROJECT_LLM_MAX_TOKENS",
+            DEFAULT_MAX_OUTPUT_TOKENS,
+        ),
+        "temperature": getattr(
+            settings,
+            "PROJECT_LLM_TEMPERATURE",
+            DEFAULT_TEMPERATURE,
+        ),
         "system": system_prompt,
         "messages": [{"role": "user", "content": user_text}],
     }
@@ -58,7 +82,11 @@ def call_llm(system_prompt: str, user_text: str) -> str:
                 ANTHROPIC_MESSAGES_URL,
                 headers=headers,
                 json=payload,
-                timeout=REQUEST_TIMEOUT_SECONDS,
+                timeout=getattr(
+                    settings,
+                    "PROJECT_LLM_TIMEOUT",
+                    DEFAULT_REQUEST_TIMEOUT_SECONDS,
+                ),
             )
         except requests.Timeout:
             if attempt + 1 < MAX_ATTEMPTS:
@@ -74,6 +102,48 @@ def call_llm(system_prompt: str, user_text: str) -> str:
             continue
 
     raise LLMTimeoutError("Le fournisseur LLM n'a pas répondu à temps.")
+
+
+def call_chatbot_llm(system_prompt: str, user_text: str) -> str:
+    """Répond au chatbot avec le fournisseur configuré ou le mode mock local."""
+    provider = getattr(settings, "CHATBOT_LLM_PROVIDER", "mock")
+    if provider == "mock":
+        return CHATBOT_MOCK_RESPONSE
+    if provider == "gemini":
+        from users.ai.exceptions import LLMError as UsersLLMError
+
+        try:
+            from users.ai.llm_client import _call_gemini
+
+            return _call_gemini(
+                system_prompt,
+                user_text,
+                DEFAULT_MAX_OUTPUT_TOKENS,
+                response_mime_type=None,
+            )
+        except UsersLLMError as error:
+            _translate_gemini_error(error)
+    raise LLMConfigError("Le fournisseur LLM du chatbot est invalide.")
+
+
+def _translate_gemini_error(error: Exception) -> None:
+    """Traduit une exception du client users vers les erreurs de projects."""
+    from users.ai.exceptions import (
+        LLMConfigError as UsersLLMConfigError,
+        LLMQuotaError as UsersLLMQuotaError,
+        LLMResponseError as UsersLLMResponseError,
+        LLMTimeoutError as UsersLLMTimeoutError,
+    )
+
+    if isinstance(error, UsersLLMConfigError):
+        raise LLMConfigError("La configuration Gemini est invalide.") from None
+    if isinstance(error, UsersLLMQuotaError):
+        raise LLMQuotaError("Le quota Gemini est dépassé.") from None
+    if isinstance(error, UsersLLMTimeoutError):
+        raise LLMTimeoutError("Le fournisseur Gemini n'a pas répondu à temps.") from None
+    if isinstance(error, UsersLLMResponseError):
+        raise LLMResponseError("La réponse du fournisseur Gemini est invalide.") from None
+    raise LLMServiceError("Le fournisseur Gemini est indisponible.") from None
 
 
 def _parse_response(response: Any, attempt: int) -> str:

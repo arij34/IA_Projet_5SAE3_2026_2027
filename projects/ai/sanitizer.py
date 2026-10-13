@@ -14,7 +14,11 @@ _EMAIL_PATTERN = re.compile(
     re.IGNORECASE,
 )
 _PHONE_PATTERN = re.compile(
-    r"(?<!\w)(?:\+?\d[\d\s().-]{7,}\d)(?!\w)"
+    r"(?<!\w)(?:"
+    r"\+\d{1,3}(?:[ .-]\d{1,3}){4,6}"
+    r"|0\d(?:[ .]\d{2}){4}"
+    r"|0\d{9}"
+    r")(?!\w)"
 )
 _LINK_PATTERN = re.compile(
     r"(?<!\w)(?:https?://|www\.)[^\s<>()]+",

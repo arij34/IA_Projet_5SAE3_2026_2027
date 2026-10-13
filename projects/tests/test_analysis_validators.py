@@ -14,16 +14,70 @@ def valid_analysis() -> dict:
     return {
         "budget_min": 1000,
         "budget_max": 2500,
+        "budget_recommande": 1800,
         "devise": "EUR",
         "nb_freelancers": 2,
-        "specialites": [{"nom": "Backend Django", "nb": 1}],
+        "specialites": [
+            {
+                "nom": "Backend Django",
+                "nb": 2,
+                "niveau": "confirme",
+                "charge_pourcentage": 100,
+            }
+        ],
         "duree_semaines": 8,
+        "duree_min_semaines": 6,
+        "duree_max_semaines": 10,
         "complexite": "MOYENNE",
-        "risques": ["La description manque de détails techniques."],
-        "jalons": ["Cadrage", "Développement"],
-        "coherence_budget": "COHERENT",
+        "score_complexite": 5,
+        "facteurs_complexite": ["Intégration avec le système existant"],
+        "risques": [
+            {
+                "description": "La description manque de détails techniques.",
+                "probabilite": 0.4,
+                "impact": "MOYEN",
+                "mitigation": "Valider les interfaces en cadrage.",
+            }
+        ],
+        "jalons": [{"nom": "Cadrage", "semaine": 2}, {"nom": "Recette", "semaine": 8}],
+        "coherence_budget": "REALISTE",
         "recommandation": "Préciser les besoins avant le lancement.",
         "confiance": 0.8,
+        "justification": "Le périmètre décrit nécessite une phase de cadrage.",
+        "phases": [
+            {
+                "nom": "Cadrage",
+                "objectif": "Préciser le besoin",
+                "duree_semaines": 2,
+                "livrables": ["Spécifications"],
+                "specialites": ["Backend Django"],
+                "budget_pourcentage": 25,
+            },
+            {
+                "nom": "Développement",
+                "objectif": "Construire la solution",
+                "duree_semaines": 3,
+                "livrables": ["Version initiale"],
+                "specialites": ["Backend Django"],
+                "budget_pourcentage": 40,
+            },
+            {
+                "nom": "Recette",
+                "objectif": "Valider la solution",
+                "duree_semaines": 3,
+                "livrables": ["Procès-verbal"],
+                "specialites": ["Backend Django"],
+                "budget_pourcentage": 35,
+            },
+        ],
+        "faisabilite_deadline": "TENABLe",
+        "faisabilite_deadline_justification": "La durée estimée tient dans le délai.",
+        "taux_reussite": 0.75,
+        "facteurs_positifs": ["Objectif identifié"],
+        "facteurs_negatifs": ["Détails techniques incomplets"],
+        "hypotheses": ["Les accès techniques seront disponibles."],
+        "questions_clarification": ["Quels systèmes doivent être intégrés ?"],
+        "recommandations": ["Valider les spécifications avec les parties prenantes."],
     }
 
 
@@ -67,12 +121,29 @@ class AnalysisValidatorTests(SimpleTestCase):
         """La liste des spécialités respecte la borne maximale de 50 éléments."""
         analysis = valid_analysis()
         analysis["specialites"] = [
-            {"nom": f"Spécialité {index}", "nb": 1}
+            {
+                "nom": f"Spécialité {index}",
+                "nb": 1,
+                "niveau": "junior",
+                "charge_pourcentage": 2,
+            }
             for index in range(50)
+        ]
+        analysis["nb_freelancers"] = 50
+        analysis["phases"] = [
+            {**phase, "specialites": ["Spécialité 0"]}
+            for phase in analysis["phases"]
         ]
         self.assertIsInstance(parse_analysis_response(json.dumps(analysis)), dict)
 
-        analysis["specialites"].append({"nom": "Spécialité 51", "nb": 1})
+        analysis["specialites"].append(
+            {
+                "nom": "Spécialité 51",
+                "nb": 1,
+                "niveau": "junior",
+                "charge_pourcentage": 0,
+            }
+        )
         self.assert_invalid(json.dumps(analysis))
 
     def test_five_hundred_character_item_is_accepted_but_five_hundred_one_is_rejected(
@@ -80,10 +151,10 @@ class AnalysisValidatorTests(SimpleTestCase):
     ) -> None:
         """Les éléments textuels sont limités à 500 caractères."""
         analysis = valid_analysis()
-        analysis["risques"] = ["R" * 500]
+        analysis["risques"][0]["description"] = "R" * 500
         self.assertIsInstance(parse_analysis_response(json.dumps(analysis)), dict)
 
-        analysis["risques"] = ["R" * 501]
+        analysis["risques"][0]["description"] = "R" * 501
         self.assert_invalid(json.dumps(analysis))
 
     def test_speciality_requires_name_and_count(self) -> None:
@@ -101,12 +172,26 @@ class AnalysisValidatorTests(SimpleTestCase):
         analysis["duree_semaines"] = 520
         analysis["confiance"] = 1
         analysis["specialites"][0]["nb"] = 50
+        analysis["specialites"][0]["charge_pourcentage"] = 100
+        analysis["duree_min_semaines"] = 1
+        analysis["duree_max_semaines"] = 520
+        analysis["phases"] = [
+            {**phase, "duree_semaines": duration}
+            for phase, duration in zip(analysis["phases"], (170, 170, 180))
+        ]
         self.assertIsInstance(parse_analysis_response(json.dumps(analysis)), dict)
 
         analysis = valid_analysis()
         analysis["nb_freelancers"] = 1
-        analysis["duree_semaines"] = 1
+        analysis["specialites"][0]["nb"] = 1
+        analysis["duree_semaines"] = 3
         analysis["confiance"] = 0
+        analysis["duree_min_semaines"] = 1
+        analysis["duree_max_semaines"] = 3
+        analysis["phases"] = [
+            {**phase, "duree_semaines": 1, "budget_pourcentage": 100 / 3}
+            for phase in analysis["phases"]
+        ]
         self.assertIsInstance(parse_analysis_response(json.dumps(analysis)), dict)
 
     def test_out_of_bounds_values_are_rejected(self) -> None:
@@ -128,6 +213,84 @@ class AnalysisValidatorTests(SimpleTestCase):
         analysis = valid_analysis()
         analysis["budget_min"] = 3000
         self.assert_invalid(json.dumps(analysis))
+
+    def test_detailed_bounds_are_accepted_and_refused(self) -> None:
+        """Les bornes détaillées acceptent leurs limites et refusent les écarts."""
+        accepted = valid_analysis()
+        accepted["score_complexite"] = 1
+        accepted["duree_min_semaines"] = 1
+        accepted["duree_semaines"] = 3
+        accepted["duree_max_semaines"] = 520
+        accepted["taux_reussite"] = 0
+        accepted["specialites"][0]["charge_pourcentage"] = 100
+        accepted["phases"] = [
+            {**phase, "duree_semaines": 1, "budget_pourcentage": 100 / 3}
+            for phase in accepted["phases"]
+        ]
+        self.assertIsInstance(parse_analysis_response(json.dumps(accepted)), dict)
+
+        for field, value in (
+            ("score_complexite", 0),
+            ("score_complexite", 11),
+            ("duree_min_semaines", 0),
+            ("duree_max_semaines", 521),
+            ("taux_reussite", -0.01),
+            ("taux_reussite", 1.01),
+        ):
+            with self.subTest(field=field, value=value):
+                invalid = valid_analysis()
+                invalid[field] = value
+                self.assert_invalid(json.dumps(invalid))
+
+    def test_budget_recommended_must_be_between_bounds(self) -> None:
+        """Le budget recommandé reste dans l'intervalle annoncé."""
+        for value in (999, 2501):
+            with self.subTest(value=value):
+                analysis = valid_analysis()
+                analysis["budget_recommande"] = value
+                self.assert_invalid(json.dumps(analysis))
+
+    def test_phase_count_and_percentage_sum_are_coherent(self) -> None:
+        """Les phases sont bornées et leurs budgets totalisent 100 %."""
+        analysis = valid_analysis()
+        analysis["phases"][0]["budget_pourcentage"] = 50
+        self.assert_invalid(json.dumps(analysis))
+
+        analysis = valid_analysis()
+        analysis["phases"] = analysis["phases"][:2]
+        self.assert_invalid(json.dumps(analysis))
+
+    def test_phase_durations_specialities_and_team_sum_are_coherent(self) -> None:
+        """Les phases doivent respecter durée, spécialités et équipe."""
+        analysis = valid_analysis()
+        analysis["phases"][0]["duree_semaines"] = 0
+        self.assert_invalid(json.dumps(analysis))
+
+        analysis = valid_analysis()
+        analysis["phases"][0]["specialites"] = ["Inconnue"]
+        self.assert_invalid(json.dumps(analysis))
+
+        analysis = valid_analysis()
+        analysis["nb_freelancers"] = 1
+        self.assert_invalid(json.dumps(analysis))
+
+    def test_structured_booleans_are_rejected(self) -> None:
+        """Les booléens ne remplacent aucun nombre structuré."""
+        for path in (
+            ("score_complexite",),
+            ("budget_recommande",),
+            ("taux_reussite",),
+            ("specialites", 0, "charge_pourcentage"),
+            ("risques", 0, "probabilite"),
+            ("phases", 0, "budget_pourcentage"),
+        ):
+            with self.subTest(path=path):
+                analysis = valid_analysis()
+                target = analysis
+                for key in path[:-1]:
+                    target = target[key]
+                target[path[-1]] = True
+                self.assert_invalid(json.dumps(analysis))
 
     def test_boolean_is_not_accepted_as_number(self) -> None:
         """Un booléen ne peut pas être utilisé comme un nombre."""
@@ -166,31 +329,47 @@ class AnalysisValidatorTests(SimpleTestCase):
         """Les énumérations acceptent la casse et les espaces périphériques."""
         analysis = valid_analysis()
         analysis["complexite"] = "  faible "
-        analysis["coherence_budget"] = " sous_estime "
+        analysis["coherence_budget"] = " realiste "
 
         result = parse_analysis_response(json.dumps(analysis))
 
         self.assertEqual(result["complexite"], "FAIBLE")
-        self.assertEqual(result["coherence_budget"], "SOUS_ESTIME")
+        self.assertEqual(result["coherence_budget"], "REALISTE")
 
     def test_string_items_are_stripped_before_empty_check(self) -> None:
         """Les espaces périphériques sont retirés des éléments textuels."""
         analysis = valid_analysis()
-        analysis["risques"] = ["  Risque détaillé  "]
-        analysis["jalons"] = ["  Cadrage  ", " Développement "]
-        analysis["specialites"] = [{"nom": "  Backend  ", "nb": 1}]
+        analysis["risques"][0]["description"] = "  Risque détaillé  "
+        analysis["jalons"] = [
+            {"nom": "  Cadrage  ", "semaine": 2},
+            {"nom": " Développement ", "semaine": 8},
+        ]
+        analysis["specialites"] = [
+            {
+                "nom": "  Backend  ",
+                "nb": 2,
+                "niveau": "confirme",
+                "charge_pourcentage": 100,
+            }
+        ]
+        analysis["phases"] = [
+            {**phase, "specialites": ["  Backend  "]} for phase in analysis["phases"]
+        ]
 
         result = parse_analysis_response(json.dumps(analysis))
 
-        self.assertEqual(result["risques"], ["Risque détaillé"])
-        self.assertEqual(result["jalons"], ["Cadrage", "Développement"])
+        self.assertEqual(result["risques"][0]["description"], "Risque détaillé")
+        self.assertEqual(result["jalons"][0]["nom"], "Cadrage")
         self.assertEqual(result["specialites"][0]["nom"], "Backend")
 
     def test_empty_string_items_are_rejected(self) -> None:
         """Un élément vide après strip est rejeté."""
         for field in ("risques", "jalons"):
             analysis = valid_analysis()
-            analysis[field] = ["   "] if field == "risques" else ["   ", "Jalon"]
+            if field == "risques":
+                analysis[field][0]["description"] = "   "
+            else:
+                analysis[field][0]["nom"] = "   "
             self.assert_invalid(json.dumps(analysis))
 
     def test_input_is_not_mutated(self) -> None:

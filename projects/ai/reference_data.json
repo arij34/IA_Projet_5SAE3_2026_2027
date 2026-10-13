@@ -1,83 +1,110 @@
 [
   {
+    "nom": "Développement web vitrine",
+    "mots_cles": ["site", "web", "vitrine", "frontend", "cms"],
+    "tarif_jour_min": 300, "tarif_jour_max": 650, "devise": "EUR",
+    "duree_min_semaines": 2, "duree_max_semaines": 6,
+    "equipe_type": ["développeur web", "designer"],
+    "phases_habituelles": ["cadrage", "design", "intégration", "recette"],
+    "description": "Site vitrine ou institutionnel avec quelques pages et formulaire."
+  },
+  {
     "nom": "Développement mobile",
     "mots_cles": ["mobile", "android", "ios", "application", "smartphone"],
-    "tarif_jour_min": 350,
-    "tarif_jour_max": 700,
-    "devise": "EUR",
-    "duree_typique_semaines": 12,
-    "description": "Conception et développement d'applications mobiles natives ou hybrides."
+    "tarif_jour_min": 350, "tarif_jour_max": 700, "devise": "EUR",
+    "duree_min_semaines": 10, "duree_max_semaines": 24,
+    "equipe_type": ["développeur mobile", "backend", "designer"],
+    "phases_habituelles": ["cadrage", "UX/UI", "développement", "tests", "stores"],
+    "description": "Application mobile native ou hybride avec API et publication."
   },
   {
-    "nom": "Développement web",
-    "mots_cles": ["site", "web", "frontend", "backend", "portail"],
-    "tarif_jour_min": 300,
-    "tarif_jour_max": 650,
-    "devise": "EUR",
-    "duree_typique_semaines": 10,
-    "description": "Création de sites, portails et applications web sur mesure."
-  },
-  {
-    "nom": "UX/UI design",
-    "mots_cles": ["design", "ux", "ui", "interface", "maquette"],
-    "tarif_jour_min": 300,
-    "tarif_jour_max": 600,
-    "devise": "EUR",
-    "duree_typique_semaines": 5,
-    "description": "Recherche utilisateur, parcours, prototypes et interfaces accessibles."
-  },
-  {
-    "nom": "Data et intelligence artificielle",
-    "mots_cles": ["data", "ia", "intelligence", "machine", "apprentissage", "données"],
-    "tarif_jour_min": 500,
-    "tarif_jour_max": 950,
-    "devise": "EUR",
-    "duree_typique_semaines": 14,
-    "description": "Analyse de données, modèles prédictifs et intégration de services IA."
-  },
-  {
-    "nom": "Cybersécurité",
-    "mots_cles": ["sécurité", "cyber", "audit", "vulnérabilité", "protection"],
-    "tarif_jour_min": 550,
-    "tarif_jour_max": 1000,
-    "devise": "EUR",
-    "duree_typique_semaines": 6,
-    "description": "Audit, sécurisation et accompagnement de systèmes numériques."
-  },
-  {
-    "nom": "Marketing digital",
-    "mots_cles": ["marketing", "seo", "référencement", "campagne", "réseaux"],
-    "tarif_jour_min": 250,
-    "tarif_jour_max": 550,
-    "devise": "EUR",
-    "duree_typique_semaines": 6,
-    "description": "Stratégie digitale, référencement et campagnes d'acquisition."
-  },
-  {
-    "nom": "Rédaction technique",
-    "mots_cles": ["rédaction", "documentation", "contenu", "article", "technique"],
-    "tarif_jour_min": 250,
-    "tarif_jour_max": 500,
-    "devise": "EUR",
-    "duree_typique_semaines": 4,
-    "description": "Documentation claire, articles spécialisés et contenus techniques."
-  },
-  {
-    "nom": "Gestion de projet",
-    "mots_cles": ["projet", "planning", "coordination", "agile", "scrum"],
-    "tarif_jour_min": 400,
-    "tarif_jour_max": 750,
-    "devise": "EUR",
-    "duree_typique_semaines": 12,
-    "description": "Cadrage, coordination des intervenants et suivi des livrables."
+    "nom": "Plateforme web métier",
+    "mots_cles": ["portail", "web", "backend", "workflow", "utilisateurs"],
+    "tarif_jour_min": 400, "tarif_jour_max": 800, "devise": "EUR",
+    "duree_min_semaines": 12, "duree_max_semaines": 30,
+    "equipe_type": ["architecte", "backend", "frontend", "QA"],
+    "phases_habituelles": ["cadrage", "architecture", "développement", "tests", "déploiement"],
+    "description": "Plateforme métier avec comptes, rôles, workflows et tableaux de bord."
   },
   {
     "nom": "E-commerce et paiement",
-    "mots_cles": ["ecommerce", "boutique", "paiement", "panier", "commande"],
-    "tarif_jour_min": 350,
-    "tarif_jour_max": 750,
-    "devise": "EUR",
-    "duree_typique_semaines": 10,
-    "description": "Boutiques en ligne, parcours de commande et intégration de paiements."
+    "mots_cles": ["ecommerce", "e-commerce", "boutique", "panier", "paiement", "commande"],
+    "tarif_jour_min": 350, "tarif_jour_max": 750, "devise": "EUR",
+    "duree_min_semaines": 10, "duree_max_semaines": 24,
+    "equipe_type": ["backend", "frontend", "paiement", "SEO"],
+    "phases_habituelles": ["catalogue", "panier", "paiement", "commandes", "recette"],
+    "description": "Boutique en ligne avec catalogue, commandes et intégration de paiement."
+  },
+  {
+    "nom": "Data engineering",
+    "mots_cles": ["data", "données", "donnees", "ETL", "pipeline", "BI"],
+    "tarif_jour_min": 450, "tarif_jour_max": 900, "devise": "EUR",
+    "duree_min_semaines": 8, "duree_max_semaines": 20,
+    "equipe_type": ["data engineer", "architecte", "analyste"],
+    "phases_habituelles": ["sources", "pipeline", "qualité", "modélisation", "monitoring"],
+    "description": "Pipelines de données, entrepôt et tableaux de bord décisionnels."
+  },
+  {
+    "nom": "Intelligence artificielle",
+    "mots_cles": ["ia", "intelligence", "machine learning", "apprentissage", "modèle"],
+    "tarif_jour_min": 500, "tarif_jour_max": 1000, "devise": "EUR",
+    "duree_min_semaines": 12, "duree_max_semaines": 32,
+    "equipe_type": ["data scientist", "ML engineer", "backend"],
+    "phases_habituelles": ["données", "prototype", "entraînement", "évaluation", "mise en production"],
+    "description": "Modèles prédictifs ou génératifs intégrés dans une application."
+  },
+  {
+    "nom": "UX/UI design",
+    "mots_cles": ["design", "ux", "ui", "interface", "maquette", "prototype"],
+    "tarif_jour_min": 300, "tarif_jour_max": 600, "devise": "EUR",
+    "duree_min_semaines": 3, "duree_max_semaines": 10,
+    "equipe_type": ["UX designer", "UI designer", "chercheur utilisateur"],
+    "phases_habituelles": ["recherche", "parcours", "wireframes", "prototype", "tests utilisateurs"],
+    "description": "Recherche utilisateur, parcours, prototype et design system."
+  },
+  {
+    "nom": "Cybersécurité",
+    "mots_cles": ["sécurité", "securite", "cyber", "audit", "vulnérabilité", "protection"],
+    "tarif_jour_min": 550, "tarif_jour_max": 1100, "devise": "EUR",
+    "duree_min_semaines": 4, "duree_max_semaines": 14,
+    "equipe_type": ["auditeur sécurité", "pentester", "architecte"],
+    "phases_habituelles": ["périmètre", "audit", "remédiation", "contre-audit", "rapport"],
+    "description": "Audit, tests d'intrusion, sécurisation et recommandations."
+  },
+  {
+    "nom": "DevOps et cloud",
+    "mots_cles": ["devops", "cloud", "CI/CD", "déploiement", "kubernetes", "infrastructure"],
+    "tarif_jour_min": 450, "tarif_jour_max": 950, "devise": "EUR",
+    "duree_min_semaines": 4, "duree_max_semaines": 16,
+    "equipe_type": ["DevOps", "cloud engineer", "SRE"],
+    "phases_habituelles": ["audit", "infrastructure", "CI/CD", "observabilité", "transfert"],
+    "description": "Automatisation des déploiements, infrastructure cloud et observabilité."
+  },
+  {
+    "nom": "Rédaction technique",
+    "mots_cles": ["rédaction", "documentation", "contenu", "article", "technique", "manuel"],
+    "tarif_jour_min": 250, "tarif_jour_max": 550, "devise": "EUR",
+    "duree_min_semaines": 2, "duree_max_semaines": 10,
+    "equipe_type": ["rédacteur technique", "expert métier", "éditeur"],
+    "phases_habituelles": ["collecte", "plan", "rédaction", "relecture", "publication"],
+    "description": "Documentation produit, guides utilisateurs et contenus techniques."
+  },
+  {
+    "nom": "Marketing digital",
+    "mots_cles": ["marketing", "SEO", "référencement", "campagne", "réseaux sociaux", "acquisition"],
+    "tarif_jour_min": 250, "tarif_jour_max": 600, "devise": "EUR",
+    "duree_min_semaines": 3, "duree_max_semaines": 16,
+    "equipe_type": ["consultant marketing", "SEO", "rédacteur", "designer"],
+    "phases_habituelles": ["stratégie", "audience", "contenus", "campagne", "mesure"],
+    "description": "Stratégie d'acquisition, référencement, contenus et campagnes."
+  },
+  {
+    "nom": "Gestion de projet",
+    "mots_cles": ["projet", "planning", "coordination", "agile", "scrum", "pilotage"],
+    "tarif_jour_min": 400, "tarif_jour_max": 800, "devise": "EUR",
+    "duree_min_semaines": 6, "duree_max_semaines": 26,
+    "equipe_type": ["chef de projet", "product owner", "scrum master"],
+    "phases_habituelles": ["cadrage", "planning", "coordination", "suivi", "bilan"],
+    "description": "Cadrage, coordination des intervenants et suivi des livrables."
   }
 ]

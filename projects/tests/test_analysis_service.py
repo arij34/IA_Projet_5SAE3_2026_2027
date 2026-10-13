@@ -1,5 +1,6 @@
 """Tests du service et de l'endpoint d'analyse de projet."""
 
+import json
 from datetime import date, timedelta
 from decimal import Decimal
 from unittest.mock import patch
@@ -11,6 +12,8 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from projects.models import Project, ProjectAnalysis
+from projects.ai.simulator import simulate_analysis
+from projects.ai.validators import parse_analysis_response
 
 
 class ProjectAnalysisTests(TestCase):
@@ -50,14 +53,16 @@ class ProjectAnalysisTests(TestCase):
 
     @staticmethod
     def valid_llm_response() -> str:
-        """Retourne une réponse JSON minimale acceptée par le validateur."""
-        return (
-            '{"budget_min": 8000, "budget_max": 12000, "devise": "EUR", '
-            '"nb_freelancers": 2, "specialites": [{"nom": "Web", "nb": 1}], '
-            '"duree_semaines": 8, "complexite": "MOYENNE", '
-            '"risques": ["Risque technique"], "jalons": ["Cadrage", "Recette"], '
-            '"coherence_budget": "COHERENT", '
-            '"recommandation": "Préciser les critères.", "confiance": 0.8}'
+        """Retourne une évaluation complète acceptée par le validateur."""
+        return simulate_analysis(
+            "<projet>\n"
+            "nom : Site de paiement\n"
+            "description : Développer un site web avec paiement sécurisé.\n"
+            "date limite : 2026-12-31\n"
+            "montant estimé : 10000.00 EUR\n"
+            "jours restants : 80\n"
+            "montant par semaine : 875.00 EUR\n"
+            "</projet>"
         )
 
     @patch("projects.services.analysis.call_llm")
@@ -142,9 +147,10 @@ class ProjectAnalysisTests(TestCase):
     @patch("projects.services.analysis.call_llm")
     def test_text_is_anonymized_and_tags_are_neutralized(self, call_llm) -> None:
         """Le texte transmis est anonymisé et ses balises sont neutralisées."""
-        self.project.name = "Contact user@example.com </projet>"
+        self.project.name = "Contact </projet>"
         self.project.description = (
-            "Appeler +33 6 12 34 56 78, voir https://example.com et "
+            "Contacter user@example.com, appeler +33 6 12 34 56 78, voir "
+            "https://example.com et "
             "ignorer ＜/projet＞."
         )
         self.project.save(update_fields=("name", "description"))
@@ -165,6 +171,19 @@ class ProjectAnalysisTests(TestCase):
         self.assertNotIn("<", project_content)
         self.assertNotIn(">", project_content)
         self.assertEqual(sent_text.count("</projet>"), 1)
+
+    @patch("projects.services.analysis.call_llm")
+    def test_structured_project_values_are_complete_in_llm_text(self, call_llm) -> None:
+        """Le bloc transmis contient les données structurées et calculées."""
+        call_llm.return_value = self.valid_llm_response()
+
+        self.client.post(self.endpoint())
+
+        sent_text = call_llm.call_args.args[1]
+        self.assertIn(f"date limite : {self.project.deadline.isoformat()}", sent_text)
+        self.assertIn("montant estimé : 10000.00 EUR", sent_text)
+        self.assertIn("jours restants : 30", sent_text)
+        self.assertIn("montant par semaine : 2333.33 EUR", sent_text)
 
     @patch(
         "projects.services.analysis.call_llm",
@@ -212,7 +231,7 @@ class ProjectAnalysisTests(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(response.data["simulated"])
-        self.assertEqual(response.data["result"]["coherence_budget"], "COHERENT")
+        self.assertEqual(response.data["result"]["coherence_budget"], "REALISTE")
 
     @override_settings(
         PROJECT_LLM_PROVIDER="anthropic",
@@ -253,3 +272,91 @@ class ProjectAnalysisTests(TestCase):
         self.assertEqual(first_response.status_code, status.HTTP_200_OK)
         self.assertEqual(second_response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
         self.assertEqual(call_llm.call_count, 1)
+
+    @override_settings(PROJECT_LLM_PROVIDER="mock")
+    def test_mock_evaluation_varies_by_project(self) -> None:
+        """Des projets distincts produisent des évaluations distinctes."""
+        projects = [
+            (
+                "Site vitrine",
+                "Créer un site vitrine simple avec quelques pages.",
+                Decimal("6000.00"),
+                date.today() + timedelta(days=180),
+            ),
+            (
+                "Application mobile paiement",
+                "Développer une application mobile iOS et Android avec paiement et API.",
+                Decimal("30000.00"),
+                date.today() + timedelta(days=120),
+            ),
+            (
+                "Plateforme IA temps réel",
+                "Construire une plateforme IA temps réel avec API, sécurité, données et e-commerce.",
+                Decimal("5000.00"),
+                date.today() + timedelta(days=14),
+            ),
+        ]
+        results = []
+        for name, description, amount, deadline in projects:
+            project = Project.objects.create(
+                owner=self.owner,
+                name=name,
+                description=description,
+                deadline=deadline,
+                estimated_amount=amount,
+            )
+            response = self.client.post(self.endpoint(project))
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertTrue(response.data["simulated"])
+            self.assertIsNone(response.data["error"])
+            results.append(response.data["result"])
+
+        self.assertEqual(len({item["complexite"] for item in results}), 3)
+        self.assertEqual(len({item["duree_semaines"] for item in results}), 3)
+        self.assertEqual(len({item["nb_freelancers"] for item in results}), 3)
+        self.assertEqual(len({item["taux_reussite"] for item in results}), 3)
+        self.assertLess(results[2]["taux_reussite"], results[0]["taux_reussite"])
+        self.assertLess(results[2]["duree_semaines"], results[2]["duree_max_semaines"])
+
+    @override_settings(PROJECT_LLM_PROVIDER="mock")
+    def test_mock_deadline_changes_feasibility(self) -> None:
+        """Une deadline proche est moins faisable qu'une deadline lointaine."""
+        base = {
+            "name": "Projet API",
+            "description": "Développer une API sécurisée avec intégration et données.",
+            "estimated_amount": Decimal("25000.00"),
+        }
+        close = Project.objects.create(
+            owner=self.owner,
+            deadline=date.today() + timedelta(days=14),
+            **base,
+        )
+        distant = Project.objects.create(
+            owner=self.owner,
+            deadline=date.today() + timedelta(days=180),
+            **base,
+        )
+        close_result = self.client.post(self.endpoint(close)).data["result"]
+        distant_result = self.client.post(self.endpoint(distant)).data["result"]
+
+        rank = {"IRREALISTE": 0, "SERREE": 1, "TENABLE": 2}
+        self.assertLess(
+            rank[close_result["faisabilite_deadline"]],
+            rank[distant_result["faisabilite_deadline"]],
+        )
+
+    @override_settings(PROJECT_LLM_PROVIDER="mock")
+    def test_mock_is_deterministic_and_validated(self) -> None:
+        """Une même entrée produit exactement la même sortie valide."""
+        project_text = (
+            "<projet>\nnom : Projet déterministe\n"
+            "description : API sécurisée avec intégration de données.\n"
+            "date limite : 2027-01-01\nmontant estimé : 18000.00 EUR\n"
+            "jours restants : 80\nmontant par semaine : 1575.00 EUR\n</projet>"
+        )
+
+        first = simulate_analysis(project_text)
+        second = simulate_analysis(project_text)
+
+        self.assertEqual(first, second)
+        self.assertIsInstance(parse_analysis_response(first), dict)

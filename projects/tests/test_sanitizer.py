@@ -21,6 +21,12 @@ class ProjectSanitizerTests(SimpleTestCase):
     def test_phone_is_anonymized(self) -> None:
         """Un numéro de téléphone est remplacé par son placeholder."""
         self.assertEqual(anonymize_text("Appelez le +33 6 12 34 56 78"), "Appelez le [TEL]")
+        self.assertEqual(anonymize_text("Appelez le 06.12.34.56.78"), "Appelez le [TEL]")
+
+    def test_dates_and_amounts_are_not_anonymized_as_phones(self) -> None:
+        """Les dates et montants restent inchangés."""
+        text = "Date 2026-11-12, date 12/11/2026, montant 1 500 000, 10000.00, 15 000 TND."
+        self.assertEqual(anonymize_text(text), text)
 
     def test_link_is_anonymized(self) -> None:
         """Un lien HTTP ou www est remplacé par son placeholder."""

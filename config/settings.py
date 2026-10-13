@@ -168,12 +168,20 @@ LLM_TIMEOUT_SECONDS = int(os.getenv("LLM_TIMEOUT_SECONDS", "20"))
 
 # --- Client LLM de projects ------------------------------------------------
 
-PROJECT_LLM_PROVIDER = os.getenv("PROJECT_LLM_PROVIDER", "")
+PROJECT_LLM_PROVIDER = os.getenv("PROJECT_LLM_PROVIDER", "mock")
+CHATBOT_LLM_PROVIDER = os.getenv("CHATBOT_LLM_PROVIDER", "mock")
 PROJECT_LLM_API_KEY = os.getenv("PROJECT_LLM_API_KEY", "")
 PROJECT_LLM_MODEL = os.getenv("PROJECT_LLM_MODEL", "")
+PROJECT_LLM_MAX_TOKENS = int(os.getenv("PROJECT_LLM_MAX_TOKENS", "4096"))
+PROJECT_LLM_TEMPERATURE = float(os.getenv("PROJECT_LLM_TEMPERATURE", "0.2"))
+PROJECT_LLM_TIMEOUT = int(os.getenv("PROJECT_LLM_TIMEOUT", "45"))
 PROJECT_ANALYSIS_THROTTLE_RATE = os.getenv(
     "PROJECT_ANALYSIS_THROTTLE_RATE",
     "10/hour",
+)
+PROJECT_CHATBOT_THROTTLE_RATE = os.getenv(
+    "PROJECT_CHATBOT_THROTTLE_RATE",
+    "30/hour",
 )
 
 if "test" in sys.argv:

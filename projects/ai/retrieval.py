@@ -17,6 +17,82 @@ MIN_CORPUS_COSINE_SIMILARITY = 0.12
 DEFAULT_REFERENCE_COUNT = 3
 DEFAULT_CORPUS_COUNT = 3
 MAX_ANALYSIS_BLOCK_CHARS = MAX_DESCRIPTION_CHARS_LLM
+FRENCH_STOP_WORDS = frozenset(
+    {
+        "a",
+        "au",
+        "aux",
+        "avec",
+        "ce",
+        "ceci",
+        "cela",
+        "cet",
+        "cette",
+        "d",
+        "dans",
+        "de",
+        "des",
+        "du",
+        "elle",
+        "elles",
+        "en",
+        "et",
+        "eux",
+        "est",
+        "etaient",
+        "etait",
+        "etre",
+        "il",
+        "ils",
+        "je",
+        "la",
+        "le",
+        "les",
+        "leur",
+        "leurs",
+        "lui",
+        "ma",
+        "mais",
+        "me",
+        "mes",
+        "mon",
+        "ne",
+        "nos",
+        "notre",
+        "nous",
+        "on",
+        "ou",
+        "par",
+        "pas",
+        "pour",
+        "qu",
+        "que",
+        "quel",
+        "quelle",
+        "quelles",
+        "quels",
+        "qui",
+        "se",
+        "ses",
+        "son",
+        "sont",
+        "sur",
+        "ta",
+        "te",
+        "tes",
+        "toi",
+        "ton",
+        "tous",
+        "tout",
+        "tu",
+        "un",
+        "une",
+        "vos",
+        "votre",
+        "vous",
+        "y",
+    }
+)
 _TOKEN_PATTERN = re.compile(r"[^\W_]+", re.UNICODE)
 
 
@@ -57,10 +133,14 @@ def retrieve_corpus(
     if not valid_corpus:
         return []
     documents = [_corpus_block_text(block) for block in valid_corpus]
-    query_tokens = _tokens(question)
+    query_tokens = _tokens(question, remove_stopwords=True)
     if not query_tokens:
         return []
-    document_tokens = [_tokens(document) for document in documents]
+    document_tokens = [
+        _tokens(document, remove_stopwords=True) for document in documents
+    ]
+    if not any(document_tokens):
+        return []
     vocabulary = set(query_tokens)
     for tokens in document_tokens:
         vocabulary.update(tokens)
@@ -163,11 +243,14 @@ def _reference_text(reference: dict) -> str:
     )
 
 
-def _tokens(text: str) -> list[str]:
-    """Tokenise sans dépendance externe et sans distinguer les accents."""
+def _tokens(text: str, remove_stopwords: bool = False) -> list[str]:
+    """Tokenise avec une option de filtrage des mots vides français."""
     folded = unicodedata.normalize("NFKD", text).casefold()
     plain = "".join(character for character in folded if not unicodedata.combining(character))
-    return _TOKEN_PATTERN.findall(plain)
+    tokens = _TOKEN_PATTERN.findall(plain)
+    if not remove_stopwords:
+        return tokens
+    return [token for token in tokens if token not in FRENCH_STOP_WORDS]
 
 
 def _idf(documents: list[list[str]], vocabulary: set[str]) -> dict[str, float]:

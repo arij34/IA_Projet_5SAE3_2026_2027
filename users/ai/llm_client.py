@@ -208,7 +208,12 @@ def _call_anthropic(system_prompt: str, user_content: str, max_tokens: int) -> s
     return _extract_text(response)
 
 
-def _call_gemini(system_prompt: str, user_content: str, max_tokens: int) -> str:
+def _call_gemini(
+    system_prompt: str,
+    user_content: str,
+    max_tokens: int,
+    response_mime_type: str | None = "application/json",
+) -> str:
     """Envoie une requête structurée à l'API Gemini et extrait son texte."""
     api_key = getattr(settings, "GEMINI_API_KEY", "")
     if not api_key:
@@ -219,14 +224,16 @@ def _call_gemini(system_prompt: str, user_content: str, max_tokens: int) -> str:
         "x-goog-api-key": api_key,
         "content-type": "application/json",
     }
+    generation_config = {
+        "maxOutputTokens": max_tokens,
+        "temperature": 0.2,
+    }
+    if response_mime_type is not None:
+        generation_config["responseMimeType"] = response_mime_type
     payload = {
         "systemInstruction": {"parts": [{"text": system_prompt}]},
         "contents": [{"role": "user", "parts": [{"text": user_content}]}],
-        "generationConfig": {
-            "maxOutputTokens": max_tokens,
-            "temperature": 0.2,
-            "responseMimeType": "application/json",
-        },
+        "generationConfig": generation_config,
     }
     response = _post_with_retries(
         f"{GEMINI_URL}/{model}:generateContent",
@@ -258,8 +265,10 @@ def _post_with_retries(
 
         if response.status_code == 429:
             raise LLMQuotaError("Quota ou limite de requêtes dépassé.")
-        if response.status_code in (401, 403):
-            raise LLMConfigError("Clé API refusée par le fournisseur.")
+        if response.status_code in (400, 401, 403):
+            raise LLMConfigError("Clé Gemini refusée : vérifiez GEMINI_API_KEY.")
+        if response.status_code == 404:
+            raise LLMConfigError("Modèle Gemini introuvable : vérifiez GEMINI_MODEL.")
         if response.status_code >= 500:
             last_error = LLMResponseError(f"Erreur serveur LLM ({response.status_code}).")
             logger.warning(

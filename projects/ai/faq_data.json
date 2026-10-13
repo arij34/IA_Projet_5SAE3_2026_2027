@@ -78,5 +78,10 @@
     "id": "limites-ia",
     "question": "L'IA garantit-elle le budget ou la réussite du projet ?",
     "reponse": "Non. Les résultats sont des estimations et ne garantissent ni le budget, ni la durée, ni la réussite. L'IA aide à décider, le porteur décide."
+  },
+  {
+    "id": "projets-publies",
+    "question": "Où voir le projet ou les projets publié ou publiés et disponible ou disponibles ?",
+    "reponse": "Le projet ou les projets publié ou publiés apparaissent dans la page « Projets publiés » lorsqu'ils sont disponible ou disponibles. Le chatbot ne connaît que la FAQ et les analyses du porteur connecté."
   }
 ]

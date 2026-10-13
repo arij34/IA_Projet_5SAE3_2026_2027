@@ -2,8 +2,10 @@
 
 import logging
 import json
+from decimal import Decimal, ROUND_HALF_UP
 
 from django.conf import settings
+from django.utils import timezone
 
 from projects.ai.client import call_llm
 from projects.ai.exceptions import LLMError
@@ -22,6 +24,9 @@ from projects.models import Project, ProjectAnalysis
 logger = logging.getLogger(__name__)
 GENERIC_LLM_ERROR = "Analyse indisponible"
 INTERNAL_ERROR = "Erreur interne"
+DAYS_PER_WEEK = Decimal("7")
+PROJECT_CURRENCY = "EUR"
+MONEY_DECIMAL_PLACES = Decimal("0.01")
 
 
 def analyze_project(project: Project) -> dict:
@@ -53,18 +58,26 @@ def analyze_project(project: Project) -> dict:
 
 
 def _build_project_text(project: Project) -> str:
-    """Construit le texte utilisateur avec les champs projet assainis."""
-    name = sanitize_project_text(project.name, MAX_NAME_CHARS_LLM)
+    """Construit le bloc structuré transmis au LLM."""
+    name = neutralize_text(project.name[:MAX_NAME_CHARS_LLM])
     description = sanitize_project_text(
         project.description,
         MAX_DESCRIPTION_CHARS_LLM,
     )
+    today = timezone.localdate()
+    days_remaining = (project.deadline - today).days
+    weeks_available = Decimal(days_remaining) / DAYS_PER_WEEK
+    amount_per_week = (
+        project.estimated_amount / weeks_available
+    ).quantize(MONEY_DECIMAL_PLACES, rounding=ROUND_HALF_UP)
     project_text = (
         "<projet>\n"
         f"nom : {name}\n"
         f"description : {description}\n"
         f"date limite : {project.deadline.isoformat()}\n"
-        f"montant estimé : {project.estimated_amount}\n"
+        f"montant estimé : {project.estimated_amount} {PROJECT_CURRENCY}\n"
+        f"jours restants : {days_remaining}\n"
+        f"montant par semaine : {amount_per_week} {PROJECT_CURRENCY}\n"
         "</projet>"
     )
     references = retrieve_reference(description)

@@ -165,6 +165,57 @@ class GeminiProviderTests(SimpleTestCase):
             },
         )
 
+    @override_settings(GEMINI_API_KEY="gemini-test-key", GEMINI_MODEL="gemini-test")
+    @patch("users.ai.llm_client.requests.post")
+    def test_bad_request_is_configuration_error_without_response_body(
+        self,
+        post,
+    ):
+        """Un 400 devient une erreur de configuration sans fuite du corps."""
+        post.return_value = fake_response(
+            400,
+            {"error": {"message": "API key not valid: secret-provider-body"}},
+        )
+
+        with self.assertRaises(LLMConfigError) as raised:
+            call_llm("sys", "user")
+
+        self.assertNotIn("secret-provider-body", str(raised.exception))
+        self.assertNotIn("gemini-test-key", str(raised.exception))
+
+    @override_settings(GEMINI_API_KEY="gemini-test-key", GEMINI_MODEL="missing-model")
+    @patch("users.ai.llm_client.requests.post")
+    def test_missing_model_is_configuration_error(self, post):
+        """Un 404 devient une erreur de modèle sans fuite de clé."""
+        post.return_value = fake_response(404, {"error": {"message": "secret-body"}})
+
+        with self.assertRaises(LLMConfigError) as raised:
+            call_llm("sys", "user")
+
+        self.assertIn("Modèle Gemini introuvable", str(raised.exception))
+        self.assertNotIn("secret-body", str(raised.exception))
+        self.assertNotIn("gemini-test-key", str(raised.exception))
+
+    @override_settings(GEMINI_API_KEY="gemini-test-key", GEMINI_MODEL="gemini-test")
+    @patch("users.ai.llm_client.requests.post")
+    def test_gemini_can_request_plain_text(self, post):
+        """Le client peut omettre le format JSON pour le chatbot."""
+        post.return_value = fake_response(
+            200,
+            {"candidates": [{"content": {"parts": [{"text": "Réponse"}]}}]},
+        )
+
+        from users.ai.llm_client import _call_gemini
+
+        self.assertEqual(
+            _call_gemini("sys", "user", 4096, response_mime_type=None),
+            "Réponse",
+        )
+        self.assertNotIn(
+            "responseMimeType",
+            post.call_args.kwargs["json"]["generationConfig"],
+        )
+
     @patch("users.ai.llm_client.requests.post")
     def test_quota(self, post):
         post.return_value = fake_response(429)

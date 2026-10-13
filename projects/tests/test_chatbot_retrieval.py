@@ -64,6 +64,37 @@ class ChatbotRetrievalTests(TestCase):
         self.assertTrue(results)
         self.assertEqual(results[0]["id"], "publier-projet")
 
+    def test_available_projects_question_returns_published_faq(self) -> None:
+        """Une question sur les projets disponibles renvoie la FAQ publiée."""
+        results = retrieve_faq("quelles sont les projets disponibles ?")
+        self.assertTrue(results)
+        self.assertEqual(results[0]["id"], "projets-publies")
+
+    def test_requested_specialties_question_returns_no_faq(self) -> None:
+        """Une question sur les spécialités renvoie la FAQ publiée la plus proche."""
+        results = retrieve_faq(
+            "quelles sont les spécialités demandées pour les projets maintenant ?"
+        )
+        self.assertTrue(results)
+        self.assertEqual(results[0]["id"], "projets-publies")
+
+    def test_stopwords_only_question_returns_no_faq(self) -> None:
+        """Une question composée uniquement de mots vides ne déclenche aucune exception."""
+        self.assertEqual(retrieve_faq("les sont pour ?"), [])
+
+    def test_successful_faq_questions_return_expected_blocks(self) -> None:
+        """Les questions FAQ usuelles renvoient leur bloc attendu."""
+        expected_blocks = (
+            ("comment publier mon projet ?", "publier-projet"),
+            ("que veut dire taux_reussite ?", "champ-taux-reussite"),
+            ("c'est quoi DECLINED ?", "statut-declined"),
+        )
+        for question, expected_id in expected_blocks:
+            with self.subTest(question=question):
+                results = retrieve_faq(question)
+                self.assertTrue(results)
+                self.assertEqual(results[0]["id"], expected_id)
+
     def test_unrelated_question_returns_no_faq(self) -> None:
         """Une question hors sujet ne renvoie aucun bloc FAQ."""
         self.assertEqual(retrieve_faq("recette de couscous"), [])

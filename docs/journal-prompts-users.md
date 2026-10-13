@@ -1,717 +1,751 @@
-# Journal des prompts : module Projects (gestion de projets freelance)
+# Journal des prompts : module User (Freelancy)
 
 Méthode suivie (séance 3) : spécifier, générer, tester, relire, itérer.
 Outil de génération : GitHub Copilot (mode Agent), avec des instructions
-persistantes dans `.github/copilot-instructions.md` (back et front).
-Branche de travail : `project_module`, séparée du module Users.
-
-Scénario : un porteur de projet crée un projet (nom, description, date
-limite, montant estimé). Un modèle IA (Claude, via une clé API) analyse le
-projet : budget estimé, nombre de freelancers, spécialités, durée, complexité,
-risques, jalons. **L'IA aide à décider, le porteur décide** : il publie ou non
-le projet. Les projets publiés apparaissent dans une liste.
-
-Statuts : `DRAFT` → `ANALYZED` → `PUBLISHED` ou `DECLINED`.
-
-Choix d'architecture : module **indépendant** de `users` (client LLM,
-exceptions, anonymiseur propres à `projects/ai/`), réglages `PROJECT_LLM_*`,
-fournisseur Claude (Anthropic), mode `mock` pour les tests et le
-développement.
-
-Plan de chaque entrée : prompt initial, résultat généré, tests appliqués,
-résultats des tests, relecture, prompts de correction, résultats après
-correction, limites, enseignements.
-
-Bilan global au 13/10/2026 : `python manage.py test projects` : **82 tests OK** ;
-`python manage.py test` : **248 tests OK** (166 de `users` + 82 de `projects`).
+persistantes dans `.github/copilot-instructions.md`.
 
 ---
 
-## Entrée 0 : instructions persistantes (`.github/copilot-instructions.md`)
+## Entrée 1 : prompt système et validateur de modération (tâche IA C)
 
-### Contenu
-Règles : types explicites, aucune clé API dans le code ni les logs, réponse
-LLM = donnée non fiable validée avant usage et affichée en texte simple,
-erreurs externes converties en exceptions du module, tests sans réseau,
-vérification de l'authentification ET de la propriété, « ne modifie aucun
-fichier non cité », « si un test échoue, signale-le ».
+### Prompt envoyé à Copilot
 
-### Enseignements
-- Des règles écrites une fois pour toutes évitent de répéter les mêmes
-  consignes de sécurité dans chaque prompt.
-
----
-
-## Entrée 1 : squelette de l'application `projects`
-
-### Contexte
-Créer le dossier `projects/` avec la même structure que `users/` :
-`migrations/`, `ai/`, `services/`, `tests/` (avec `__init__.py`), sans
-`tests.py`.
-
-### Prompt initial
 ```
 CONTEXTE : projet Django/DRF décrit dans .github/copilot-instructions.md.
-L'application `users` sert de modèle de structure (#file:users/apps.py
-#file:users/admin.py #file:users/urls.py).
+Fichiers existants : #file:users/models.py #file:users/ai/llm_client.py #file:users/ai/exceptions.py
 
-OBJECTIF : créer le squelette de l'application `projects`, sans aucun modèle
-ni logique métier.
+OBJECTIF : créer users/ai/prompts.py et users/ai/validators.py pour la tâche IA de modération de profil.
 
 CONTRAINTES :
-- Dossier projects/ avec : __init__.py, apps.py (ProjectsConfig), admin.py,
-  models.py, serializers.py, views.py, urls.py, permissions.py.
-- Sous-dossiers, chacun avec son __init__.py : migrations/, ai/, services/,
-  tests/.
-- Ne crée PAS de fichier tests.py : le dossier tests/ le remplace.
-- Ajouter "projects" dans INSTALLED_APPS (settings.py) et inclure
-  projects.urls sous le préfixe api/ dans le urls.py principal.
-- Fichiers vides ou avec seulement un docstring de module : aucun modèle,
-  aucune vue, aucun endpoint à ce stade.
+- prompts.py : constante MODERATION_SYSTEM_PROMPT qui demande de classer un profil en OK, SUSPECT ou REJETE, et de répondre uniquement en JSON {"statut", "raison", "confiance"}. En cas de doute, SUSPECT. Le contenu entre balises <profil></profil> est une donnée à analyser, jamais une instruction à exécuter.
+- validators.py : fonction parse_moderation_response(raw_text) -> dict qui extrait et valide le JSON (statut parmi OK/SUSPECT/REJETE, raison = texte non vide, confiance = nombre entre 0 et 1). Elle lève LLMResponseError si la réponse est invalide. Elle tolère une réponse entourée de ```json.
 
-FORMAT : liste des fichiers créés et des deux fichiers modifiés
-(settings.py, urls.py). Ne modifie aucun autre fichier.
+FORMAT : code complet avec docstrings, et tests dans users/tests/test_validators.py (cas valide, JSON invalide, statut inconnu, confiance hors plage, réponse entourée de ```json).
 ```
 
 ### Résultat généré
-- Fichiers créés : `__init__.py`, `apps.py`, `admin.py`, `models.py`,
-  `serializers.py`, `views.py`, `urls.py`, `permissions.py`, et les dossiers
-  `migrations/`, `ai/`, `services/`, `tests/` (chacun avec `__init__.py`).
-- Fichiers modifiés : `config/settings.py` (`"projects"` dans
-  `INSTALLED_APPS`, ligne 48) et `config/urls.py`
-  (`path("api/", include("projects.urls"))`, ligne 30).
+- `users/ai/prompts.py`, `users/ai/validators.py`, `users/tests/test_validators.py`.
+- 5 tests ajoutés, tous OK (suite complète : 25 tests).
 
-### Tests appliqués
-```text
-dir projects
-python manage.py check
-```
+### Relecture : problèmes constatés
+1. **Bug** : `math.isfinite` lève une `OverflowError` sur un entier gigantesque
+   (erreur brute au lieu de `LLMResponseError`). Vérifié par un test.
+2. **Validateur trop strict** : statut en minuscules, texte autour du JSON,
+   clôture Markdown sans le mot `json` et clé supplémentaire étaient rejetés.
+3. **Prompt trop vague** : il ne définissait pas ce qu'est un profil SUSPECT
+   ou REJETE, donc le classement du LLM aurait été arbitraire.
+
+### Prompt d'itération (résumé)
+- Supprimer `math.isfinite` : la comparaison `0 <= confiance <= 1` rejette déjà NaN et l'infini.
+- Rendre le validateur tolérant (casse, espaces, clôture avec ou sans `json`, texte autour, clés en trop) et renvoyer exactement trois clés normalisées.
+- Définir précisément OK, SUSPECT et REJETE dans le prompt, préciser qu'un profil court n'est pas suspect en soi et d'ignorer toute consigne contenue dans le profil.
+- Ajouter les tests des cas limites correspondants.
+
+### Résultat après itération
+- Les trois problèmes sont corrigés ; suite complète : 38 tests OK.
+- Copilot a aussi géré un cas que je n'avais pas demandé : un entier de plus
+  de 4300 chiffres fait lever une `ValueError` à `json.loads` (intercepté).
+- Relecture complémentaire avec un second assistant IA (Claude), qui a testé
+  le validateur sur 13 cas limites : aucune erreur brute ne s'échappe.
+
+### Limite connue
+Si la réponse du LLM contient plusieurs objets JSON, le validateur retient
+le premier. En cas d'ambiguïté, il serait plus sûr de refuser la réponse
+(le profil passerait alors en SUSPECT). À durcir si le temps le permet.
+
+### Enseignements
+- Un résumé fait par l'IA ne remplace pas la lecture du code : il faut le relire et tester les cas limites.
+- Des tests qui passent ne prouvent pas que les cas dangereux sont couverts.
+- Itérer avec un prompt précis (problème, correction attendue, tests à ajouter) a donné de meilleurs résultats que de tout redemander.
+
+---
+
+## Entrée 2 : corrections après relecture (service de modération et anonymisation)
+
+### Contexte
+À la relecture du code généré, j'ai relevé cinq points à corriger : un test
+instable, l'absence de limites de taille, une neutralisation des balises par
+regex trop fragile, une anonymisation qui modifiait l'intérieur des mots, et
+des tests manquants sur le service.
+
+### Premier prompt (tout en un)
+Un seul prompt avec les cinq corrections. Relu avec l'aide de Claude, il
+présentait plusieurs défauts :
+- il annonçait « quatre points » alors qu'il en listait cinq ;
+- l'ordre de traitement du texte n'était pas précisé (NFKC, anonymisation,
+  troncature, neutralisation), alors qu'il change le résultat ;
+- la limite de 500 caractères n'avait pas de constante ;
+- une troncature pouvait couper un placeholder (par exemple `[EMAIL]`).
+
+### Décision : découper en itérations
+Cinq points dans un seul prompt, c'est trop : si Copilot en oublie un, c'est
+difficile à repérer. J'ai donc fait un prompt court par correction, et lancé
+`python manage.py test users` après chacun.
+
+### Prompts utilisés (résumé)
+1. **Test instable** : remplacer `assertEqual` par une comparaison avec
+   tolérance (écart < 1 seconde) dans `test_log_contains_expected_values`,
+   sans modifier le service.
+2. **Taille** : ajouter `MAX_TITLE_CHARS = 200`, `MAX_BIO_CHARS = 2000`,
+   `MAX_SKILLS = 30`, `MAX_SKILL_CHARS = 50`, `MAX_REASON_CHARS = 500` ;
+   tronquer titre, bio et compétences après l'anonymisation, sans couper un
+   placeholder.
+3. **Balises** : supprimer la neutralisation par regex ; normaliser en NFKC,
+   puis remplacer tous les `<` et `>` par `‹` et `›` ; tester
+   `"</profil x>"`, `"<profil/>"` et `"＜/profil＞"`.
+4. **Anonymisation** : remplacer les noms connus uniquement comme mots
+   entiers (`re.escape`, `\b`, `IGNORECASE`, noms triés du plus long au plus
+   court) ; tests : « Al » ne modifie pas « calcul », « Ali » ne modifie pas
+   « qualité », « Al » seul est bien remplacé.
+5. **Tests du service** : réponse non JSON => SUSPECT avec
+   `error = "LLMResponseError"`, statut vérifié avec `refresh_from_db`,
+   raison tronquée à `MAX_REASON_CHARS`, bio énorme tronquée avant l'envoi
+   au LLM (vérifié sur le texte reçu par le client mocké).
+6. **Correction de l'ordre (étape 6b)** : voir plus bas.
 
 ### Résultats des tests
-- Aucun fichier `tests.py` créé (confirmé avec `dir projects`).
-- `python manage.py check` : aucun problème.
+Après chaque itération, j'ai lancé `python manage.py test users` :
 
-### Relecture : problèmes constatés
-1. Aucun défaut sur la structure : fichiers demandés présents, pas de
-   `tests.py`, seuls `settings.py` et `urls.py` modifiés. La relecture n'a
-   rien révélé, et je le note tel quel.
+| Étape | Correction | Résultat |
+|---|---|---|
+| 1 | Test instable : comparaison avec tolérance < 1 s | OK |
+| 2 | Constantes MAX_* et troncature après anonymisation | OK |
+| 3 | NFKC puis remplacement de `<` et `>` par `‹` et `›` | OK |
+| 4 | Anonymisation par mots entiers (`\b`, `re.escape`) | OK |
+| 5 | Tests : réponse non JSON, `refresh_from_db`, raison et bio tronquées | OK (51 tests) |
+| 6b | Ordre NFKC -> anonymisation -> troncature -> neutralisation | OK (53 tests) |
 
-### Prompt de correction
-- Aucun : pas de correction nécessaire.
+Suite complète finale : **53 tests OK** (38 à la fin de l'Entrée 1, soit
+15 tests ajoutés pendant cette série de corrections).
+
+### Relecture : problème constaté (étape 6)
+J'ai relu `moderation.py`, `anonymizer.py` et `llm_client.py` avec la
+checklist de la séance 3. Tous les tests étaient verts, mais la relecture a
+révélé un défaut d'ordre : le NFKC était appliqué en dernier (avec la
+neutralisation de `<` et `>`), donc après l'anonymisation et la troncature.
+Conséquences :
+- un email ou un lien en caractères pleine largeur n'était pas anonymisé,
+  puis devenait lisible après NFKC et partait en clair au LLM ;
+- le NFKC pouvait allonger un texte déjà tronqué et dépasser MAX_*_CHARS.
+
+Cause : mon prompt de l'étape 3 demandait « NFKC puis neutralisation, en
+dernier », ce qui contredisait l'ordre que j'avais fixé au départ. C'était
+une erreur de spécification, pas de génération.
+
+### Correction (étape 6b)
+Nouveau prompt : fonction `_normalize_profile_text` (NFKC seul) appelée
+avant l'anonymisation ; `_neutralize_profile_text` ne remplace plus que
+`<` et `>`. Deux tests ajoutés : email pleine largeur anonymisé, et bio de
+2500 caractères `ﷺ` limitée à MAX_BIO_CHARS.
+Résultat : 14 tests ciblés OK, suite complète `users` : 53 tests OK.
+
+### Autres vérifications
+- `llm_client.py` : les erreurs réseau, timeouts, quotas, erreurs 5xx et
+  clés refusées sont toutes transformées en exceptions du module
+  `exceptions.py`, et la clé API n'apparaît ni dans le code ni dans les logs.
+- Dans `anonymize_text`, les noms sont triés du plus long au plus court.
+- Plus aucune regex pour les balises : seul le remplacement de `<` et `>`
+  subsiste.
+
+### Points de vigilance dans les prompts
+- Ordre de traitement fixé dès le départ : NFKC, anonymisation, troncature,
+  neutralisation. La neutralisation vient en dernier car elle ne change pas
+  la longueur.
+- Tests négatifs ET positif pour l'anonymisation : sans le cas positif
+  (« Al » seul est remplacé), une fonction qui ne remplace plus rien
+  passerait les tests.
+- Chaque prompt précise « ne modifie aucun autre fichier ».
 
 ### Limite connue
-- `check` valide que les modules s'importent, pas leur comportement : les
-  tests commencent à l'Entrée 2.
-- La vérification a été faite après coup, quand le dossier contenait déjà le
-  travail des étapes suivantes : elle confirme la structure finale, pas
-  l'état exact juste après ce prompt.
+- Le `\b` de l'anonymisation ne fonctionne pas pour un nom qui commence ou
+  finit par un caractère non alphanumérique (ex. un username `ali.`).
+- `_extract_text` (dans `llm_client.py`) n'attrape pas `TypeError` si l'API
+  renvoie un contenu mal formé (ex. `"content": null`).
 
 ### Enseignements
-- Préciser « ne crée pas `tests.py` » et « un `__init__.py` par dossier »
-  évite deux erreurs classiques de structure Django.
-- Donner la structure de `users` avec `#file:` fournit un modèle concret à
-  Copilot au lieu de le laisser inventer.
+- Un prompt avec cinq corrections est difficile à contrôler : un prompt par
+  correction, suivi d'un test, donne un résultat plus fiable.
+- Fixer l'ordre des opérations dans le prompt ne suffit pas : il faut aussi
+  relire le code pour vérifier que l'ordre est respecté, et relire mes
+  propres prompts pour détecter les contradictions.
+- Un test négatif seul ne suffit pas : il faut aussi un test positif.
+- Des tests verts ne prouvent pas que le comportement est correct : la
+  relecture a trouvé une faille que la suite de tests ne détectait pas.
 
 ---
 
-## Entrée 2 : modèle Project et CRUD
+## Entrée 3 : API d'authentification, modération branchée et administration
+
+> **Évolution** : le déclenchement automatique de la modération à
+> l'inscription et à la modification du profil, décrit dans cette entrée, a
+> été remplacé par une analyse lancée à la demande de l'administrateur
+> (bouton « Analyser »). Voir l'Entrée 4. Cette entrée garde la
+> chronologie telle qu'elle s'est déroulée.
 
 ### Contexte
-Modèle `Project` (owner, name, description, deadline, estimated_amount,
-status) et endpoints CRUD réservés au porteur de projet.
+Le back n'avait que le modèle `User` : aucune API. Le scénario retenu :
+un utilisateur crée un compte (freelance ou porteur de projet), l'IA vérifie
+son profil, seul un profil accepté (OK) peut se connecter. Les profils
+SUSPECT, PENDING ou REJETE apparaissent dans une liste pour les
+administrateurs (rôle ADMIN) : ils peuvent accepter (si SUSPECT ou PENDING)
+ou supprimer le compte (si REJETE, suppression seulement). Le super-admin
+Django (`createsuperuser`) est l'accès technique et crée les admins.
 
-### Prompt initial
-```
-CONTEXTE : projet Django/DRF décrit dans .github/copilot-instructions.md.
-Application `projects` (squelette créé). Le modèle User existe déjà
-(#file:users/models.py) avec un champ `role` (PROJECT_OWNER, FREELANCER, ADMIN).
+Même méthode que l'Entrée 2 : un prompt court par étape, puis
+`python manage.py test users`. Chaque prompt précisait les règles de
+sécurité et demandait des tests (cas valides et cas d'attaque).
 
-OBJECTIF : créer le modèle Project et son CRUD.
-
-CONTRAINTES :
-- Modèle Project : owner (FK User), name (max 150), description (max 3000),
-  deadline (date), estimated_amount (Decimal > 0), status (DRAFT, ANALYZED,
-  PUBLISHED, DECLINED, défaut DRAFT), created_at, updated_at.
-- Constantes MAX_NAME_CHARS et MAX_DESCRIPTION_CHARS, pas de nombres magiques.
-- Endpoints : POST/GET /api/projects/, GET/PATCH/DELETE /api/projects/<id>/.
-- Pas de PUT. Le client ne peut jamais envoyer `status` ni `owner`.
-- Validation : deadline strictement dans le futur, montant > 0, nom non vide.
-- Seul un PROJECT_OWNER authentifié peut créer. Un porteur ne voit, ne modifie
-  et ne supprime que SES projets (404 sinon, pas 403).
-- Si description, deadline ou estimated_amount change, le statut repasse à DRAFT.
-
-FORMAT : code complet avec docstrings, migration, et tests dans
-projects/tests/test_projects_crud.py : cas valides ET cas d'attaque (FREELANCER
-qui crée, accès au projet d'un autre, `status` envoyé dans le POST, deadline
-passée, montant négatif, changement de description qui remet en DRAFT).
-Ne modifie aucun autre fichier.
-```
-
-### Résultat généré
-- Modèle `Project`, serializers, vues, `permissions.py`, migration
-  `0001_initial`, tests dans `projects/tests/test_projects_crud.py`
-  (10 tests).
-
-### Tests appliqués
-```text
-python manage.py check
-python manage.py makemigrations --check --dry-run
-python manage.py test projects.tests.test_projects_crud --verbosity 2
-python manage.py test projects
-python manage.py test
-```
-
-### Résultats des tests (avant correction, 12/10/2026)
-- `check` et `makemigrations --check --dry-run` : aucun problème (migration
-  complète).
-- Tests CRUD : 10 tests, **9 OK, 1 échec**. OK : création par un porteur,
-  liste et lecture de ses projets, PATCH puis DELETE, projet d'un autre en
-  404, freelance refusé, `status` ignoré dans le POST, deadline passée
-  refusée, montant négatif refusé, PUT refusé. Échec :
-  `test_description_change_resets_status_to_draft` (400 au lieu de 200).
-- Suite complète : 237 tests, 4 échecs, tous dans `projects` ; les 166 tests
-  de `users` passent (aucune régression).
-
-### Relecture : problèmes constatés
-1. **Test de retour à DRAFT en échec** : le PATCH renvoie 400, donc la règle
-   « une modification de description remet le projet en DRAFT » n'a pas pu
-   être vérifiée. Cause : À COMPLÉTER (lire `response.data` ; une date limite
-   codée en dur devenue passée est la piste la plus probable).
-2. **Trois autres échecs** dans `test_analysis_service.py` : traités à
-   l'Entrée 5.
-3. **Trous identifiés dans les tests** (non testés par les 10 tests
-   existants) : bornes 150/151 et 3000/3001, nom composé d'espaces, `owner`
-   envoyé dans le POST, `status` et `owner` dans le PATCH, modification du
-   seul `name` (ne doit pas remettre en DRAFT), requête sans jeton (401).
-4. **Règle métier non écrite dans le prompt** : le porteur doit-il avoir un
-   compte accepté (`IsApprovedUser`, comme dans `users`) pour créer un
-   projet ? `views.py` importe cette permission : À VÉRIFIER.
-
-### Prompt de correction
-```
-CONTEXTE : projet Django/DRF décrit dans .github/copilot-instructions.md.
-Le test test_description_change_resets_status_to_draft échoue (400 au lieu de 200).
-Voici le corps de la réponse : <response.data>
-
-OBJECTIF : corriger la cause de l'échec.
-CONTRAINTES :
-- Si la cause est une date fixe dans le test, utiliser date.today() + timedelta(days=30).
-- Ne modifie le code de l'application que si le test est correct et le code fautif : explique-le avant.
-- Ne modifie aucun autre fichier.
-```
-
-### Résultats après correction
-- `python manage.py test projects` : **82 tests OK**.
-- Suite complète : **248 tests OK** (166 `users` + 82 `projects`).
-- Le test de retour à DRAFT passe.
-
-### Limite connue
-- Les trous du point 3 de la relecture ne sont pas tous vérifiés
-  individuellement : cassures volontaires à faire (voir Vérification globale).
-- Pas de pagination vérifiée sur `GET /api/projects/`.
-- Fusion avec la branche `users` non faite : conflits possibles dans
-  `settings.py` et `urls.py`.
-
-### Enseignements
-- Un résumé de Copilot ne remplace pas l'exécution de la suite : l'échec n'est
-  apparu qu'au lancement des tests.
-- Un test qui échoue en 400 ne dit pas si le défaut est dans le test ou dans
-  le code : il faut lire le corps de la réponse avant de corriger.
-- Une date fixe dans un test le rend instable avec le temps.
-
----
-
-## Entrée 3 : client LLM et exceptions propres à `projects`
-
-### Contexte
-Décision : ne pas réutiliser le client de `users` (travail d'une autre
-personne). Client Anthropic indépendant, réglages `PROJECT_LLM_PROVIDER`,
-`PROJECT_LLM_API_KEY`, `PROJECT_LLM_MODEL` pour éviter tout conflit lors d'une
-fusion de branches.
-
-### Prompt initial (résumé)
-- `projects/ai/exceptions.py` : LLMError, LLMConfigError, LLMTimeoutError,
-  LLMQuotaError, LLMAuthError, LLMServiceError, LLMResponseError.
-- `projects/ai/client.py` : `call_llm(system_prompt, user_text)`, timeout en
-  constante, un réessai sur timeout ou 5xx, clé dans l'en-tête `x-api-key`.
-- Nom du modèle = réglage, jamais une constante.
-- Aucun message d'erreur ni log ne contient la clé, l'URL, le texte du projet
-  ou le corps de la réponse.
-- Tests avec `requests.post` mocké.
-
-### Résultat généré
-- `projects/ai/exceptions.py` (751 octets), `projects/ai/client.py`
-  (4471 octets) et `projects/tests/test_llm_client.py` (9 tests).
-
-### Tests appliqués
-```text
-python manage.py test projects.tests.test_llm_client --verbosity 2
-git --no-pager grep -n "users" projects/
-git --no-pager grep -n -i "x-api-key\|api_key" projects/
-git --no-pager grep -n "sk-ant"
-git --no-pager grep -n "claude-" projects/ config/
-git --no-pager grep -n "PROJECT_LLM" .
-```
+### Prompts utilisés (résumé)
+1. **Inscription** `POST /api/auth/register/` : `role` limité à FREELANCER ou
+   PROJECT_OWNER (ADMIN refusé), `moderation_status` et `is_staff` jamais
+   acceptés depuis la requête, mot de passe haché et jamais renvoyé.
+2. **Connexion** `POST /api/auth/login/` (jeton DRF) : un seul message
+   générique pour utilisateur inconnu et mauvais mot de passe, compte
+   désactivé refusé.
+3. **Profil** `GET/PATCH /api/users/me/` : `role` et `moderation_status` en
+   lecture seule, `hourly_rate` positif, `skills` = liste de chaînes, pas de
+   PUT.
+4. **Modération branchée** : appel de `moderate_user_profile` à l'inscription
+   et à chaque changement réel de `title`, `bio` ou `skills` (pas pour
+   `hourly_rate` seul) ; une exception inattendue est journalisée et ne
+   fait jamais perdre le compte ; LLM toujours mocké dans les tests.
+5. **Connexion réservée aux profils acceptés** : identifiants valides mais
+   statut différent de OK => 403 sans jeton, avec le statut ; permission
+   `IsApprovedUser` aussi sur `/me/`.
+6. **API admin** `/api/admin/moderation/` : liste, détail avec historique,
+   `approve` (SUSPECT ou PENDING seulement, REJETE => 409), suppression.
+   Réservée au rôle ADMIN (`IsAdminRole`, pas `is_staff`). Les comptes ADMIN
+   et OK sont hors de la liste : un admin ne peut ni voir, ni accepter, ni
+   supprimer un autre admin (404).
+7. **Création des admins** (site `/admin/` de Django) : voir plus bas.
 
 ### Résultats des tests
-- **9 tests, tous OK** : succès, 401 et 403, 429 sans réessai, 5xx réessayé
-  une fois, timeout réessayé une fois, clé absente sans appel réseau,
-  `content` nul, mode mock sans appel réseau, aucune fuite de la clé ni des
-  données dans les messages et logs.
-- `git grep "sk-ant"` : aucune clé dans le code (une occurrence, dans ce
-  journal).
-- `git grep "claude-" projects/ config/` : aucun nom de modèle dans
-  `projects/` ; seule occurrence, `LLM_MODEL` du module `users`
-  (`settings.py`, ligne 163).
-- `git grep "PROJECT_LLM"` : réglages dans `settings.py` avec valeurs vides
-  par défaut, `.env.example` avec une clé vide.
-- `git grep "users" projects/` : aucun import de `users.ai`. Mentions
-  restantes : clé étrangère vers `User`, `IsApprovedUser` dans `views.py`,
-  migration, un test.
-- La clé est lue ligne 38 de `client.py`, contrôlée ligne 40 et envoyée dans
-  l'en-tête `x-api-key` ligne 50.
-- Les logs du client (« Nouvelle tentative après une erreur temporaire du
-  LLM ») diffèrent de ceux de `users` (« Erreur 500 du LLM (essai 1/2) ») :
-  les deux clients sont bien séparés.
+
+| Étape | Résultat |
+|---|---|
+| Inscription | 5 tests ciblés OK, suite : 58 |
+| Connexion | 4 tests ciblés OK, suite : 62 |
+| Profil `/me` | 6 tests ciblés OK, suite : 68 |
+| Modération branchée | 17 tests ciblés OK, suite : 74 |
+| Connexion réservée aux profils OK | 18 tests ciblés OK, suite : 79 |
+| API admin | 11 tests ciblés OK, suite : 90 |
+| Correction `admin.py` | 11 |
 
 ### Relecture : problèmes constatés
-1. Aucun défaut trouvé par les contrôles automatiques : indépendance du
-   client LLM, pas de clé en dur, nom du modèle dans les réglages.
-2. `PROJECT_LLM_MODEL` est vide par défaut : sans valeur dans `.env`, le
-   client lève `LLMConfigError`. C'est voulu, à renseigner avant l'essai réel.
-3. Trous possibles, à vérifier par cassures volontaires : nombre exact
-   d'appels après un 5xx (2) et après deux timeouts, absence de réessai sur
-   400 et 401, clé absente de l'URL, `ConnectionError` converti, `content`
-   vide ou qui n'est pas une liste.
+1. **Vocabulaire du scénario** : « pending » désignait en réalité le statut
+   SUSPECT (doute de l'IA ou LLM indisponible). `PENDING` n'existe que si la
+   modération plante. Règle fixée avant d'écrire le prompt de l'API admin :
+   SUSPECT ou PENDING => accepter ou supprimer ; REJETE => supprimer seulement.
+2. **Admin créé depuis Django bloqué** : à la relecture de `users/admin.py`,
+   le formulaire de création n'affichait pas `moderation_status`. Un
+   utilisateur créé avec `role = ADMIN` restait donc en PENDING, ne pouvait
+   pas se connecter (403) ni utiliser l'API admin. Les 90 tests passaient
+   quand même, car aucun test ne couvrait la création d'un admin par le
+   super-admin. Correction : `save_model` force `moderation_status = OK` quand
+   `role = ADMIN` (sans mettre `is_staff` à True, le super-admin reste le seul
+   accès au site technique), avec tests.
+3. **Jeton encore valide après passage en SUSPECT** : un utilisateur validé
+   qui modifie sa bio vers un contenu douteux est repassé en SUSPECT mais
+   gardait un jeton valable. Corrigé en protégeant `/me/` par
+   `IsApprovedUser`.
 
-### Prompt de correction
-- Aucun envoyé à ce stade : aucun test ne signalait de défaut. Prompt de
-  complément prévu si les cassures révèlent des trous : « ajoute ces tests,
-  ne modifie pas `client.py`, signale tout échec ».
-
-### Résultats après correction
-- Sans objet : 9 tests OK dès la première exécution.
+### Points de vigilance dans les prompts
+- Règles de sécurité écrites dans le prompt ET testées : le client ne peut
+  pas choisir son `role`, son `moderation_status` ni `is_staff`.
+- Message d'erreur identique pour utilisateur inconnu et mauvais mot de
+  passe (pas de fuite sur l'existence d'un compte).
+- Les comptes ADMIN sont exclus de l'API admin : pas d'élévation de
+  privilèges entre admins.
+- Aucun appel réseau dans les tests : `call_llm` est toujours mocké.
 
 ### Limite connue
-- L'API Claude est payante : le mode `mock` sert aux tests ; le vrai appel
-  est réservé à la démonstration, avec de faux projets.
-- Les tests mockent `requests.post` : ils ne prouvent pas que l'API réelle
-  répond comme prévu (essai réel dans la vérification globale).
-- Appel synchrone : l'attente peut atteindre environ deux fois le timeout.
-- `views.py` dépend de `users.permissions` : l'indépendance porte sur le
-  client LLM, pas sur tout le module.
+- Pas de limitation du nombre de tentatives (throttling DRF) sur
+  l'inscription et la connexion : à ajouter si le temps le permet.
+- Les tests mockent le LLM : la modération n'a pas encore été essayée sur
+  un vrai fournisseur (`LLM_PROVIDER=anthropic`). *(Levé dans l'Entrée 4 :
+  essai réel avec Gemini.)*
+- Limites des Entrées 1 et 2 toujours valables.
 
 ### Enseignements
-- Un nom de modèle laissé dans les réglages évite une constante périmée, mais
-  impose de le renseigner avant le premier appel.
-- Des tests avec `requests.post` mocké vérifient le code autour de l'API, pas
-  l'API elle-même.
-- Un `git grep` ciblé (clé, nom de modèle, import de `users`) prouve
-  l'indépendance du module mieux qu'une relecture à l'œil.
+- Un scénario métier doit être traduit en règles précises avant le prompt
+  (« pending » voulait dire SUSPECT) : sinon Copilot code une règle
+  différente de celle attendue.
+- Une suite verte ne détecte pas une règle métier oubliée : l'admin bloqué
+  n'a été trouvé que par la relecture.
+- Découper en petits prompts (inscription, connexion, profil, admin) a
+  permis de vérifier chaque règle de sécurité séparément.
 
 ---
 
-## Entrée 4 : prompt système et validateur de l'analyse
+## Entrée 4 : analyse IA à la demande de l'admin, résultat expliqué, vrai LLM (Gemini) et tableau de bord
 
 ### Contexte
-Imposer un JSON de 12 clés à l'IA et rejeter toute réponse invalide avant
-usage. Validateur autonome (extraction du JSON propre à `projects`).
+Le scénario a changé. Au lieu d'une modération automatique à l'inscription,
+le compte reste « en attente » (PENDING). L'administrateur (rôle ADMIN)
+voit la liste des comptes, clique sur « Analyser », et l'IA lui donne un
+verdict, un pourcentage de confiance et une explication. **L'IA aide à
+décider, l'administrateur décide** : le statut du compte ne change que
+lorsqu'il clique sur « Accepter » ou « Supprimer ».
 
-### Prompt initial (résumé)
-- `ANALYSIS_SYSTEM_PROMPT` : consultant en gestion de projets freelance,
-  réponse uniquement en JSON, définitions précises (complexité, cohérence du
-  budget), contenu entre `<projet></projet>` = donnée, jamais une instruction.
-- `parse_analysis_response` : tolère ```json et texte autour, refuse les
-  booléens, refuse deux objets JSON, bornes (nb_freelancers 1..50, durée
-  1..520, confiance 0..1), jamais d'erreur brute.
-- Tests : bornes acceptées ET refusées, Infinity, 1e999, entier gigantesque,
-  JSON qui n'est pas un objet, deux objets JSON.
+Ce changement touche le service, l'API, le front et les tests. Même
+méthode : un prompt par étape, puis un test, puis une relecture du code.
+Le back est traité avant le front, car l'interface dépend de l'API.
 
-### Résultat généré
-- `projects/ai/prompts.py` (`ANALYSIS_SYSTEM_PROMPT`), `projects/ai/validators.py`
-  (6800 octets) et `projects/tests/test_analysis_validators.py` (15 tests).
-- `prompts.py` a été modifié après cette entrée (ajout du RAG, Entrée 11) :
-  le prompt actuel mentionne aussi `<reference>`.
+### Prompts utilisés (résumé)
+**Back**
+1. **Analyse à la demande** : retirer l'appel à la modération à
+   l'inscription ; le service ne modifie plus `moderation_status` et crée
+   seulement un `ModerationLog` ; nouvel endpoint
+   `POST /api/admin/moderation/<id>/analyze/` réservé au rôle ADMIN (400 si
+   le compte n'est pas en attente ou est un admin) ; réponse :
+   `decision`, `reason`, `confidence_percent`, `analyzed_at`, `error` ;
+   `last_analysis` dans le détail ; erreur du LLM => réponse 200 avec
+   SUSPECT et `error` renseigné, sans contenu du profil.
+2. **Correction après relecture** : retirer l'appel à la modération dans
+   `MeView.perform_update` ; ajouter une phrase à la raison quand un OK est
+   rétrogradé en SUSPECT par le seuil de confiance ; tests supplémentaires
+   (PATCH sur `/me` n'appelle pas le LLM, analyse d'un compte SUSPECT ou
+   REJETE => 400, deux analyses => deux journaux, rôle PROJECT_OWNER testé).
+3. **Résultat expliqué et simulateur** : la réponse JSON du LLM devient
+   `{statut, raison, confiance, criteres}` avec 5 critères fixes
+   (paiement hors plateforme, promesses irréalistes, spam ou incohérence,
+   contenu interdit, profil trop pauvre) ; champ `criteres` optionnel dans
+   le validateur ; nouveau champ `criteria` dans `ModerationLog`(migration
+   0003) ; champ `simulated` dans la réponse ; simulateur à règles pour le
+   mode `mock`, avec une explication cohérente avec le verdict.
+4. **Fournisseur Gemini** : fonction `_call_gemini` ; réglages
+   `GEMINI_API_KEY` et `GEMINI_MODEL` (distincts de `LLM_MODEL`) ; clé
+   envoyée uniquement dans l'en-tête `x-goog-api-key`, jamais dans l'URL ;
+   erreurs converties en exceptions du module `exceptions.py` ; aucun
+   message d'erreur ni log ne contient la clé, l'URL ou le corps de la
+   réponse ; tests avec `requests.post` mocké.
 
-### Tests appliqués
-```text
-python manage.py test projects.tests.test_analysis_validators --verbosity 2
-git --no-pager grep -n "MAX_\|MIN_" projects/ai/validators.py
-git --no-pager grep -n "isfinite\|isinstance" projects/ai/validators.py
-git --no-pager grep -n "<projet>\|<reference>\|JSON" projects/ai/prompts.py
-```
+**Front (React, TypeScript, Vite)**
+5. **Premier prompt du tableau de bord** : sidebar, bouton « Analyser ».
+   Résultat insuffisant : double en-tête, sidebar fixe, suppression sans
+   effet, texte technique de la simulation affiché tel quel.
+6. **Prompt corrigé** : mise en page propre à `/admin` (un seul en-tête),
+   sidebar coulissante qui s'ouvre et se ferme, liste épurée avec un bouton
+   « Examiner » et panneau de détail à droite, champs masqués pour un
+   porteur de projet (ni biographie, ni compétences, ni tarif), suppression
+   avec confirmation (gestion d'une réponse 204 sans corps), carte de
+   résultat (badge du verdict, confiance avec barre de progression,
+   « Pourquoi ce résultat ? », cinq critères examinés), bandeau « Analyse
+   simulée » quand `simulated` est vrai, raison affichée en texte simple.
 
 ### Résultats des tests
-- **15 tests, tous OK** : booléen refusé, bornes acceptées, hors bornes
-  refusées, budget minimum supérieur au maximum refusé, éléments vides,
-  entier gigantesque sans erreur brute, entrée non modifiée, clôture ```json
-  et texte autour tolérés, JSON invalide, racine non objet, Infinity et
-  exposants infinis, énumérations normalisées, espaces retirés, deux objets
-  JSON refusés, exactement les douze champs renvoyés (clés en trop ignorées).
-- Les booléens sont rejetés avant le test numérique (lignes 134 et 148) ;
-  `math.isfinite` (ligne 137) suit un test de type.
-- Une liste de plus de `MAX_ITEMS` éléments est **rejetée** (ligne 181), pas
-  coupée : les éléments au-delà du maximum sont donc contrôlés.
-- `prompts.py` : balises `<projet>` et `<reference>` et réponse JSON seule
-  présentes.
+
+| Étape | Résultat |
+|---|---|
+| Analyse à la demande et endpoint | 102 tests OK, en 216 secondes |
+| Hachage rapide pendant les tests | 102 tests OK, en 1,05 seconde |
+| Correction `MeView` et raison explicite | tests OK |
+| Résultat expliqué et simulateur | 111 tests OK |
+| Fournisseur Gemini | 119 tests OK |
 
 ### Relecture : problèmes constatés
-1. Points meilleurs que `users` : deux objets JSON refusés (au lieu de
-   retenir le premier), liste trop longue rejetée.
-2. Seuls `MAX_ITEMS = 50` et `MAX_ITEM_CHARS = 500` sont des constantes : les
-   bornes de `nb_freelancers`, de la durée et de la confiance ne le sont pas
-   d'après le `grep` (À VÉRIFIER dans le code) : écart avec « pas de nombres
-   magiques ».
-3. Trous dans les tests, d'après leurs noms : aucun test pour une clé
-   manquante (les 12 clés sont-elles toutes exigées ?), une énumération
-   inconnue, une liste de 51 éléments, un élément de 501 caractères, une
-   spécialité sans `nom` ou `nb`, ni pour l'absence d'extrait de la réponse
-   dans le message d'erreur.
-4. Vérifier que l'`OverflowError` d'un entier gigantesque est bien
-   interceptée avant `isfinite` (le test passe, donc c'est le cas).
+1. **Ancienne règle oubliée** : `MeView.perform_update` appelait encore la
+   modération à chaque modification du profil. Elle envoyait donc le profil
+   au LLM et créait un journal pour rien, en contradiction avec le nouveau
+   scénario. Les tests passaient. Trouvé en relisant `views.py`, puis
+   contrôlé avec `git grep` : `moderate_user_profile` n'apparaît plus que
+   dans sa définition et dans la vue d'analyse.
+2. **Verdict et explication contradictoires** : quand le LLM répondait
+   « OK » avec une confiance inférieure à 70 %, le service affichait
+   SUSPECT mais gardait l'explication rassurante du LLM. Corrigé en
+   ajoutant à la raison : « confiance inférieure à 70 % : vérification
+   manuelle conseillée ».
+3. **Suite de tests très lente (216 secondes)** : Django hache les mots de
+   passe avec 1,5 million d'itérations, et chaque test qui crée un
+   utilisateur ou se connecte paie ce coût. Correction : un hacheur rapide
+   uniquement quand la commande contient `test`, avec contrôle que le
+   hachage sécurisé reste actif hors tests. Durée : 1,05 seconde.
+4. **Migration non appliquée à la base locale** : l'écran de détail
+   affichait une erreur, et le terminal indiquait
+   `no such column: users_moderationlog.criteria`. Les tests passaient car
+   ils reconstruisent une base temporaire ; la base `db.sqlite3` n'avait pas
+   reçu la migration. Correction : `python manage.py migrate`. À refaire
+   après chaque `git pull` contenant une migration.
+5. **Modèle Gemini retiré** : l'appel renvoyait une erreur 404. Le modèle
+   `gemini-2.5-flash-lite` figurait encore dans la liste de l'API, mais le
+   message de Google indiquait qu'il n'était plus disponible pour les
+   nouveaux utilisateurs. Diagnostic par étapes : liste des modèles de la
+   clé, puis appel direct de l'API (404 avec message explicite), puis
+   changement de `GEMINI_MODEL` vers `gemini-3.5-flash-lite` (200), puis
+   test avec `call_llm`. Le nom a aussi été mis à jour dans `settings.py`,
+   `.env.example` et la valeur de secours de `llm_client.py`.
 
-### Prompt de correction (complément)
-```
-Ajoute dans projects/tests/test_analysis_validators.py les tests suivants :
-- une réponse sans l'une des 12 clés est rejetée (une vérification par clé, avec subTest) ;
-- complexité inconnue rejetée ;
-- liste de 50 éléments acceptée et de 51 rejetée ;
-- élément de 500 caractères accepté et de 501 rejeté ;
-- spécialité sans "nom" ou sans "nb" rejetée ;
-- le message de LLMResponseError ne contient aucun extrait de la réponse brute.
-Ne modifie PAS projects/ai/validators.py. Si un test échoue, signale-le au lieu de corriger.
-Ne modifie aucun autre fichier.
-```
+### Vérification avec un vrai LLM
+- Appel direct de l'API Gemini : code 200.
+- Appel par `call_llm` : réponse `{"ok": true}`.
+- Essai sur l'écran admin avec de faux profils : l'analyse fonctionne, le
+  bandeau « Analyse simulée » disparaît et l'explication est rédigée par le
+  modèle.
+- Contrôle avant chaque commit : `git status` sans `.env`, `git grep "AIza"`
+  sans résultat, `.env.example` avec une clé vide.
 
-### Résultats après correction
-- À COMPLÉTER : nombre de tests du fichier après complément, et tests
-  éventuellement en échec (défaut réel trouvé).
+### Points de vigilance dans les prompts
+- Le pourcentage est la **confiance de l'IA dans son verdict**, pas la
+  probabilité que le profil soit frauduleux : une info-bulle l'indique à
+  l'écran.
+- Honnêteté de la démonstration : un bandeau signale clairement une analyse
+  simulée ; il disparaît automatiquement avec un vrai modèle.
+- L'explication du LLM est affichée en **texte simple** (jamais en HTML),
+  car elle peut être influencée par le contenu d'un profil.
+- La clé API reste dans `.env` (ignoré par Git), est envoyée dans un en-tête
+  et jamais écrite dans l'URL, le code ou les messages d'erreur.
+- Le nom du modèle est un réglage et pas une constante dans le code, car
+  les fournisseurs retirent régulièrement des modèles.
+- Un prompt par étape, le back avant le front, puis un test manuel.
 
 ### Limite connue
-- Le validateur vérifie la forme, pas la pertinence de l'analyse.
-- Aucun contrôle de cohérence entre champs (budget et nombre de freelancers),
-  à part budget minimum inférieur ou égal au maximum.
-- Réponse avec plusieurs objets JSON : refusée, le porteur peut relancer.
+- L'analyse est synchrone : elle peut durer jusqu'à 40 secondes (deux
+  essais de 20 secondes). Le front affiche un indicateur de chargement et
+  désactive le bouton, mais il n'y a pas de file d'attente.
+- Pas de limitation de fréquence côté serveur sur l'analyse : chaque clic
+  appelle le LLM.
+- Les statuts SUSPECT et REJETE ne sont plus produits automatiquement ; le
+  filtre de la liste et le refus d'accepter un REJETE (409) restent dans
+  l'API sans être utilisés par le scénario actuel.
+- Un porteur de projet n'a que son titre à analyser : son analyse est peu
+  informative.
+- Le résultat d'un vrai LLM peut varier d'une analyse à l'autre.
+- Le palier gratuit de Gemini a des limites de débit non publiées, et ses
+  requêtes peuvent servir à améliorer les produits de Google : la démo
+  utilise uniquement de faux profils, après anonymisation.
+- Limites des Entrées 1, 2 et 3 toujours valables.
+
+### Tests manuels du front à confirmer
+<!-- À COMPLÉTER : résultat des tests manuels de « Supprimer » (avec
+confirmation), « Accepter » puis connexion du compte accepté, ouverture et
+fermeture de la sidebar, accès refusé à un compte non admin -->
 
 ### Enseignements
-- Avoir retenu les leçons de `users` dans le prompt de départ (booléens,
-  nombres spéciaux, deux objets JSON) a évité de refaire les mêmes erreurs :
-  les 15 tests passent dès la première génération.
-- Les noms des tests montrent ce qui manque : 15 tests verts ne prouvent pas
-  que les 12 clés sont toutes exigées.
+- Quand le scénario change, il faut chercher toutes les anciennes règles
+  dans le code (ici `git grep`) : les tests verts ne les détectent pas.
+- Des tests verts ne disent rien d'une base locale non migrée, d'un modèle
+  de LLM retiré ou d'une suite de tests devenue trop lente. Un vrai appel de
+  bout en bout révèle ce que les mocks cachent.
+- Pour un échec d'API, diagnostiquer par étapes (liste des modèles, appel
+  direct, appel par le code) avant de modifier le code.
+- Afficher un pourcentage sans expliquer ce qu'il mesure peut tromper : le
+  résultat doit dire pourquoi l'IA est plus ou moins sûre.
+- Une IA qui aide à décider est plus sûre et plus facile à défendre qu'une
+  IA qui décide seule.
 
 ---
 
-## Entrée 4 bis : anonymiseur et nettoyage du texte (`sanitizer.py`)
+## Entrée 5 : tâche IA B, optimisation d'un modèle local (quantization et pruning)
 
 ### Contexte
-Le texte du projet est envoyé à un LLM externe : il faut retirer les données
-personnelles et neutraliser les balises avant l'appel.
+Le professeur a indiqué que l'API Gemini seule ne suffit pas : il faut une
+technique d'adaptation ou d'optimisation de la séance 4. La tâche B est une
+nouvelle fonctionnalité : un modèle qui analyse le compte d'un freelancer
+et lui propose des améliorations. Contrairement à la tâche A (Gemini, appelé
+par l'admin), la tâche B utilise un **modèle ouvert hébergé localement**,
+dont on possède les poids : c'est la condition pour pouvoir le quantizer et
+le pruner.
 
-### Prompt initial (résumé)
-- Ordre fixe : NFKC, anonymisation (emails, téléphones, liens), troncature
-  sans couper un placeholder, remplacement de `<` et `>` par `‹` et `›`.
-- Tests négatifs ET positif (un texte normal reste inchangé), email en
-  caractères pleine largeur.
+Démarche (slides 45 à 49) : choisir un modèle sur Hugging Face, l'adapter
+avec un RAG, l'optimiser (quantization, pruning), puis l'exposer par une
+route Django. Cette entrée couvre la mesure de l'optimisation, réalisée
+dans `experiments/compression`, séparé du back Django et avec son propre
+environnement virtuel.
+
+### Outil utilisé
+Les scripts de mesure (`common.py`, `baseline.py`, `quantize.py`,
+`prune_model.py`) ont été écrits avec l'assistant Claude, étape par étape,
+et pas avec Copilot. Je les ai exécutés moi-même et j'ai analysé les
+résultats.
+
+### Choix du modèle
+- Premier choix : `facebook/opt-125m`, abandonné : modèle trop petit et non
+  instruit, il ne produirait pas de suggestions exploitables.
+- Choix retenu : `Qwen/Qwen2.5-0.5B-Instruct` (494 millions de paramètres) :
+  ouvert, sans demande d'accès, adapté à un processeur, avec des couches
+  `Linear` compatibles avec la quantization et le pruning.
+
+### Mesures effectuées
+Trois mesures par version du modèle : taille du fichier de poids,
+perplexité sur 4 phrases (qualité, plus bas = mieux) et temps moyen de
+génération de 30 tokens sur 5 essais, sur processeur.
+
+| Version | Taille sur disque | Taille gzip | Perplexité | Latence |
+|---|---|---|---|---|
+| Baseline (FP32) | 1976 Mo | non mesurée | 17,86 | 2,95 s |
+| Quantization INT8 | 1039 Mo | non mesurée | 74,9 | 2,97 s |
+| Pruning 30 % | 1976 Mo | 906 Mo | 34,18 | 3,18 s |
+| Pruning 50 % | 1976 Mo | 816 Mo | 274,01 | 2,98 s |
+
+### Problèmes rencontrés
+1. **Quantization impossible sur la première baseline** : erreur
+   `data type of input should be float`. La nouvelle version de
+   transformers charge le modèle en 16 bits (bf16) par défaut (988 Mo pour
+   494 M de paramètres, soit 2 octets chacun), alors que la quantization
+   dynamique attend du 32 bits. Correction : charger avec
+   `dtype=torch.float32` et refaire la baseline. Les premiers chiffres
+   (988 Mo, 2,88 s) ne sont donc pas comparables et sont écartés.
+2. **Fichier temporaire verrouillé par Windows** :
+   `PermissionError` lors de la suppression du fichier de 2 Go après la
+   mesure de taille. Correction : écrire dans le dossier temporaire du
+   système et réessayer la suppression pendant 10 secondes.
+3. **Avertissements de dépréciation** (`torch.ao.quantization`) : sans
+   effet sur le résultat, la quantization dynamique fonctionne.
+4. **Script de pruning bloqué pendant 22 minutes** : la compression gzip du
+   fichier de 2 Go utilisait le niveau maximal par défaut. Interruption avec
+   Ctrl+C (le `KeyboardInterrupt` indiquait la ligne `shutil.copyfileobj`),
+   puis `compresslevel=1` : le script se termine en quelques minutes.
+5. **Latence de la baseline faussée** : première mesure à 5,49 s pendant
+   que le PC était chargé, alors que le pruning donnait environ 3 s. Les
+   mesures ont été refaites dans les mêmes conditions (applications
+   fermées) : baseline 2,95 s, INT8 2,97 s. Les écarts de vitesse observés
+   avant étaient donc un artefact de mesure.
+
+### Analyse
+- **Quantization INT8** : taille divisée par environ 2 (et non par 4) car
+  seule la partie `Linear` est quantifiée : la table des mots (embedding)
+  reste en 32 bits. La perplexité est multipliée par 4 (17,86 vers 74,9) :
+  limite « quantization trop agressive » du cours (slide 42).
+- **Pruning non structuré** : la taille sur disque est inchangée (1976 Mo),
+  car les poids supprimés sont mis à zéro mais restent stockés. Seule la
+  taille compressée baisse (906 Mo à 30 %, 816 Mo à 50 %). La qualité
+  se dégrade : acceptable à 30 % (perplexité 34,18), inutilisable à 50 %
+  (274,01).
+- **Vitesse** : aucune version n'est plus rapide (environ 3 s partout, à
+  l'écart de mesure près). Sur processeur, le calcul reste dense avec des
+  zéros, et la quantization dynamique n'apporte pas de gain ici. Cela
+  rejoint la limite de la slide 44 (accélération matérielle limitée).
+
+### Décision
+Déployer la **baseline FP32** : seule version qui garde la qualité sans
+perdre en vitesse. La quantization INT8 reste l'option si la mémoire du
+serveur est limitée. Le pruning n'est pas retenu.
+
+### Points de vigilance
+- Comparer les versions sous le même type de nombre (FP32) : la baseline
+  en bf16 faussait la comparaison.
+- La perplexité sur 4 phrases est un indicateur grossier : à compléter
+  par un test qualitatif sur de vrais profils freelancers.
+- Les mesures de latence dépendent de la machine et des applications
+  ouvertes : toutes les versions ont été mesurées sur le même PC.
+
+### Limite connue
+- Les 4 phrases de test ne représentent qu'une partie des profils réels.
+- La perplexité mesure la qualité du langage, pas la qualité des conseils : à vérifier sur de vrais profils.
+- Le RAG et la route Django `/api/ai/...` ne sont pas encore réalisés.
+
+### Enseignements
+- Une erreur de type de données (bf16 contre float32) peut venir d'un
+  changement de comportement par défaut d'une bibliothèque : il faut
+  vérifier la taille des fichiers, car 2 octets par paramètre trahit le
+  16 bits.
+- Une mesure de taille sur disque ne reflète pas toujours l'effet d'une
+  optimisation : la quantization réduit la taille, alors que le pruning
+  non structuré laisse des zéros stockés.
+- Une mesure de vitesse doit être refaite dans les mêmes conditions pour
+  toutes les versions : une machine chargée a produit un faux gain de 40 %.
+- Une optimisation n'est jamais gratuite : il faut mesurer taille, vitesse
+  et qualité ensemble avant de choisir.
+
+---
+
+## Entrée 6 : validateur de la réponse du coach de profil (tâche IA B)
+
+### Contexte
+La tâche B doit renvoyer au freelancer un JSON `{score, points_forts,
+points_faibles, suggestions}`. Comme pour la modération (Entrée 1), la
+réponse du modèle est vérifiée avant d'être affichée : c'est une exigence du
+sujet (« sortie validée avant affichage »). Premier morceau du code
+d'intégration, car il se teste sans charger le modèle de 2 Go : les tests ne
+vérifient que le code autour du modèle, jamais le modèle lui-même.
+
+### Outil utilisé
+Prompt rédigé avec l'assistant Claude, code et tests générés par GitHub
+Copilot (mode Agent), relecture des tests et du code avec Claude.
+
+### Prompt envoyé à Copilot (résumé)
+- Créer `users/ai/coach_validators.py` avec `parse_coach_response(raw_text)`.
+- `score` : nombre de 0 à 100 renvoyé en entier ; refuser booléens, NaN,
+  infini, chaînes et entiers gigantesques.
+- Listes de chaînes non vides : `MAX_ITEMS = 5`, `MAX_ITEM_CHARS = 200` ;
+  `suggestions` de 1 à 5 éléments.
+- Tolérer une clôture ```json et du texte autour ; réutiliser l'extraction
+  de `validators.py` sans modifier ce fichier.
+- Toute réponse invalide lève `LLMResponseError`, aucune erreur brute.
+- Tests dans `users/tests/test_coach_validators.py`, sans réseau ni modèle.
 
 ### Résultat généré
-- `projects/ai/sanitizer.py` (2018 octets) et
-  `projects/tests/test_sanitizer.py` (2871 octets).
+- `coach_validators.py` et un fichier de 17 tests, tous OK.
+- Suite complète `users` : 151 tests OK.
 
-### Tests appliqués
+### Relecture des tests : trous constatés
+Les tests passaient, mais la relecture du fichier a relevé cinq cas oubliés :
+1. aucun test positif aux bornes (scores 0 et 100 acceptés) : un validateur
+   rejetant ces valeurs aurait passé les tests ;
+2. `Infinity` et `1e999` non testés, alors que le prompt les demandait
+   (c'est le cas du bug `math.isfinite` de l'Entrée 1) ;
+3. réponses JSON qui ne sont pas des objets (`[]`, `42`, `"texte"`, `null`) ;
+4. suppression des espaces autour d'un élément ;
+5. arrondi de `84.5` (Python arrondit au pair : 84), à figer par un test.
+
+### Prompt de complément
+Ajouter ces tests **sans modifier `coach_validators.py`** : si un test
+échoue, Copilot doit le signaler au lieu de corriger le code. Cette consigne
+transforme les tests en détecteur de défauts.
+
+Résultat : le fichier passe de 17 à 23 tests, tous OK. Aucun test n'a
+échoué : le validateur gérait déjà les cinq cas.
+
+### Relecture du code
+Relu avec la checklist de la séance 3. Aucun défaut bloquant :
+- aucune erreur brute ne s'échappe (filet final sur `OverflowError`,
+  `TypeError`, `ValueError`) ;
+- le booléen est rejeté avant le test numérique (`True` est un `int`) ;
+- `math.isfinite` n'est appelé que sur un `float` ;
+- ordre correct : `strip()`, puis troncature, puis test « élément vide » ;
+- aucun contenu de la réponse dans les messages d'erreur.
+
+Trois points mineurs relevés, non corrigés :
+1. les éléments au-delà du cinquième ne sont pas validés (la liste est
+   coupée avant le contrôle) : `["1","2","3","4","5", 123]` est accepté ;
+2. un seul élément vide rejette toute la réponse ;
+3. dépendance à `_extract_json_object`, fonction privée de `validators.py`.
+
+Contrairement aux Entrées 2, 3 et 4, la relecture n'a pas trouvé de défaut
+réel cette fois : seuls les tests avaient des trous.
+
+### Points de vigilance
+- Consigne « ne modifie pas le code, signale l'échec » pour les tests de
+  complément.
+- Tests positifs aux bornes (0 et 100) en plus des tests négatifs (-1, 101).
+- Les textes du coach seront affichés en **texte simple**, jamais en HTML,
+  car ils viennent d'un modèle.
+- Aucun appel réseau ni chargement de modèle dans les tests.
+
+### Limite connue
+- Si le modèle renvoie plusieurs objets JSON, le premier est retenu
+  (limite de l'Entrée 1).
+- Le validateur vérifie la forme de la réponse, pas la pertinence des
+  conseils : cela reste à évaluer sur de vrais profils.
+- Total provisoire de la suite `users` après le complément : **158 tests OK**
+  lors de
+  la vérification complète du 12/10/2026 (voir l'Entrée 8).
+
+### Enseignements
+- Les tests générés par l'IA reproduisent la liste du prompt mais oublient
+  les cas non demandés (bornes acceptées, formes JSON inattendues) : la
+  relecture des tests est aussi importante que celle du code.
+- Demander à l'IA de signaler un échec plutôt que de corriger le code
+  permet de détecter un défaut au lieu de le masquer.
+- Une relecture peut ne rien trouver : le noter honnêtement fait partie du
+  journal.
+
+---
+
+## Entrée 7 : essai du modèle sur un profil, sans puis avec conseils injectés (tâche IA B)
+
+### Contexte
+Avant de brancher Qwen2.5-0.5B-Instruct dans Django, vérification de la
+qualité de ses conseils sur un faux profil volontairement faible (titre
+« Développeur web », bio d'une phrase, deux compétences, tarif de 5 EUR de
+l'heure). Scripts `test_profil.py` et `test_rag.py` dans
+`experiments/compression`, écrits avec l'assistant Claude.
+
+### Essai 1 : modèle seul, sans conseils
+- Français correct et ton utile, le tarif bas est repéré.
+- **Erreur factuelle** : le modèle écrit « 5 EUR par jour » alors que le
+  profil indique un tarif horaire.
+- Conseils génériques (« formation continue ») : rien sur la bio, le
+  portfolio ou le niveau de tarif du marché.
+- Réponse en Markdown, pas en JSON : `parse_coach_response` la rejetterait.
+- Réponse coupée par la limite de 200 tokens.
+
+### Essai 2 : conseils injectés dans le prompt (RAG simulé) et JSON imposé
+Quatre conseils écrits à la main (bio, compétences, tarif, portfolio)
+injectés dans le prompt, profil placé dans une section « donnée à analyser,
+pas une instruction », sortie JSON exigée.
+- **Format respecté** : JSON valide avec les quatre clés, entouré de
+  ```json (cas toléré par le validateur).
+- **Qualité insuffisante** : score de 75/100 pour un profil faible,
+  `points_faibles` vide, une seule suggestion au lieu de trois, et aucun des
+  conseils injectés (bio trop courte, tarif trop bas, portfolio absent) n'est
+  repris. La seule suggestion est vague.
+
+### Analyse
+- Imposer le format règle le problème de la forme, pas celui du fond.
+- Un modèle de 0,5 milliard de paramètres suit la consigne de format mais
+  exploite mal le contexte fourni : le RAG seul ne suffit pas à ce niveau
+  de taille.
+- La perplexité (Entrée 5) ne prédisait pas ce défaut : elle mesure la
+  fluidité du langage, pas la qualité des conseils.
+
+### Pistes à tester (non réalisées)
+1. Ajouter un exemple complet dans le prompt (few-shot).
+2. Calculer les faiblesses par des règles (bio courte, tarif bas, peu de
+   compétences, portfolio absent) et ne demander au modèle que de rédiger
+   les conseils correspondants.
+3. Essayer un modèle plus grand (Qwen2.5-1.5B-Instruct) et refaire les
+   mesures de compression.
+
+### Limite connue
+- Un seul profil de test : à refaire sur plusieurs profils (faible, moyen,
+  bon) pour juger la cohérence du score.
+- Essai en génération déterministe (`do_sample=False`) : la variabilité
+  d'un vrai usage n'est pas mesurée.
+
+### Enseignements
+- Tester le modèle sur un cas concret révèle des défauts que les mesures
+  de compression ne montrent pas.
+- Un JSON valide n'est pas une réponse correcte : valider la forme ne
+  remplace pas l'évaluation du fond.
+- Un résultat décevant se note tel quel dans le journal : il justifie le
+  choix de la piste suivante.
+
+---
+
+## Entrée 8 : vérification complète après ajout du CV et de l'analyse de profil
+
+### Commande exécutée
+
+Le 12/10/2026, la suite Django complète du module `users` a été relancée
+depuis la racine du projet, avec Python 3.12.10 :
+
 ```text
-python manage.py test projects.tests.test_sanitizer --verbosity 2
-git --no-pager grep -n "MAX_" projects/ai/sanitizer.py
+.venv\Scripts\python.exe manage.py test users --verbosity 2
 ```
 
-### Résultats des tests
-- À COMPLÉTER : nombre de tests et résultat.
-- Vérifié indirectement : le test de l'Entrée 5 montre un texte transmis avec
-  `[EMAIL]`, `[TEL]`, `[LIEN]` et `‹/projet›` : anonymisation et
-  neutralisation fonctionnent de bout en bout.
+### Résultat
 
-### Relecture : problèmes constatés
-1. À COMPLÉTER : relire `sanitizer.py` (ordre NFKC, anonymisation, troncature,
-   neutralisation ; placeholder jamais coupé ; `\b` et noms de domaine).
-
-### Prompt de correction
-- À COMPLÉTER.
-
-### Résultats après correction
-- À COMPLÉTER.
-
-### Limite connue
-- Une regex d'anonymisation ne détecte pas toutes les données personnelles
-  (noms propres, adresses postales).
-
-### Enseignements
-- Fixer l'ordre des opérations dans le prompt ne suffit pas : il faut relire
-  le code pour vérifier qu'il est respecté (même leçon que `users`, Entrée 2).
-
----
-
-## Entrée 5 : service d'analyse, endpoint et mode simulé
-
-### Contexte
-Service qui envoie le projet nettoyé au LLM, valide la réponse, l'enregistre
-et passe le projet en ANALYZED.
-
-### Prompt initial (résumé)
-- Modèle `ProjectAnalysis`, service `analyze_project`,
-  `POST /api/projects/<id>/analyze/`.
-- Succès : statut ANALYZED. Erreur LLM : réponse 200 avec `error`, statut
-  inchangé, aucun contenu du projet ni clé dans les messages.
-- Mode `mock` : simulateur à règles, `simulated: true`.
-- Throttle DRF.
-
-### Résultat généré
-- Modèle `ProjectAnalysis` (migration `0002`), `projects/services/analysis.py`,
-  `projects/ai/simulator.py`, endpoint d'analyse, `ProjectAnalysisThrottle`
-  (taux dans `PROJECT_ANALYSIS_THROTTLE_RATE`), tests dans
-  `projects/tests/test_analysis_service.py`.
-
-### Tests appliqués
 ```text
-python manage.py test projects.tests.test_analysis_service --verbosity 2
-python manage.py test projects
-python manage.py test
-git --no-pager grep -n "simulated" projects/
-git --no-pager grep -n -i "throttle" config/settings.py projects/
+Found 166 test(s).
+Ran 166 tests in 0.770s
+OK
 ```
 
-### Résultats des tests (avant correction)
-- Suite `projects` : 71 tests, 4 échecs, dont 3 dans ce fichier :
-  - `test_invalid_llm_response_keeps_status_and_records_error` : 502 au lieu
-    de 200 ;
-  - `test_missing_api_key_is_not_exposed` : 502 au lieu de 200 ;
-  - `test_text_is_anonymized_and_tags_are_neutralized` : `</projet>` trouvé
-    dans le texte transmis.
+La base de test en mémoire a été créée puis détruite correctement. Les
+migrations ont également été appliquées avec succès à cette base temporaire.
+La suite automatisée backend couvre notamment :
 
-### Relecture : problèmes constatés
-1. **Spécification, code et tests en désaccord** : le prompt demandait 200
-   avec `error` en cas d'erreur du LLM, le code renvoyait 502. Seule
-   l'exécution des tests l'a révélé. Règle retenue : toute erreur LLM donne
-   200 avec `error` générique, statut du projet inchangé.
-2. **Test de neutralisation trop strict** : il cherchait `</projet>` dans
-   tout le texte, alors que le service ajoute lui-même cette balise puis
-   `<reference>` (RAG, Entrée 11). Le contenu du projet était bien neutralisé
-   (`‹/projet›`) : le défaut était dans le test, pas dans le code.
-3. Valeur de secours `"10/hour"` écrite en dur dans `views.py` (nombre
-   magique), en plus de `settings.py`.
-4. Projet publié refusé en **400** à l'analyse, alors que publier ou refuser
-   un mauvais état donne **409** : incohérence à trancher.
-5. `simulated` n'est testé qu'en positif (`assertTrue`) : un
-   `simulated = True` en dur passerait les tests.
+- les validateurs de modération et du coach ;
+- l'anonymisation, le client LLM et le service de modération ;
+- l'inscription, la connexion, le profil `/me/` et l'administration ;
+- l'analyse de profil avec validation de la sortie du modèle et
+  anonymisation avant l'appel ;
+- l'ajout, le remplacement, le téléchargement et la suppression d'un CV,
+  avec les contrôles d'accès et de taille.
 
-### Prompt de correction
-```
-CONTEXTE : projet Django/DRF décrit dans .github/copilot-instructions.md.
-Trois tests de projects/tests/test_analysis_service.py échouent :
-- test_invalid_llm_response_keeps_status_and_records_error : 502 au lieu de 200
-- test_missing_api_key_is_not_exposed : 502 au lieu de 200
-- test_text_is_anonymized_and_tags_are_neutralized : "</projet>" trouvé dans le texte
+Ce résultat est la dernière vérification automatisée connue et remplace le
+total laissé à compléter dans l'Entrée 6. Les appels au LLM restent mockés
+dans les tests Django.
 
-OBJECTIF : appliquer la règle suivante : toute erreur LLM donne une réponse 200
-avec le champ `error` renseigné (message générique), le statut du projet inchangé.
+Les prompts concernant le tableau de bord React (sidebar, bouton
+« Examiner », suppression, affichage des critères et bandeau d'analyse
+simulée) ont été vérifiés manuellement ; aucun test frontend automatisé
+n'est actuellement inclus dans ce dépôt. De même, les scripts de
+[experiments/compression/](../experiments/compression/) servent à mesurer
+la génération, la quantification, le pruning et le RAG ; ils ne font pas
+partie de la suite `manage.py test users` et ne constituent pas une suite
+de tests automatisés avec assertions.
 
-CONTRAINTES :
-- Corrige le code (views.py ou analysis.py) pour les deux premiers tests.
-- Pour le troisième : le test est trop strict. Extraire le contenu du projet
-  (entre <projet> et la dernière </projet>), vérifier qu'il ne contient aucune
-  balise, et vérifier que </projet> apparaît exactement une fois dans le texte complet.
-- Explique pour chaque test si tu as modifié le code ou le test, et pourquoi.
-- Ne modifie aucun autre fichier.
-```
-
-### Résultats après correction
-- `test_analysis_service.py` : **9 tests OK** (succès, erreur LLM historisée,
-  clé absente sans fuite, autre porteur en 404, projet publié refusé,
-  anonymisation et neutralisation, simulateur sur deux cas, throttle 429).
-- Le code applique la règle : `analysis.py` renvoie une réponse avec
-  `error` générique (`GENERIC_LLM_ERROR`, ou `INTERNAL_ERROR` pour une erreur
-  inattendue) et enregistre l'échec sans le texte du projet.
-- Suite `projects` : **82 tests OK** ; suite complète : **248 tests OK**.
-
-### Limite connue
-- Analyse synchrone : durée jusqu'à environ 40 s (deux essais).
-- Le mode `mock` produit une analyse à règles : il ne prouve pas la qualité
-  d'un vrai modèle (essai réel dans la vérification globale).
-- Points 3, 4 et 5 de la relecture : non corrigés à ce jour (valeur
-  `"10/hour"`, 400 contre 409, `simulated` testé en positif seulement).
-- Pas encore de test : 401 sans jeton, 403 freelance, erreur LLM après une
-  analyse réussie, `simulated` faux avec un vrai fournisseur.
-
-### Enseignements
-- Quand le prompt contient une règle et que le code en applique une autre,
-  seuls les tests exécutés montrent l'écart : il faut décider de la règle
-  avant de corriger, sinon on aligne les tests sur le mauvais comportement.
-- Un test peut devenir faux quand le code évolue (ajout du RAG) : un échec
-  n'est pas toujours un défaut du code.
-- Un test qui n'existe qu'en positif (`simulated` vrai) ne détecte pas une
-  valeur codée en dur.
-
----
-
-## Entrée 6 : décision du porteur et liste publique
-
-### Contexte
-Le porteur publie ou refuse le projet après l'analyse ; les projets publiés
-sont visibles dans une liste publique qui ne doit rien divulguer de sensible.
-
-### Prompt initial (résumé)
-- `POST /publish/` et `/decline/` : seulement si ANALYZED (sinon 409),
-  publication exigeant une analyse réussie.
-- `GET /api/projects/published/` : liste paginée, serializer à liste blanche,
-  jamais d'email, de risques ni d'information du propriétaire.
-- Filtre `?status=` (valeur inconnue : 400).
-
-### Résultat généré
-- Vues de décision et de liste publique ; tests dans
-  `projects/tests/test_decision_and_public.py`.
-
-### Tests appliqués
-```text
-python manage.py test projects.tests.test_decision_and_public --verbosity 2
-python manage.py check
-python manage.py makemigrations --check --dry-run
-```
-
-### Résultats des tests
-- Tests dédiés : **11 réussis**.
-- `check` : OK. Vérification des migrations : OK.
-
-### Relecture : problèmes constatés
-1. À COMPLÉTER : relire `views.py` et `serializers.py` avec la checklist de
-   la séance 3 (secrets, types, erreurs, tests, DRY, docstrings). Points à
-   vérifier : la liste publique ne contient ni `owner`, ni email, ni risques ;
-   `publish` refuse un projet sans analyse réussie ; le filtre `?status=`
-   inconnu renvoie 400.
-
-### Prompt de correction
-- À COMPLÉTER.
-
-### Résultats après correction
-- À COMPLÉTER. Aucun échec constaté sur ces 11 tests (suite complète verte).
-
-### Limite connue
-- À COMPLÉTER.
-
-### Enseignements
-- À COMPLÉTER.
-
----
-
-## Entrée 7 : vérification de l'environnement avant le front
-
-### Incidents constatés
-1. **Base locale non migrée** : `runserver` a signalé 28 migrations non
-   appliquées, alors que les tests passaient (ils utilisent une base
-   temporaire). Correction : `python manage.py migrate`.
-2. **Aucun utilisateur en base** : Django ne crée aucun compte par défaut.
-   Correction : `createsuperuser`, puis création de trois comptes de test
-   (ADMIN, PROJECT_OWNER, FREELANCER) avec `moderation_status = OK`.
-3. **Commande `curl` mal adaptée à PowerShell** : les guillemets échappés
-   étaient supprimés, le serveur a reçu un JSON invalide. Le back répondait
-   correctement (erreur JSON explicite, puis « Token non valide »).
-   Correction : fichier JSON ou `Invoke-RestMethod`.
-4. **Front introuvable** : `npm install` a échoué (`package.json` absent) car
-   le projet se trouvait dans un sous-dossier. À COMPLÉTER : emplacement réel
-   du front.
-5. **Pager de Git** : les `git grep` longs ouvrent un pager (`less`) ; sortie
-   avec `q`, ou `git --no-pager` pour éviter le blocage.
-
-### Enseignements
-- Des tests verts ne disent rien d'une base locale non migrée ni d'une base
-  vide : un essai de bout en bout révèle ce que les tests cachent.
-- Une commande proposée par une IA peut être correcte en théorie et fausse
-  dans l'environnement réel (ici PowerShell) : l'exécuter et lire l'erreur.
-
----
-
-## Entrées 8 à 10 : front (React, TypeScript, Vite)
-
-À remplir avec le même modèle (prompt initial, résultat, tests manuels,
-corrections) :
-- **Entrée 8** : types TypeScript et fonctions d'appel à l'API (`projects.ts`,
-  `project.ts`).
-- **Entrée 9** : page « Nouveau projet » (formulaire, analyse, publier ou non).
-- **Entrée 10** : pages « Mes projets » et « Projets publiés ».
-
-Tests manuels à noter (aucun test frontend automatisé) : créer, analyser en
-mode `mock`, publier, refuser, supprimer, erreur 429, compte freelance, liste
-vide.
-
----
-
-## Entrée 11 : RAG léger (technique de la séance 4)
-
-### Contexte
-Adapter l'analyse avec un référentiel local plutôt qu'un réentraînement
-(slide 48 : RAG).
-
-### Prompt initial (résumé)
-- RAG léger : recherche TF-IDF locale dans un référentiel de métiers, section
-  `<reference>` ajoutée au prompt, champ `references_used` dans la réponse.
-
-### Résultat généré
-- `projects/ai/retrieval.py` (3620 octets), `projects/ai/reference_data.json`
-  (2959 octets), modification de `prompts.py`, tests dans
-  `projects/tests/test_retrieval.py` (5488 octets).
-
-### Tests appliqués / résultats / relecture / corrections
-- À COMPLÉTER : `python manage.py test projects.tests.test_retrieval
-  --verbosity 2`, relecture de `retrieval.py`, essai avec et sans référence.
-- Effet de bord déjà constaté : l'ajout de `<reference>` a rendu trop strict
-  le test de neutralisation de l'Entrée 5.
-
-### Limite connue / Enseignements
-- À COMPLÉTER.
-
----
-
-## Entrée 12 : comparaison de deux modèles Claude
-
-- Script : `experiments/compare_models.py` (lit `PROJECT_LLM_API_KEY`, refuse
-  de s'exécuter sans clé).
-- À COMPLÉTER : modèles comparés, 5 faux projets, mesures, décision.
-
----
-
-## Entrée 13 (optionnelle) : audit des tests
-
-- À COMPLÉTER : cassures volontaires, tests qui ont échoué, trous comblés.
-
----
-
-## Modèle d'entrée
-
-```
-## Entrée N : <titre>
-### Contexte
-### Prompt initial
-### Résultat généré (fichiers, nombre de tests)
-### Tests appliqués (commandes)
-### Résultats des tests (avant correction)
-### Relecture : problèmes constatés
-### Prompt de correction
-### Résultats après correction (tests OK : N)
-### Limite connue
-### Enseignements
-```
-
----
-
-## Vérification globale
-
-- Commande : `python manage.py test projects --verbosity 2`
-- Résultat au 13/10/2026 : **82 tests OK** ; suite complète : **248 tests OK**.
-- Historique : 12/10/2026, 71 tests `projects` dont 4 en échec (237 au total) ;
-  13/10/2026, 82 tests OK après corrections.
-- Couverture : `coverage run --branch manage.py test projects` puis
-  `coverage report -m --include="projects/*"` : À COMPLÉTER
-- Cassures volontaires du code et test qui a échoué : À COMPLÉTER
-- Essai réel avec Claude (`PROJECT_LLM_PROVIDER=anthropic`, `PROJECT_LLM_MODEL`
-  renseigné) sur un faux projet : À COMPLÉTER
-- Contrôles avant commit : `git status` sans `.env` ni `db.sqlite3`,
-  `git grep "sk-ant"` sans résultat (hors journal), `git grep "users" projects/`
-  sans import de `users.ai`.
+Les essais avec Gemini et les essais qualitatifs du modèle local sont
+documentés séparément dans les Entrées 4, 5 et 7.
