@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "corsheaders",
     # Applications du projet
     "users",
+    "projects",
 ]
 
 MIDDLEWARE = [
@@ -164,5 +165,16 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite")
 COACH_MODEL_NAME = os.getenv("COACH_MODEL_NAME", "Qwen/Qwen2.5-0.5B-Instruct")
 LLM_TIMEOUT_SECONDS = int(os.getenv("LLM_TIMEOUT_SECONDS", "20"))
+
+# --- Client LLM de projects ------------------------------------------------
+
+PROJECT_LLM_PROVIDER = os.getenv("PROJECT_LLM_PROVIDER", "")
+PROJECT_LLM_API_KEY = os.getenv("PROJECT_LLM_API_KEY", "")
+PROJECT_LLM_MODEL = os.getenv("PROJECT_LLM_MODEL", "")
+PROJECT_ANALYSIS_THROTTLE_RATE = os.getenv(
+    "PROJECT_ANALYSIS_THROTTLE_RATE",
+    "10/hour",
+)
+
 if "test" in sys.argv:
     PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]

@@ -1,0 +1,83 @@
+[
+  {
+    "nom": "Développement mobile",
+    "mots_cles": ["mobile", "android", "ios", "application", "smartphone"],
+    "tarif_jour_min": 350,
+    "tarif_jour_max": 700,
+    "devise": "EUR",
+    "duree_typique_semaines": 12,
+    "description": "Conception et développement d'applications mobiles natives ou hybrides."
+  },
+  {
+    "nom": "Développement web",
+    "mots_cles": ["site", "web", "frontend", "backend", "portail"],
+    "tarif_jour_min": 300,
+    "tarif_jour_max": 650,
+    "devise": "EUR",
+    "duree_typique_semaines": 10,
+    "description": "Création de sites, portails et applications web sur mesure."
+  },
+  {
+    "nom": "UX/UI design",
+    "mots_cles": ["design", "ux", "ui", "interface", "maquette"],
+    "tarif_jour_min": 300,
+    "tarif_jour_max": 600,
+    "devise": "EUR",
+    "duree_typique_semaines": 5,
+    "description": "Recherche utilisateur, parcours, prototypes et interfaces accessibles."
+  },
+  {
+    "nom": "Data et intelligence artificielle",
+    "mots_cles": ["data", "ia", "intelligence", "machine", "apprentissage", "données"],
+    "tarif_jour_min": 500,
+    "tarif_jour_max": 950,
+    "devise": "EUR",
+    "duree_typique_semaines": 14,
+    "description": "Analyse de données, modèles prédictifs et intégration de services IA."
+  },
+  {
+    "nom": "Cybersécurité",
+    "mots_cles": ["sécurité", "cyber", "audit", "vulnérabilité", "protection"],
+    "tarif_jour_min": 550,
+    "tarif_jour_max": 1000,
+    "devise": "EUR",
+    "duree_typique_semaines": 6,
+    "description": "Audit, sécurisation et accompagnement de systèmes numériques."
+  },
+  {
+    "nom": "Marketing digital",
+    "mots_cles": ["marketing", "seo", "référencement", "campagne", "réseaux"],
+    "tarif_jour_min": 250,
+    "tarif_jour_max": 550,
+    "devise": "EUR",
+    "duree_typique_semaines": 6,
+    "description": "Stratégie digitale, référencement et campagnes d'acquisition."
+  },
+  {
+    "nom": "Rédaction technique",
+    "mots_cles": ["rédaction", "documentation", "contenu", "article", "technique"],
+    "tarif_jour_min": 250,
+    "tarif_jour_max": 500,
+    "devise": "EUR",
+    "duree_typique_semaines": 4,
+    "description": "Documentation claire, articles spécialisés et contenus techniques."
+  },
+  {
+    "nom": "Gestion de projet",
+    "mots_cles": ["projet", "planning", "coordination", "agile", "scrum"],
+    "tarif_jour_min": 400,
+    "tarif_jour_max": 750,
+    "devise": "EUR",
+    "duree_typique_semaines": 12,
+    "description": "Cadrage, coordination des intervenants et suivi des livrables."
+  },
+  {
+    "nom": "E-commerce et paiement",
+    "mots_cles": ["ecommerce", "boutique", "paiement", "panier", "commande"],
+    "tarif_jour_min": 350,
+    "tarif_jour_max": 750,
+    "devise": "EUR",
+    "duree_typique_semaines": 10,
+    "description": "Boutiques en ligne, parcours de commande et intégration de paiements."
+  }
+]
