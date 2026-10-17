@@ -28,6 +28,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/auth/", include("users.urls")),
     path("api/challenges/", include("challenges.urls")),
+    path("api/matching/", include("matching.urls")),
     path("api/", include("projects.urls")),
     path("api/ai/", include((ai_urlpatterns, "ai"))),
     path("api/users/me/", MeView.as_view(), name="me"),

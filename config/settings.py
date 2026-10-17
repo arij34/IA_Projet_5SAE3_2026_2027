@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "users",
     "projects",
     "challenges",
+    "matching",
 ]
 
 MIDDLEWARE = [
