@@ -15,6 +15,9 @@ import MyProjectsPage from './pages/MyProjectsPage'
 import ProfilePage from './pages/ProfilePage'
 import PublishedProjectsPage from './pages/PublishedProjectsPage'
 import RegisterPage from './pages/RegisterPage'
+import FreelancerProjectRecommendations from './features/matching/pages/FreelancerProjectRecommendations'
+import ProjectFreelancerRecommendations from './features/matching/pages/ProjectFreelancerRecommendations'
+import TeamRecommendations from './features/matching/pages/TeamRecommendations'
 
 function ProjectOwnerRoute() {
   const location = useLocation()
@@ -53,6 +56,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route element={<FreelancerRoute />}>
           <Route path="/challenges" element={<ChallengesPage />} />
+          <Route path="/matching/projets-recommandes" element={<FreelancerProjectRecommendations />} />
           <Route path="/challenges/attempts/:attemptId/results" element={<ChallengeResultsPage />} />
           <Route path="/challenges/attempts/:attemptId" element={<ChallengeAttemptPage />} />
         </Route>
@@ -62,6 +66,10 @@ function App() {
           <Route path="/projects" element={<MyProjectsPage />} />
           <Route path="/gestion-projets" element={<MyProjectsPage />} />
           <Route path="/assistant" element={<AssistantPage />} />
+          <Route path="/matching/projects" element={<ProjectFreelancerRecommendations />} />
+          <Route path="/matching/projects/:projectId/freelancers" element={<ProjectFreelancerRecommendations />} />
+          <Route path="/matching/projects/:projectId/team" element={<TeamRecommendations />} />
+          <Route path="/matching/equipes" element={<TeamRecommendations />} />
         </Route>
         <Route path="/projects/published" element={<PublishedProjectsPage />} />
         <Route path="/profile" element={<ProfilePage />} />

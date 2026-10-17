@@ -72,6 +72,11 @@ function Layout() {
                     Challenges
                   </NavLink>
                 )}
+                {isApprovedFreelancer && (
+                  <NavLink className={navClassName} to="/matching/projets-recommandes" onClick={closeMenu}>
+                    Projets recommandés
+                  </NavLink>
+                )}
                 <NavLink className={navClassName} to="/profile" onClick={closeMenu}>
                   Mon profil
                 </NavLink>
@@ -82,6 +87,12 @@ function Layout() {
                     </NavLink>
                     <NavLink className={navClassName} to="/assistant" onClick={closeMenu}>
                       Assistant
+                    </NavLink>
+                    <NavLink className={navClassName} to="/matching/projects" onClick={closeMenu}>
+                      Trouver des freelances
+                    </NavLink>
+                    <NavLink className={navClassName} to="/matching/equipes" onClick={closeMenu}>
+                      Composer une équipe
                     </NavLink>
                   </>
                 )}
