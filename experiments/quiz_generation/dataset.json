@@ -1,0 +1,75 @@
+{
+  "dataset_version": "quiz-eval-cases-v1",
+  "notes": "Six cases, 4 categories, 3 difficulty levels. No secrets or personal data. References are official documentation pages whose URLs returned HTTP 200 when checked on 2026-10-15; reaching a page does NOT mean any generated question has been verified against it. Factual accuracy is a manual review against the rubric and references (see manual_review_template.json).",
+  "cases": [
+    {
+      "case_id": "PY-BEG-01",
+      "category_name": "Python",
+      "category_description": "Testez les fondamentaux du langage, les collections et les pratiques Python.",
+      "difficulty": "BEGINNER",
+      "difficulty_label": "Débutant",
+      "question_count": 5,
+      "learning_objective": "Built-in collections (list, tuple, dict, set) and their basic operations.",
+      "references": ["https://docs.python.org/3/tutorial/datastructures.html"],
+      "rubric": "Each question must be answerable from the cited tutorial page; exactly one choice correct; no Python-version-specific claim unless stated."
+    },
+    {
+      "case_id": "PY-ADV-01",
+      "category_name": "Python",
+      "category_description": "Testez les fondamentaux du langage, les collections et les pratiques Python.",
+      "difficulty": "ADVANCED",
+      "difficulty_label": "Avancé",
+      "question_count": 5,
+      "learning_objective": "Classes, instance vs class attributes, and subtle object-model behaviour.",
+      "references": ["https://docs.python.org/3/tutorial/classes.html"],
+      "rubric": "Subtle cases must be decidable from the cited page; reject questions relying on unstated interpreter behaviour."
+    },
+    {
+      "case_id": "DJ-BEG-01",
+      "category_name": "Django",
+      "category_description": "Explorez les modèles, les vues, les API et les tests avec Django.",
+      "difficulty": "BEGINNER",
+      "difficulty_label": "Débutant",
+      "question_count": 5,
+      "learning_objective": "Django models: fields, relationships and what a model represents.",
+      "references": ["https://docs.djangoproject.com/en/stable/topics/db/models/"],
+      "rubric": "Answers must agree with the cited model documentation of the stable Django release."
+    },
+    {
+      "case_id": "DJ-INT-01",
+      "category_name": "Django",
+      "category_description": "Explorez les modèles, les vues, les API et les tests avec Django.",
+      "difficulty": "INTERMEDIATE",
+      "difficulty_label": "Intermédiaire",
+      "question_count": 5,
+      "learning_objective": "QuerySets: filtering, lazy evaluation and common query patterns.",
+      "references": ["https://docs.djangoproject.com/en/stable/topics/db/queries/"],
+      "rubric": "Answers must agree with the cited queries documentation; reject invented ORM methods."
+    },
+    {
+      "case_id": "RE-INT-01",
+      "category_name": "React",
+      "category_description": "Mettez en pratique les composants, les hooks et les interfaces React.",
+      "difficulty": "INTERMEDIATE",
+      "difficulty_label": "Intermédiaire",
+      "question_count": 5,
+      "learning_objective": "useState and useEffect: state updates and effect dependencies.",
+      "references": [
+        "https://react.dev/reference/react/useState",
+        "https://react.dev/reference/react/useEffect"
+      ],
+      "rubric": "Answers must agree with the cited react.dev reference pages; reject class-component-only or deprecated guidance."
+    },
+    {
+      "case_id": "TS-ADV-01",
+      "category_name": "TypeScript",
+      "category_description": "Progressez sur les types, le narrowing et les fonctionnalités TypeScript.",
+      "difficulty": "ADVANCED",
+      "difficulty_label": "Avancé",
+      "question_count": 5,
+      "learning_objective": "Type narrowing (typeof, truthiness, discriminated unions).",
+      "references": ["https://www.typescriptlang.org/docs/handbook/2/narrowing.html"],
+      "rubric": "Answers must agree with the cited handbook page; code snippets must be valid TypeScript."
+    }
+  ]
+}

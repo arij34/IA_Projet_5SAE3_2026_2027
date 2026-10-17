@@ -4,10 +4,11 @@ Projet Freelancy - backend API
 """
 
 import os
+import sys
 from pathlib import Path
 
+from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
-import sys  # noqa: E402
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,6 +34,7 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 # --- Applications -----------------------------------------------------------
 
 INSTALLED_APPS = [
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -43,9 +45,11 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "corsheaders",
+    "channels",
     # Applications du projet
     "users",
     "projects",
+    "challenges",
 ]
 
 MIDDLEWARE = [
@@ -151,6 +155,26 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",
 ]
 
+ASGI_APPLICATION = "config.asgi.application"
+CHANNEL_REDIS_URL = os.getenv("CHANNEL_REDIS_URL", "")
+if CHANNEL_REDIS_URL:
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {"hosts": [CHANNEL_REDIS_URL]},
+        },
+    }
+elif DEBUG:
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels.layers.InMemoryChannelLayer",
+        },
+    }
+else:
+    raise ImproperlyConfigured(
+        "CHANNEL_REDIS_URL must be configured when DEBUG is disabled."
+    )
+
 
 # --- E-mail (affiché dans le terminal en développement) ---------------------
 
@@ -183,6 +207,21 @@ PROJECT_CHATBOT_THROTTLE_RATE = os.getenv(
     "PROJECT_CHATBOT_THROTTLE_RATE",
     "30/hour",
 )
+
+# --- Génération de quiz Challenges (clé OpenAI uniquement côté serveur) -----
+
+CHALLENGE_LLM_PROVIDER = os.getenv("CHALLENGE_LLM_PROVIDER", "mock")  # "mock" ou "openai"
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+OPENAI_TIMEOUT_SECONDS = int(os.getenv("OPENAI_TIMEOUT_SECONDS", "45"))
+CHALLENGE_GENERATION_THROTTLE_RATE = os.getenv(
+    "CHALLENGE_GENERATION_THROTTLE_RATE",
+    "5/hour",
+)
+# RAG local (désactivé par défaut) : injecte des extraits de documentation attribués dans le prompt.
+CHALLENGE_RAG_ENABLED = os.getenv("CHALLENGE_RAG_ENABLED", "false").lower() in ("1", "true", "yes")
+CHALLENGE_RAG_TOP_K = int(os.getenv("CHALLENGE_RAG_TOP_K", "3"))
+CHALLENGE_RAG_MAX_CHARS = int(os.getenv("CHALLENGE_RAG_MAX_CHARS", "3000"))
 
 if "test" in sys.argv:
     PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]

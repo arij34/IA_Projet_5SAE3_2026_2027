@@ -1,0 +1,3444 @@
+{
+  "template": "independent-human-review-v1",
+  "status": "PENDING_HUMAN_REVIEW",
+  "source_run": "final_v2_run.json",
+  "dataset": "quiz-eval-cases-v1",
+  "ratings_are_blank": true,
+  "questions": [
+    {
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "case_id": "PY-BEG-01",
+      "question_index": 1,
+      "learning_objective": "Built-in collections (list, tuple, dict, set) and their basic operations.",
+      "rubric": "Each question must be answerable from the cited tutorial page; exactly one choice correct; no Python-version-specific claim unless stated.",
+      "references": [
+        "https://docs.python.org/3/tutorial/datastructures.html"
+      ],
+      "text": "Quel est le bon moyen d'afficher 'Bonjour, le monde!' en Python?",
+      "choices": [
+        "print('Bonjour, le monde!')",
+        "echo 'Bonjour, le monde!'",
+        "console.log('Bonjour, le monde!')",
+        "write('Bonjour, le monde!')"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "print('Bonjour, le monde!')",
+      "explanation": "En Python, la fonction print() est utilisée pour afficher du texte à l'écran.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "case_id": "PY-BEG-01",
+      "question_index": 2,
+      "learning_objective": "Built-in collections (list, tuple, dict, set) and their basic operations.",
+      "rubric": "Each question must be answerable from the cited tutorial page; exactly one choice correct; no Python-version-specific claim unless stated.",
+      "references": [
+        "https://docs.python.org/3/tutorial/datastructures.html"
+      ],
+      "text": "Quelle est la syntaxe correcte pour créer une fonction en Python?",
+      "choices": [
+        "def ma_fonction():",
+        "function ma_fonction():",
+        "create ma_fonction():",
+        "func ma_fonction():"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "def ma_fonction():",
+      "explanation": "La syntaxe correcte pour définir une fonction en Python est 'def nom_de_la_fonction():'.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "case_id": "PY-BEG-01",
+      "question_index": 3,
+      "learning_objective": "Built-in collections (list, tuple, dict, set) and their basic operations.",
+      "rubric": "Each question must be answerable from the cited tutorial page; exactly one choice correct; no Python-version-specific claim unless stated.",
+      "references": [
+        "https://docs.python.org/3/tutorial/datastructures.html"
+      ],
+      "text": "Quel type de données est utilisé pour stocker une séquence de caractères en Python?",
+      "choices": [
+        "string",
+        "char",
+        "text",
+        "list"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "string",
+      "explanation": "En Python, un 'string' est utilisé pour représenter une séquence de caractères.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "case_id": "PY-BEG-01",
+      "question_index": 4,
+      "learning_objective": "Built-in collections (list, tuple, dict, set) and their basic operations.",
+      "rubric": "Each question must be answerable from the cited tutorial page; exactly one choice correct; no Python-version-specific claim unless stated.",
+      "references": [
+        "https://docs.python.org/3/tutorial/datastructures.html"
+      ],
+      "text": "Comment ajouter un élément à une liste en Python?",
+      "choices": [
+        "list.add(element)",
+        "list.append(element)",
+        "list.insert(element)",
+        "list.push(element)"
+      ],
+      "marked_answer_index": 1,
+      "marked_answer": "list.append(element)",
+      "explanation": "La méthode append() est utilisée pour ajouter un élément à la fin d'une liste en Python.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "case_id": "PY-BEG-01",
+      "question_index": 5,
+      "learning_objective": "Built-in collections (list, tuple, dict, set) and their basic operations.",
+      "rubric": "Each question must be answerable from the cited tutorial page; exactly one choice correct; no Python-version-specific claim unless stated.",
+      "references": [
+        "https://docs.python.org/3/tutorial/datastructures.html"
+      ],
+      "text": "Quelle est la bonne manière de commenter une ligne de code en Python?",
+      "choices": [
+        "// Ceci est un commentaire",
+        "# Ceci est un commentaire",
+        "/* Ceci est un commentaire */",
+        "<!-- Ceci est un commentaire -->"
+      ],
+      "marked_answer_index": 1,
+      "marked_answer": "# Ceci est un commentaire",
+      "explanation": "En Python, les commentaires sont créés en utilisant le symbole '#' au début de la ligne.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "case_id": "PY-BEG-01",
+      "question_index": 1,
+      "learning_objective": "Built-in collections (list, tuple, dict, set) and their basic operations.",
+      "rubric": "Each question must be answerable from the cited tutorial page; exactly one choice correct; no Python-version-specific claim unless stated.",
+      "references": [
+        "https://docs.python.org/3/tutorial/datastructures.html"
+      ],
+      "text": "Quel est le bon mot-clé pour définir une fonction en Python ?",
+      "choices": [
+        "def",
+        "function",
+        "func",
+        "define"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "def",
+      "explanation": "En Python, le mot-clé 'def' est utilisé pour définir une fonction.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "case_id": "PY-BEG-01",
+      "question_index": 2,
+      "learning_objective": "Built-in collections (list, tuple, dict, set) and their basic operations.",
+      "rubric": "Each question must be answerable from the cited tutorial page; exactly one choice correct; no Python-version-specific claim unless stated.",
+      "references": [
+        "https://docs.python.org/3/tutorial/datastructures.html"
+      ],
+      "text": "Quelle structure de données est utilisée pour stocker une collection ordonnée d'éléments en Python ?",
+      "choices": [
+        "Liste",
+        "Dictionnaire",
+        "Ensemble",
+        "Tuple"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "Liste",
+      "explanation": "Une liste est une structure de données qui stocke une collection ordonnée d'éléments en Python.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "case_id": "PY-BEG-01",
+      "question_index": 3,
+      "learning_objective": "Built-in collections (list, tuple, dict, set) and their basic operations.",
+      "rubric": "Each question must be answerable from the cited tutorial page; exactly one choice correct; no Python-version-specific claim unless stated.",
+      "references": [
+        "https://docs.python.org/3/tutorial/datastructures.html"
+      ],
+      "text": "Comment ajouter un élément à une liste en Python ?",
+      "choices": [
+        "append()",
+        "add()",
+        "insert()",
+        "push()"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "append()",
+      "explanation": "La méthode 'append()' est utilisée pour ajouter un élément à la fin d'une liste en Python.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "case_id": "PY-BEG-01",
+      "question_index": 4,
+      "learning_objective": "Built-in collections (list, tuple, dict, set) and their basic operations.",
+      "rubric": "Each question must be answerable from the cited tutorial page; exactly one choice correct; no Python-version-specific claim unless stated.",
+      "references": [
+        "https://docs.python.org/3/tutorial/datastructures.html"
+      ],
+      "text": "Quel est le type de données utilisé pour représenter des valeurs booléennes en Python ?",
+      "choices": [
+        "int",
+        "bool",
+        "str",
+        "float"
+      ],
+      "marked_answer_index": 1,
+      "marked_answer": "bool",
+      "explanation": "Le type de données 'bool' est utilisé pour représenter des valeurs booléennes (True ou False) en Python.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "case_id": "PY-BEG-01",
+      "question_index": 5,
+      "learning_objective": "Built-in collections (list, tuple, dict, set) and their basic operations.",
+      "rubric": "Each question must be answerable from the cited tutorial page; exactly one choice correct; no Python-version-specific claim unless stated.",
+      "references": [
+        "https://docs.python.org/3/tutorial/datastructures.html"
+      ],
+      "text": "Quelle est la méthode pour obtenir la longueur d'une liste en Python ?",
+      "choices": [
+        "length()",
+        "len()",
+        "size()",
+        "count()"
+      ],
+      "marked_answer_index": 1,
+      "marked_answer": "len()",
+      "explanation": "La fonction 'len()' est utilisée pour obtenir la longueur d'une liste en Python.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "C",
+      "prompt_version": "quiz-objective-v2",
+      "case_id": "PY-BEG-01",
+      "question_index": 1,
+      "learning_objective": "Built-in collections (list, tuple, dict, set) and their basic operations.",
+      "rubric": "Each question must be answerable from the cited tutorial page; exactly one choice correct; no Python-version-specific claim unless stated.",
+      "references": [
+        "https://docs.python.org/3/tutorial/datastructures.html"
+      ],
+      "text": "Quelle est la syntaxe correcte pour créer une liste en Python ?",
+      "choices": [
+        "ma_liste = [1, 2, 3]",
+        "ma_liste = (1, 2, 3)",
+        "ma_liste = {1, 2, 3}",
+        "ma_liste = 1, 2, 3"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "ma_liste = [1, 2, 3]",
+      "explanation": "La syntaxe correcte pour créer une liste en Python utilise des crochets : [].",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "C",
+      "prompt_version": "quiz-objective-v2",
+      "case_id": "PY-BEG-01",
+      "question_index": 2,
+      "learning_objective": "Built-in collections (list, tuple, dict, set) and their basic operations.",
+      "rubric": "Each question must be answerable from the cited tutorial page; exactly one choice correct; no Python-version-specific claim unless stated.",
+      "references": [
+        "https://docs.python.org/3/tutorial/datastructures.html"
+      ],
+      "text": "Comment accéder au premier élément d'un tuple nommé 'mon_tuple' ?",
+      "choices": [
+        "mon_tuple[0]",
+        "mon_tuple(0)",
+        "mon_tuple{0}",
+        "mon_tuple.first()"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "mon_tuple[0]",
+      "explanation": "Pour accéder au premier élément d'un tuple, on utilise l'indexation avec des crochets : mon_tuple[0].",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "C",
+      "prompt_version": "quiz-objective-v2",
+      "case_id": "PY-BEG-01",
+      "question_index": 3,
+      "learning_objective": "Built-in collections (list, tuple, dict, set) and their basic operations.",
+      "rubric": "Each question must be answerable from the cited tutorial page; exactly one choice correct; no Python-version-specific claim unless stated.",
+      "references": [
+        "https://docs.python.org/3/tutorial/datastructures.html"
+      ],
+      "text": "Quelle méthode permet d'ajouter un élément à un dictionnaire en Python ?",
+      "choices": [
+        "dico.add(key, value)",
+        "dico[key] = value",
+        "dico.append(key, value)",
+        "dico.insert(key, value)"
+      ],
+      "marked_answer_index": 1,
+      "marked_answer": "dico[key] = value",
+      "explanation": "Pour ajouter un élément à un dictionnaire, on utilise la syntaxe d'assignation : dico[key] = value.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "C",
+      "prompt_version": "quiz-objective-v2",
+      "case_id": "PY-BEG-01",
+      "question_index": 4,
+      "learning_objective": "Built-in collections (list, tuple, dict, set) and their basic operations.",
+      "rubric": "Each question must be answerable from the cited tutorial page; exactly one choice correct; no Python-version-specific claim unless stated.",
+      "references": [
+        "https://docs.python.org/3/tutorial/datastructures.html"
+      ],
+      "text": "Quel est le type de la collection suivante : {1, 2, 3} ?",
+      "choices": [
+        "liste",
+        "tuple",
+        "dictionnaire",
+        "ensemble"
+      ],
+      "marked_answer_index": 3,
+      "marked_answer": "ensemble",
+      "explanation": "La notation avec des accolades {} crée un ensemble en Python.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "C",
+      "prompt_version": "quiz-objective-v2",
+      "case_id": "PY-BEG-01",
+      "question_index": 5,
+      "learning_objective": "Built-in collections (list, tuple, dict, set) and their basic operations.",
+      "rubric": "Each question must be answerable from the cited tutorial page; exactly one choice correct; no Python-version-specific claim unless stated.",
+      "references": [
+        "https://docs.python.org/3/tutorial/datastructures.html"
+      ],
+      "text": "Quelle est la méthode pour obtenir la longueur d'une liste en Python ?",
+      "choices": [
+        "len(ma_liste)",
+        "ma_liste.length()",
+        "ma_liste.size()",
+        "length(ma_liste)"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "len(ma_liste)",
+      "explanation": "La fonction len() est utilisée pour obtenir la longueur d'une liste en Python.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "case_id": "PY-ADV-01",
+      "question_index": 1,
+      "learning_objective": "Classes, instance vs class attributes, and subtle object-model behaviour.",
+      "rubric": "Subtle cases must be decidable from the cited page; reject questions relying on unstated interpreter behaviour.",
+      "references": [
+        "https://docs.python.org/3/tutorial/classes.html"
+      ],
+      "text": "Quelle est la sortie de ce code : `print([x for x in range(5) if x % 2 == 0])` ?",
+      "choices": [
+        "[0, 2, 4]",
+        "[1, 3]",
+        "[0, 1, 2, 3, 4]",
+        "[2, 4]"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "[0, 2, 4]",
+      "explanation": "La compréhension de liste filtre les nombres pairs dans la plage de 0 à 4, donc la sortie est [0, 2, 4].",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "case_id": "PY-ADV-01",
+      "question_index": 2,
+      "learning_objective": "Classes, instance vs class attributes, and subtle object-model behaviour.",
+      "rubric": "Subtle cases must be decidable from the cited page; reject questions relying on unstated interpreter behaviour.",
+      "references": [
+        "https://docs.python.org/3/tutorial/classes.html"
+      ],
+      "text": "Quel est l'effet de l'utilisation de `@staticmethod` dans une classe ?",
+      "choices": [
+        "Elle permet d'accéder à l'instance de la classe.",
+        "Elle empêche l'accès à l'instance de la classe.",
+        "Elle crée une méthode qui peut être surchargée.",
+        "Elle rend la méthode privée."
+      ],
+      "marked_answer_index": 1,
+      "marked_answer": "Elle empêche l'accès à l'instance de la classe.",
+      "explanation": "Un `@staticmethod` est une méthode qui ne prend pas de référence à l'instance ou à la classe et peut être appelée sans créer une instance.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "case_id": "PY-ADV-01",
+      "question_index": 3,
+      "learning_objective": "Classes, instance vs class attributes, and subtle object-model behaviour.",
+      "rubric": "Subtle cases must be decidable from the cited page; reject questions relying on unstated interpreter behaviour.",
+      "references": [
+        "https://docs.python.org/3/tutorial/classes.html"
+      ],
+      "text": "Quel module Python est utilisé pour gérer des fichiers JSON ?",
+      "choices": [
+        "json",
+        "pickle",
+        "csv",
+        "xml"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "json",
+      "explanation": "Le module `json` est utilisé pour encoder et décoder des données JSON en Python.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "case_id": "PY-ADV-01",
+      "question_index": 4,
+      "learning_objective": "Classes, instance vs class attributes, and subtle object-model behaviour.",
+      "rubric": "Subtle cases must be decidable from the cited page; reject questions relying on unstated interpreter behaviour.",
+      "references": [
+        "https://docs.python.org/3/tutorial/classes.html"
+      ],
+      "text": "Quelle est la méthode pour obtenir la longueur d'un dictionnaire en Python ?",
+      "choices": [
+        "len(dictionnaire)",
+        "dictionnaire.length()",
+        "dictionnaire.size()",
+        "count(dictionnaire)"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "len(dictionnaire)",
+      "explanation": "La fonction `len()` est utilisée pour obtenir le nombre d'éléments dans un dictionnaire.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "case_id": "PY-ADV-01",
+      "question_index": 5,
+      "learning_objective": "Classes, instance vs class attributes, and subtle object-model behaviour.",
+      "rubric": "Subtle cases must be decidable from the cited page; reject questions relying on unstated interpreter behaviour.",
+      "references": [
+        "https://docs.python.org/3/tutorial/classes.html"
+      ],
+      "text": "Quel est le résultat de `set([1, 2, 2, 3])` ?",
+      "choices": [
+        "{1, 2, 3}",
+        "[1, 2, 3]",
+        "(1, 2, 3)",
+        "[1, 2, 2, 3]"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "{1, 2, 3}",
+      "explanation": "Un ensemble (`set`) ne contient que des éléments uniques, donc les doublons sont supprimés, résultant en {1, 2, 3}.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "case_id": "PY-ADV-01",
+      "question_index": 1,
+      "learning_objective": "Classes, instance vs class attributes, and subtle object-model behaviour.",
+      "rubric": "Subtle cases must be decidable from the cited page; reject questions relying on unstated interpreter behaviour.",
+      "references": [
+        "https://docs.python.org/3/tutorial/classes.html"
+      ],
+      "text": "Quel est le résultat de l'expression suivante : 'abc' + 1 ?",
+      "choices": [
+        "Lance une exception",
+        "Renvoie 'abc1'",
+        "Renvoie 'abc'",
+        "Renvoie '1abc'"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "Lance une exception",
+      "explanation": "L'addition d'une chaîne et d'un entier lance une exception TypeError.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "case_id": "PY-ADV-01",
+      "question_index": 2,
+      "learning_objective": "Classes, instance vs class attributes, and subtle object-model behaviour.",
+      "rubric": "Subtle cases must be decidable from the cited page; reject questions relying on unstated interpreter behaviour.",
+      "references": [
+        "https://docs.python.org/3/tutorial/classes.html"
+      ],
+      "text": "Quelle méthode permet de supprimer un élément d'un dictionnaire sans lever d'exception si la clé n'existe pas ?",
+      "choices": [
+        "del",
+        "remove()",
+        "discard()",
+        "pop()"
+      ],
+      "marked_answer_index": 3,
+      "marked_answer": "pop()",
+      "explanation": "La méthode pop() peut prendre un argument par défaut pour éviter une exception si la clé n'existe pas.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "case_id": "PY-ADV-01",
+      "question_index": 3,
+      "learning_objective": "Classes, instance vs class attributes, and subtle object-model behaviour.",
+      "rubric": "Subtle cases must be decidable from the cited page; reject questions relying on unstated interpreter behaviour.",
+      "references": [
+        "https://docs.python.org/3/tutorial/classes.html"
+      ],
+      "text": "Quel est l'effet de l'utilisation de 'is' pour comparer deux listes en Python ?",
+      "choices": [
+        "Compare les valeurs",
+        "Compare les identités",
+        "Compare les longueurs",
+        "Compare les types"
+      ],
+      "marked_answer_index": 1,
+      "marked_answer": "Compare les identités",
+      "explanation": "'is' compare si les deux objets référencent le même emplacement en mémoire, pas leurs valeurs.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "case_id": "PY-ADV-01",
+      "question_index": 4,
+      "learning_objective": "Classes, instance vs class attributes, and subtle object-model behaviour.",
+      "rubric": "Subtle cases must be decidable from the cited page; reject questions relying on unstated interpreter behaviour.",
+      "references": [
+        "https://docs.python.org/3/tutorial/classes.html"
+      ],
+      "text": "Quelle est la complexité temporelle de l'accès à un élément dans une liste Python ?",
+      "choices": [
+        "O(1)",
+        "O(n)",
+        "O(log n)",
+        "O(n^2)"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "O(1)",
+      "explanation": "L'accès à un élément dans une liste est en temps constant O(1).",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "case_id": "PY-ADV-01",
+      "question_index": 5,
+      "learning_objective": "Classes, instance vs class attributes, and subtle object-model behaviour.",
+      "rubric": "Subtle cases must be decidable from the cited page; reject questions relying on unstated interpreter behaviour.",
+      "references": [
+        "https://docs.python.org/3/tutorial/classes.html"
+      ],
+      "text": "Quel est l'effet de l'utilisation de 'global' dans une fonction ?",
+      "choices": [
+        "Crée une nouvelle variable locale",
+        "Modifie une variable de classe",
+        "Accède à une variable globale",
+        "Supprime une variable globale"
+      ],
+      "marked_answer_index": 2,
+      "marked_answer": "Accède à une variable globale",
+      "explanation": "L'utilisation de 'global' permet d'accéder et de modifier une variable définie dans le scope global.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "C",
+      "prompt_version": "quiz-objective-v2",
+      "case_id": "PY-ADV-01",
+      "question_index": 1,
+      "learning_objective": "Classes, instance vs class attributes, and subtle object-model behaviour.",
+      "rubric": "Subtle cases must be decidable from the cited page; reject questions relying on unstated interpreter behaviour.",
+      "references": [
+        "https://docs.python.org/3/tutorial/classes.html"
+      ],
+      "text": "Quel est le résultat de l'exécution du code suivant ?\n\nclass MaClasse:\n    attribut_classe = 0\n    def __init__(self, valeur):\n        self.attribut_instance = valeur\n\nobjet1 = MaClasse(5)\nobjet2 = MaClasse(10)\nobjet1.attribut_classe += 1\nprint(objet2.attribut_classe)",
+      "choices": [
+        "0",
+        "1",
+        "5",
+        "10"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "0",
+      "explanation": "L'attribut 'attribut_classe' est un attribut de classe, donc il est partagé entre toutes les instances. La modification de 'attribut_classe' via 'objet1' n'affecte pas 'objet2', qui affiche donc la valeur initiale de 0.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "C",
+      "prompt_version": "quiz-objective-v2",
+      "case_id": "PY-ADV-01",
+      "question_index": 2,
+      "learning_objective": "Classes, instance vs class attributes, and subtle object-model behaviour.",
+      "rubric": "Subtle cases must be decidable from the cited page; reject questions relying on unstated interpreter behaviour.",
+      "references": [
+        "https://docs.python.org/3/tutorial/classes.html"
+      ],
+      "text": "Quel sera le résultat de l'exécution suivante ?\n\nclass Test:\n    attribut = []\n\n    def ajouter(self, valeur):\n        self.attribut.append(valeur)\n\ninstance1 = Test()\ninstance2 = Test()\ninstance1.ajouter(1)\nprint(instance2.attribut)",
+      "choices": [
+        "[]",
+        "[1]",
+        "[1, 1]",
+        "[1, 2]"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "[]",
+      "explanation": "L'attribut 'attribut' est une liste partagée entre toutes les instances de la classe. Cependant, 'instance2' n'a pas modifié la liste, donc elle reste vide.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "C",
+      "prompt_version": "quiz-objective-v2",
+      "case_id": "PY-ADV-01",
+      "question_index": 3,
+      "learning_objective": "Classes, instance vs class attributes, and subtle object-model behaviour.",
+      "rubric": "Subtle cases must be decidable from the cited page; reject questions relying on unstated interpreter behaviour.",
+      "references": [
+        "https://docs.python.org/3/tutorial/classes.html"
+      ],
+      "text": "Considérez le code suivant :\n\nclass Compte:\n    solde = 0\n    def __init__(self, montant):\n        self.solde = montant\n\ncompte1 = Compte(100)\ncompte2 = Compte(200)\nprint(compte1.solde, compte2.solde, Compte.solde)",
+      "choices": [
+        "100 200 0",
+        "100 200 100",
+        "0 0 0",
+        "100 200 200"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "100 200 0",
+      "explanation": "Les instances 'compte1' et 'compte2' ont chacune leur propre attribut 'solde', qui masque l'attribut de classe 'solde'. Donc, 'compte1.solde' est 100, 'compte2.solde' est 200, et 'Compte.solde' reste 0.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "C",
+      "prompt_version": "quiz-objective-v2",
+      "case_id": "PY-ADV-01",
+      "question_index": 4,
+      "learning_objective": "Classes, instance vs class attributes, and subtle object-model behaviour.",
+      "rubric": "Subtle cases must be decidable from the cited page; reject questions relying on unstated interpreter behaviour.",
+      "references": [
+        "https://docs.python.org/3/tutorial/classes.html"
+      ],
+      "text": "Quel est le résultat de l'exécution suivante ?\n\nclass A:\n    x = 5\n\nclass B(A):\n    x = 10\n\nb = B()\nprint(b.x)\nA.x = 20\nprint(b.x)",
+      "choices": [
+        "5 5",
+        "10 10",
+        "10 20",
+        "20 10"
+      ],
+      "marked_answer_index": 1,
+      "marked_answer": "10 10",
+      "explanation": "L'attribut 'x' de l'instance 'b' est défini dans la classe 'B', donc il affiche 10. La modification de 'A.x' n'affecte pas 'b.x', qui reste 10.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "C",
+      "prompt_version": "quiz-objective-v2",
+      "case_id": "PY-ADV-01",
+      "question_index": 5,
+      "learning_objective": "Classes, instance vs class attributes, and subtle object-model behaviour.",
+      "rubric": "Subtle cases must be decidable from the cited page; reject questions relying on unstated interpreter behaviour.",
+      "references": [
+        "https://docs.python.org/3/tutorial/classes.html"
+      ],
+      "text": "Que va afficher le code suivant ?\n\nclass C:\n    def __init__(self):\n        self.valeur = 0\n        C.valeur = 1\n\nc1 = C()\nc2 = C()\nprint(c1.valeur, c2.valeur, C.valeur)",
+      "choices": [
+        "0 0 1",
+        "1 1 1",
+        "0 1 1",
+        "1 0 1"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "0 0 1",
+      "explanation": "Chaque instance 'c1' et 'c2' a son propre attribut 'valeur' initialisé à 0. L'attribut de classe 'valeur' est défini à 1, mais cela ne change pas les attributs d'instance.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "case_id": "DJ-BEG-01",
+      "question_index": 1,
+      "learning_objective": "Django models: fields, relationships and what a model represents.",
+      "rubric": "Answers must agree with the cited model documentation of the stable Django release.",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/models/"
+      ],
+      "text": "Quel est le framework web basé sur Python qui permet de créer des applications rapidement et facilement ?",
+      "choices": [
+        "Django",
+        "Flask",
+        "Pyramid",
+        "FastAPI"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "Django",
+      "explanation": "Django est un framework web de haut niveau qui encourage le développement rapide et pragmatique.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "case_id": "DJ-BEG-01",
+      "question_index": 2,
+      "learning_objective": "Django models: fields, relationships and what a model represents.",
+      "rubric": "Answers must agree with the cited model documentation of the stable Django release.",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/models/"
+      ],
+      "text": "Quelle commande est utilisée pour créer un nouveau projet Django ?",
+      "choices": [
+        "django-admin startproject",
+        "python manage.py runserver",
+        "django-admin startapp",
+        "python manage.py makemigrations"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "django-admin startproject",
+      "explanation": "La commande 'django-admin startproject' est utilisée pour créer un nouveau projet Django.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "case_id": "DJ-BEG-01",
+      "question_index": 3,
+      "learning_objective": "Django models: fields, relationships and what a model represents.",
+      "rubric": "Answers must agree with the cited model documentation of the stable Django release.",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/models/"
+      ],
+      "text": "Quel fichier contient les paramètres de configuration d'un projet Django ?",
+      "choices": [
+        "settings.py",
+        "urls.py",
+        "views.py",
+        "models.py"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "settings.py",
+      "explanation": "Le fichier 'settings.py' contient les paramètres de configuration d'un projet Django.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "case_id": "DJ-BEG-01",
+      "question_index": 4,
+      "learning_objective": "Django models: fields, relationships and what a model represents.",
+      "rubric": "Answers must agree with the cited model documentation of the stable Django release.",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/models/"
+      ],
+      "text": "Quel est le rôle de l'ORM dans Django ?",
+      "choices": [
+        "Gérer les fichiers statiques",
+        "Interagir avec la base de données",
+        "Définir les URL",
+        "Créer des formulaires"
+      ],
+      "marked_answer_index": 1,
+      "marked_answer": "Interagir avec la base de données",
+      "explanation": "L'ORM (Object-Relational Mapping) de Django permet d'interagir avec la base de données en utilisant des objets Python.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "case_id": "DJ-BEG-01",
+      "question_index": 5,
+      "learning_objective": "Django models: fields, relationships and what a model represents.",
+      "rubric": "Answers must agree with the cited model documentation of the stable Django release.",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/models/"
+      ],
+      "text": "Comment appelle-t-on le fichier qui définit les routes d'une application Django ?",
+      "choices": [
+        "urls.py",
+        "views.py",
+        "models.py",
+        "admin.py"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "urls.py",
+      "explanation": "Le fichier 'urls.py' est utilisé pour définir les routes et les URL de l'application Django.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "case_id": "DJ-BEG-01",
+      "question_index": 1,
+      "learning_objective": "Django models: fields, relationships and what a model represents.",
+      "rubric": "Answers must agree with the cited model documentation of the stable Django release.",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/models/"
+      ],
+      "text": "Quel est le fichier principal de configuration d'un projet Django ?",
+      "choices": [
+        "settings.py",
+        "urls.py",
+        "views.py",
+        "models.py"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "settings.py",
+      "explanation": "Le fichier settings.py contient la configuration de base du projet Django.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "case_id": "DJ-BEG-01",
+      "question_index": 2,
+      "learning_objective": "Django models: fields, relationships and what a model represents.",
+      "rubric": "Answers must agree with the cited model documentation of the stable Django release.",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/models/"
+      ],
+      "text": "Quelle commande est utilisée pour créer une nouvelle application dans un projet Django ?",
+      "choices": [
+        "django-admin startapp",
+        "django-admin startproject",
+        "python manage.py runserver",
+        "python manage.py makemigrations"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "django-admin startapp",
+      "explanation": "La commande django-admin startapp permet de créer une nouvelle application au sein d'un projet Django.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "case_id": "DJ-BEG-01",
+      "question_index": 3,
+      "learning_objective": "Django models: fields, relationships and what a model represents.",
+      "rubric": "Answers must agree with the cited model documentation of the stable Django release.",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/models/"
+      ],
+      "text": "Quel est le rôle des modèles dans Django ?",
+      "choices": [
+        "Gérer la logique de l'application",
+        "Définir la structure des données",
+        "Gérer les requêtes HTTP",
+        "Rendre les templates HTML"
+      ],
+      "marked_answer_index": 1,
+      "marked_answer": "Définir la structure des données",
+      "explanation": "Les modèles dans Django définissent la structure des données et les interactions avec la base de données.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "case_id": "DJ-BEG-01",
+      "question_index": 4,
+      "learning_objective": "Django models: fields, relationships and what a model represents.",
+      "rubric": "Answers must agree with the cited model documentation of the stable Django release.",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/models/"
+      ],
+      "text": "Quel décorateur est utilisé pour créer une vue basée sur une fonction dans Django ?",
+      "choices": [
+        "@app.route",
+        "@login_required",
+        "@api_view",
+        "@require_http_methods"
+      ],
+      "marked_answer_index": 3,
+      "marked_answer": "@require_http_methods",
+      "explanation": "Le décorateur @require_http_methods permet de spécifier les méthodes HTTP autorisées pour une vue.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "case_id": "DJ-BEG-01",
+      "question_index": 5,
+      "learning_objective": "Django models: fields, relationships and what a model represents.",
+      "rubric": "Answers must agree with the cited model documentation of the stable Django release.",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/models/"
+      ],
+      "text": "Quel est le format standard pour définir une API dans Django ?",
+      "choices": [
+        "Django REST framework",
+        "Django API toolkit",
+        "Django Web API",
+        "Django API framework"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "Django REST framework",
+      "explanation": "Django REST framework est le format standard pour créer des API dans Django.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "C",
+      "prompt_version": "quiz-objective-v2",
+      "case_id": "DJ-BEG-01",
+      "question_index": 1,
+      "learning_objective": "Django models: fields, relationships and what a model represents.",
+      "rubric": "Answers must agree with the cited model documentation of the stable Django release.",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/models/"
+      ],
+      "text": "Quel champ de modèle Django est utilisé pour stocker une chaîne de caractères?",
+      "choices": [
+        "CharField",
+        "TextField",
+        "IntegerField",
+        "BooleanField"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "CharField",
+      "explanation": "CharField est utilisé pour stocker des chaînes de caractères de longueur limitée.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "C",
+      "prompt_version": "quiz-objective-v2",
+      "case_id": "DJ-BEG-01",
+      "question_index": 2,
+      "learning_objective": "Django models: fields, relationships and what a model represents.",
+      "rubric": "Answers must agree with the cited model documentation of the stable Django release.",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/models/"
+      ],
+      "text": "Quelle méthode est utilisée pour sauvegarder une instance d'un modèle Django dans la base de données?",
+      "choices": [
+        ".create()",
+        ".save()",
+        ".update()",
+        ".insert()"
+      ],
+      "marked_answer_index": 1,
+      "marked_answer": ".save()",
+      "explanation": ".save() est la méthode utilisée pour persister une instance d'un modèle dans la base de données.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "C",
+      "prompt_version": "quiz-objective-v2",
+      "case_id": "DJ-BEG-01",
+      "question_index": 3,
+      "learning_objective": "Django models: fields, relationships and what a model represents.",
+      "rubric": "Answers must agree with the cited model documentation of the stable Django release.",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/models/"
+      ],
+      "text": "Quel type de relation un champ ForeignKey représente-t-il dans un modèle Django?",
+      "choices": [
+        "Relation un-à-un",
+        "Relation un-à-plusieurs",
+        "Relation plusieurs-à-plusieurs",
+        "Relation optionnelle"
+      ],
+      "marked_answer_index": 1,
+      "marked_answer": "Relation un-à-plusieurs",
+      "explanation": "ForeignKey représente une relation un-à-plusieurs entre deux modèles.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "C",
+      "prompt_version": "quiz-objective-v2",
+      "case_id": "DJ-BEG-01",
+      "question_index": 4,
+      "learning_objective": "Django models: fields, relationships and what a model represents.",
+      "rubric": "Answers must agree with the cited model documentation of the stable Django release.",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/models/"
+      ],
+      "text": "Quel champ de modèle est utilisé pour stocker un nombre entier?",
+      "choices": [
+        "CharField",
+        "TextField",
+        "IntegerField",
+        "FloatField"
+      ],
+      "marked_answer_index": 2,
+      "marked_answer": "IntegerField",
+      "explanation": "IntegerField est utilisé pour stocker des valeurs entières dans un modèle Django.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "C",
+      "prompt_version": "quiz-objective-v2",
+      "case_id": "DJ-BEG-01",
+      "question_index": 5,
+      "learning_objective": "Django models: fields, relationships and what a model represents.",
+      "rubric": "Answers must agree with the cited model documentation of the stable Django release.",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/models/"
+      ],
+      "text": "Quel est le rôle principal d'un modèle dans Django?",
+      "choices": [
+        "Définir la logique de l'application",
+        "Représenter une table de base de données",
+        "Gérer les requêtes HTTP",
+        "Créer des vues"
+      ],
+      "marked_answer_index": 1,
+      "marked_answer": "Représenter une table de base de données",
+      "explanation": "Un modèle dans Django représente une table de base de données et définit la structure des données.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "case_id": "DJ-INT-01",
+      "question_index": 1,
+      "learning_objective": "QuerySets: filtering, lazy evaluation and common query patterns.",
+      "rubric": "Answers must agree with the cited queries documentation; reject invented ORM methods.",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/queries/"
+      ],
+      "text": "Quelle commande est utilisée pour créer une nouvelle application Django ?",
+      "choices": [
+        "django-admin startapp <nom_app>",
+        "django-admin createapp <nom_app>",
+        "python manage.py startapp <nom_app>",
+        "python manage.py createapp <nom_app>"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "django-admin startapp <nom_app>",
+      "explanation": "La commande correcte pour créer une nouvelle application dans un projet Django est 'django-admin startapp <nom_app>'.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "case_id": "DJ-INT-01",
+      "question_index": 2,
+      "learning_objective": "QuerySets: filtering, lazy evaluation and common query patterns.",
+      "rubric": "Answers must agree with the cited queries documentation; reject invented ORM methods.",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/queries/"
+      ],
+      "text": "Quel décorateur est utilisé pour restreindre l'accès à une vue en fonction des permissions de l'utilisateur ?",
+      "choices": [
+        "@login_required",
+        "@permission_required",
+        "@user_passes_test",
+        "@require_http_methods"
+      ],
+      "marked_answer_index": 1,
+      "marked_answer": "@permission_required",
+      "explanation": "Le décorateur '@permission_required' est utilisé pour restreindre l'accès à une vue en fonction des permissions de l'utilisateur.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "case_id": "DJ-INT-01",
+      "question_index": 3,
+      "learning_objective": "QuerySets: filtering, lazy evaluation and common query patterns.",
+      "rubric": "Answers must agree with the cited queries documentation; reject invented ORM methods.",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/queries/"
+      ],
+      "text": "Dans quel fichier de configuration Django peut-on définir des paramètres de base de données ?",
+      "choices": [
+        "settings.py",
+        "urls.py",
+        "wsgi.py",
+        "manage.py"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "settings.py",
+      "explanation": "Les paramètres de base de données sont définis dans le fichier 'settings.py' du projet Django.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "case_id": "DJ-INT-01",
+      "question_index": 4,
+      "learning_objective": "QuerySets: filtering, lazy evaluation and common query patterns.",
+      "rubric": "Answers must agree with the cited queries documentation; reject invented ORM methods.",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/queries/"
+      ],
+      "text": "Quelle méthode est utilisée pour sérialiser des objets dans Django REST Framework ?",
+      "choices": [
+        "serialize()",
+        "to_representation()",
+        "save()",
+        "create()"
+      ],
+      "marked_answer_index": 1,
+      "marked_answer": "to_representation()",
+      "explanation": "La méthode 'to_representation()' est utilisée pour sérialiser des objets dans Django REST Framework.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "case_id": "DJ-INT-01",
+      "question_index": 5,
+      "learning_objective": "QuerySets: filtering, lazy evaluation and common query patterns.",
+      "rubric": "Answers must agree with the cited queries documentation; reject invented ORM methods.",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/queries/"
+      ],
+      "text": "Quel est l'objectif principal des migrations dans Django ?",
+      "choices": [
+        "Gérer les fichiers statiques",
+        "Synchroniser la base de données avec les modèles",
+        "Créer des vues",
+        "Définir des URL"
+      ],
+      "marked_answer_index": 1,
+      "marked_answer": "Synchroniser la base de données avec les modèles",
+      "explanation": "Les migrations dans Django servent à synchroniser la base de données avec les modèles définis dans le code.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "case_id": "DJ-INT-01",
+      "question_index": 1,
+      "learning_objective": "QuerySets: filtering, lazy evaluation and common query patterns.",
+      "rubric": "Answers must agree with the cited queries documentation; reject invented ORM methods.",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/queries/"
+      ],
+      "text": "Quel décorateur est utilisé pour créer une vue basée sur une classe dans Django ?",
+      "choices": [
+        "@method_decorator",
+        "@class_view",
+        "@view_decorator",
+        "@cbv"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "@method_decorator",
+      "explanation": "Le décorateur @method_decorator est utilisé pour appliquer des décorateurs à des méthodes de vues basées sur des classes.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "case_id": "DJ-INT-01",
+      "question_index": 2,
+      "learning_objective": "QuerySets: filtering, lazy evaluation and common query patterns.",
+      "rubric": "Answers must agree with the cited queries documentation; reject invented ORM methods.",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/queries/"
+      ],
+      "text": "Dans Django, quel fichier est généralement utilisé pour définir les modèles ?",
+      "choices": [
+        "models.py",
+        "views.py",
+        "urls.py",
+        "admin.py"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "models.py",
+      "explanation": "Le fichier models.py est l'endroit où les modèles de données sont définis dans une application Django.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "case_id": "DJ-INT-01",
+      "question_index": 3,
+      "learning_objective": "QuerySets: filtering, lazy evaluation and common query patterns.",
+      "rubric": "Answers must agree with the cited queries documentation; reject invented ORM methods.",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/queries/"
+      ],
+      "text": "Quelle commande est utilisée pour exécuter les tests dans un projet Django ?",
+      "choices": [
+        "python manage.py runserver",
+        "python manage.py test",
+        "python manage.py migrate",
+        "python manage.py shell"
+      ],
+      "marked_answer_index": 1,
+      "marked_answer": "python manage.py test",
+      "explanation": "La commande python manage.py test est utilisée pour exécuter les tests définis dans un projet Django.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "case_id": "DJ-INT-01",
+      "question_index": 4,
+      "learning_objective": "QuerySets: filtering, lazy evaluation and common query patterns.",
+      "rubric": "Answers must agree with the cited queries documentation; reject invented ORM methods.",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/queries/"
+      ],
+      "text": "Quelle méthode est utilisée pour sérialiser des données dans une API Django REST Framework ?",
+      "choices": [
+        "serialize()",
+        "to_representation()",
+        "save()",
+        "create()"
+      ],
+      "marked_answer_index": 1,
+      "marked_answer": "to_representation()",
+      "explanation": "La méthode to_representation() est utilisée pour sérialiser les données dans une API utilisant Django REST Framework.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "case_id": "DJ-INT-01",
+      "question_index": 5,
+      "learning_objective": "QuerySets: filtering, lazy evaluation and common query patterns.",
+      "rubric": "Answers must agree with the cited queries documentation; reject invented ORM methods.",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/queries/"
+      ],
+      "text": "Quel est le rôle du fichier urls.py dans une application Django ?",
+      "choices": [
+        "Définir les modèles",
+        "Gérer les migrations",
+        "Configurer les routes",
+        "Gérer les tests"
+      ],
+      "marked_answer_index": 2,
+      "marked_answer": "Configurer les routes",
+      "explanation": "Le fichier urls.py est utilisé pour configurer les routes et l'acheminement des requêtes dans une application Django.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "C",
+      "prompt_version": "quiz-objective-v2",
+      "case_id": "DJ-INT-01",
+      "question_index": 1,
+      "learning_objective": "QuerySets: filtering, lazy evaluation and common query patterns.",
+      "rubric": "Answers must agree with the cited queries documentation; reject invented ORM methods.",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/queries/"
+      ],
+      "text": "Quelle méthode est utilisée pour filtrer les objets d'un modèle en fonction de critères spécifiques ?",
+      "choices": [
+        "filter()",
+        "select()",
+        "retrieve()",
+        "get_objects()"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "filter()",
+      "explanation": "La méthode filter() est utilisée pour récupérer les objets qui correspondent à des critères spécifiques dans un QuerySet.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "C",
+      "prompt_version": "quiz-objective-v2",
+      "case_id": "DJ-INT-01",
+      "question_index": 2,
+      "learning_objective": "QuerySets: filtering, lazy evaluation and common query patterns.",
+      "rubric": "Answers must agree with the cited queries documentation; reject invented ORM methods.",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/queries/"
+      ],
+      "text": "Quel est l'effet de l'évaluation paresseuse des QuerySets dans Django ?",
+      "choices": [
+        "Les requêtes sont exécutées immédiatement.",
+        "Les requêtes sont exécutées lors de l'itération sur le QuerySet.",
+        "Les requêtes ne peuvent pas être modifiées après leur création.",
+        "Les résultats sont stockés en mémoire pour un accès rapide."
+      ],
+      "marked_answer_index": 1,
+      "marked_answer": "Les requêtes sont exécutées lors de l'itération sur le QuerySet.",
+      "explanation": "L'évaluation paresseuse signifie que les requêtes ne sont exécutées que lorsque cela est nécessaire, par exemple lors de l'itération sur le QuerySet.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "C",
+      "prompt_version": "quiz-objective-v2",
+      "case_id": "DJ-INT-01",
+      "question_index": 3,
+      "learning_objective": "QuerySets: filtering, lazy evaluation and common query patterns.",
+      "rubric": "Answers must agree with the cited queries documentation; reject invented ORM methods.",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/queries/"
+      ],
+      "text": "Quelle méthode permet de récupérer un seul objet correspondant à un critère donné dans Django ?",
+      "choices": [
+        "get()",
+        "filter()",
+        "all()",
+        "first()"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "get()",
+      "explanation": "La méthode get() est utilisée pour récupérer un seul objet correspondant à un critère donné, levant une exception si aucun ou plusieurs objets sont trouvés.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "C",
+      "prompt_version": "quiz-objective-v2",
+      "case_id": "DJ-INT-01",
+      "question_index": 4,
+      "learning_objective": "QuerySets: filtering, lazy evaluation and common query patterns.",
+      "rubric": "Answers must agree with the cited queries documentation; reject invented ORM methods.",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/queries/"
+      ],
+      "text": "Comment peut-on obtenir tous les objets d'un modèle en Django ?",
+      "choices": [
+        "all()",
+        "list()",
+        "retrieve_all()",
+        "get_all()"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "all()",
+      "explanation": "La méthode all() est utilisée pour récupérer tous les objets d'un modèle dans un QuerySet.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "C",
+      "prompt_version": "quiz-objective-v2",
+      "case_id": "DJ-INT-01",
+      "question_index": 5,
+      "learning_objective": "QuerySets: filtering, lazy evaluation and common query patterns.",
+      "rubric": "Answers must agree with the cited queries documentation; reject invented ORM methods.",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/queries/"
+      ],
+      "text": "Quelle méthode permet de compter le nombre d'objets dans un QuerySet ?",
+      "choices": [
+        "count()",
+        "size()",
+        "length()",
+        "total()"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "count()",
+      "explanation": "La méthode count() est utilisée pour compter le nombre d'objets dans un QuerySet.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "case_id": "RE-INT-01",
+      "question_index": 1,
+      "learning_objective": "useState and useEffect: state updates and effect dependencies.",
+      "rubric": "Answers must agree with the cited react.dev reference pages; reject class-component-only or deprecated guidance.",
+      "references": [
+        "https://react.dev/reference/react/useState",
+        "https://react.dev/reference/react/useEffect"
+      ],
+      "text": "Quelle méthode du cycle de vie est appelée juste avant que le composant ne soit retiré du DOM ?",
+      "choices": [
+        "componentWillUnmount",
+        "componentDidMount",
+        "componentDidUpdate",
+        "render"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "componentWillUnmount",
+      "explanation": "La méthode componentWillUnmount est appelée juste avant que le composant ne soit retiré du DOM, ce qui permet de nettoyer les ressources ou les abonnements.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "case_id": "RE-INT-01",
+      "question_index": 2,
+      "learning_objective": "useState and useEffect: state updates and effect dependencies.",
+      "rubric": "Answers must agree with the cited react.dev reference pages; reject class-component-only or deprecated guidance.",
+      "references": [
+        "https://react.dev/reference/react/useState",
+        "https://react.dev/reference/react/useEffect"
+      ],
+      "text": "Quel hook permet de gérer l'état local d'un composant fonctionnel ?",
+      "choices": [
+        "useEffect",
+        "useState",
+        "useContext",
+        "useReducer"
+      ],
+      "marked_answer_index": 1,
+      "marked_answer": "useState",
+      "explanation": "Le hook useState est utilisé pour gérer l'état local dans un composant fonctionnel.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "case_id": "RE-INT-01",
+      "question_index": 3,
+      "learning_objective": "useState and useEffect: state updates and effect dependencies.",
+      "rubric": "Answers must agree with the cited react.dev reference pages; reject class-component-only or deprecated guidance.",
+      "references": [
+        "https://react.dev/reference/react/useState",
+        "https://react.dev/reference/react/useEffect"
+      ],
+      "text": "Quelle est la principale différence entre un composant de classe et un composant fonctionnel ?",
+      "choices": [
+        "Les composants de classe ne peuvent pas utiliser des hooks.",
+        "Les composants fonctionnels ne peuvent pas avoir d'état.",
+        "Les composants de classe sont plus performants.",
+        "Les composants fonctionnels ne peuvent pas avoir de méthodes."
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "Les composants de classe ne peuvent pas utiliser des hooks.",
+      "explanation": "Les composants de classe ne peuvent pas utiliser des hooks, tandis que les composants fonctionnels peuvent utiliser des hooks pour gérer l'état et les effets.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "case_id": "RE-INT-01",
+      "question_index": 4,
+      "learning_objective": "useState and useEffect: state updates and effect dependencies.",
+      "rubric": "Answers must agree with the cited react.dev reference pages; reject class-component-only or deprecated guidance.",
+      "references": [
+        "https://react.dev/reference/react/useState",
+        "https://react.dev/reference/react/useEffect"
+      ],
+      "text": "Quelle fonction est utilisée pour créer un contexte dans React ?",
+      "choices": [
+        "createContext",
+        "useContext",
+        "setContext",
+        "getContext"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "createContext",
+      "explanation": "La fonction createContext est utilisée pour créer un contexte dans React, permettant de partager des données entre des composants sans avoir à passer des props manuellement.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "case_id": "RE-INT-01",
+      "question_index": 5,
+      "learning_objective": "useState and useEffect: state updates and effect dependencies.",
+      "rubric": "Answers must agree with the cited react.dev reference pages; reject class-component-only or deprecated guidance.",
+      "references": [
+        "https://react.dev/reference/react/useState",
+        "https://react.dev/reference/react/useEffect"
+      ],
+      "text": "Quel est le but de la fonction useEffect ?",
+      "choices": [
+        "Gérer l'état local d'un composant.",
+        "Effectuer des effets de bord dans un composant.",
+        "Rendre un composant conditionnellement.",
+        "Créer un contexte."
+      ],
+      "marked_answer_index": 1,
+      "marked_answer": "Effectuer des effets de bord dans un composant.",
+      "explanation": "La fonction useEffect est utilisée pour effectuer des effets de bord dans un composant, comme des appels API ou des abonnements.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "case_id": "RE-INT-01",
+      "question_index": 1,
+      "learning_objective": "useState and useEffect: state updates and effect dependencies.",
+      "rubric": "Answers must agree with the cited react.dev reference pages; reject class-component-only or deprecated guidance.",
+      "references": [
+        "https://react.dev/reference/react/useState",
+        "https://react.dev/reference/react/useEffect"
+      ],
+      "text": "Quel hook est utilisé pour gérer l'état dans un composant fonctionnel ?",
+      "choices": [
+        "useState",
+        "useEffect",
+        "useContext",
+        "useReducer"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "useState",
+      "explanation": "useState est le hook qui permet de déclarer un état local dans un composant fonctionnel.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "case_id": "RE-INT-01",
+      "question_index": 2,
+      "learning_objective": "useState and useEffect: state updates and effect dependencies.",
+      "rubric": "Answers must agree with the cited react.dev reference pages; reject class-component-only or deprecated guidance.",
+      "references": [
+        "https://react.dev/reference/react/useState",
+        "https://react.dev/reference/react/useEffect"
+      ],
+      "text": "Quelle méthode est utilisée pour mettre à jour l'état d'un composant dans React ?",
+      "choices": [
+        "setState",
+        "updateState",
+        "changeState",
+        "modifyState"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "setState",
+      "explanation": "setState est la méthode utilisée pour mettre à jour l'état d'un composant en React.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "case_id": "RE-INT-01",
+      "question_index": 3,
+      "learning_objective": "useState and useEffect: state updates and effect dependencies.",
+      "rubric": "Answers must agree with the cited react.dev reference pages; reject class-component-only or deprecated guidance.",
+      "references": [
+        "https://react.dev/reference/react/useState",
+        "https://react.dev/reference/react/useEffect"
+      ],
+      "text": "Quel hook permet d'effectuer des effets de bord dans un composant fonctionnel ?",
+      "choices": [
+        "useEffect",
+        "useMemo",
+        "useCallback",
+        "useLayoutEffect"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "useEffect",
+      "explanation": "useEffect est le hook qui permet d'exécuter des effets de bord tels que des appels API ou des abonnements.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "case_id": "RE-INT-01",
+      "question_index": 4,
+      "learning_objective": "useState and useEffect: state updates and effect dependencies.",
+      "rubric": "Answers must agree with the cited react.dev reference pages; reject class-component-only or deprecated guidance.",
+      "references": [
+        "https://react.dev/reference/react/useState",
+        "https://react.dev/reference/react/useEffect"
+      ],
+      "text": "Comment peut-on passer des données d'un composant parent à un composant enfant ?",
+      "choices": [
+        "Props",
+        "State",
+        "Context",
+        "Refs"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "Props",
+      "explanation": "Les props sont utilisées pour passer des données d'un composant parent à un composant enfant.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "case_id": "RE-INT-01",
+      "question_index": 5,
+      "learning_objective": "useState and useEffect: state updates and effect dependencies.",
+      "rubric": "Answers must agree with the cited react.dev reference pages; reject class-component-only or deprecated guidance.",
+      "references": [
+        "https://react.dev/reference/react/useState",
+        "https://react.dev/reference/react/useEffect"
+      ],
+      "text": "Quelle est la fonction principale du hook useMemo ?",
+      "choices": [
+        "Mémoriser une valeur calculée",
+        "Gérer l'état",
+        "Créer un effet de bord",
+        "Récupérer des données"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "Mémoriser une valeur calculée",
+      "explanation": "useMemo est utilisé pour mémoriser une valeur calculée afin d'optimiser les performances.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "C",
+      "prompt_version": "quiz-objective-v2",
+      "case_id": "RE-INT-01",
+      "question_index": 1,
+      "learning_objective": "useState and useEffect: state updates and effect dependencies.",
+      "rubric": "Answers must agree with the cited react.dev reference pages; reject class-component-only or deprecated guidance.",
+      "references": [
+        "https://react.dev/reference/react/useState",
+        "https://react.dev/reference/react/useEffect"
+      ],
+      "text": "Quel hook est utilisé pour gérer l'état local dans un composant fonctionnel React ?",
+      "choices": [
+        "useState",
+        "useEffect",
+        "useContext",
+        "useReducer"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "useState",
+      "explanation": "Le hook useState est spécifiquement conçu pour gérer l'état local dans des composants fonctionnels.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "C",
+      "prompt_version": "quiz-objective-v2",
+      "case_id": "RE-INT-01",
+      "question_index": 2,
+      "learning_objective": "useState and useEffect: state updates and effect dependencies.",
+      "rubric": "Answers must agree with the cited react.dev reference pages; reject class-component-only or deprecated guidance.",
+      "references": [
+        "https://react.dev/reference/react/useState",
+        "https://react.dev/reference/react/useEffect"
+      ],
+      "text": "Quelle dépendance doit être fournie à useEffect pour exécuter l'effet uniquement lors du premier rendu ?",
+      "choices": [
+        "[]",
+        "[state]",
+        "[props]",
+        "[state, props]"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "[]",
+      "explanation": "En passant un tableau vide [] comme dépendance à useEffect, l'effet ne s'exécute qu'une seule fois lors du premier rendu.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "C",
+      "prompt_version": "quiz-objective-v2",
+      "case_id": "RE-INT-01",
+      "question_index": 3,
+      "learning_objective": "useState and useEffect: state updates and effect dependencies.",
+      "rubric": "Answers must agree with the cited react.dev reference pages; reject class-component-only or deprecated guidance.",
+      "references": [
+        "https://react.dev/reference/react/useState",
+        "https://react.dev/reference/react/useEffect"
+      ],
+      "text": "Comment peut-on mettre à jour l'état à l'aide de useState ?",
+      "choices": [
+        "setState(newState)",
+        "setState(prevState => newState)",
+        "setState(prevState => prevState + 1)",
+        "setState(newState => newState)"
+      ],
+      "marked_answer_index": 2,
+      "marked_answer": "setState(prevState => prevState + 1)",
+      "explanation": "setState(prevState => prevState + 1) utilise la fonction de mise à jour pour incrémenter l'état précédent, ce qui est une bonne pratique.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "C",
+      "prompt_version": "quiz-objective-v2",
+      "case_id": "RE-INT-01",
+      "question_index": 4,
+      "learning_objective": "useState and useEffect: state updates and effect dependencies.",
+      "rubric": "Answers must agree with the cited react.dev reference pages; reject class-component-only or deprecated guidance.",
+      "references": [
+        "https://react.dev/reference/react/useState",
+        "https://react.dev/reference/react/useEffect"
+      ],
+      "text": "Que se passe-t-il si une dépendance de useEffect change ?",
+      "choices": [
+        "L'effet s'exécute à nouveau",
+        "L'effet ne s'exécute jamais",
+        "L'effet s'exécute une seule fois",
+        "L'effet s'exécute en boucle"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "L'effet s'exécute à nouveau",
+      "explanation": "Lorsque l'une des dépendances de useEffect change, l'effet s'exécute à nouveau pour refléter les nouvelles valeurs.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "C",
+      "prompt_version": "quiz-objective-v2",
+      "case_id": "RE-INT-01",
+      "question_index": 5,
+      "learning_objective": "useState and useEffect: state updates and effect dependencies.",
+      "rubric": "Answers must agree with the cited react.dev reference pages; reject class-component-only or deprecated guidance.",
+      "references": [
+        "https://react.dev/reference/react/useState",
+        "https://react.dev/reference/react/useEffect"
+      ],
+      "text": "Quel est l'impact de ne pas spécifier de dépendances dans useEffect ?",
+      "choices": [
+        "L'effet s'exécute à chaque rendu",
+        "L'effet ne s'exécute jamais",
+        "L'effet s'exécute une seule fois",
+        "L'effet s'exécute uniquement lors du premier rendu"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "L'effet s'exécute à chaque rendu",
+      "explanation": "Si aucune dépendance n'est spécifiée, useEffect s'exécute après chaque rendu du composant.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "case_id": "TS-ADV-01",
+      "question_index": 1,
+      "learning_objective": "Type narrowing (typeof, truthiness, discriminated unions).",
+      "rubric": "Answers must agree with the cited handbook page; code snippets must be valid TypeScript.",
+      "references": [
+        "https://www.typescriptlang.org/docs/handbook/2/narrowing.html"
+      ],
+      "text": "Quelle est la fonctionnalité principale des 'Mapped Types' en TypeScript ?",
+      "choices": [
+        "Créer des types basés sur d'autres types en transformant leurs propriétés",
+        "Définir des types de données immuables",
+        "Gérer les promesses de manière asynchrone",
+        "Créer des classes abstraites"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "Créer des types basés sur d'autres types en transformant leurs propriétés",
+      "explanation": "Les 'Mapped Types' permettent de créer de nouveaux types en transformant les propriétés d'un type existant, ce qui est très utile pour la réutilisation et la flexibilité des types.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "case_id": "TS-ADV-01",
+      "question_index": 2,
+      "learning_objective": "Type narrowing (typeof, truthiness, discriminated unions).",
+      "rubric": "Answers must agree with the cited handbook page; code snippets must be valid TypeScript.",
+      "references": [
+        "https://www.typescriptlang.org/docs/handbook/2/narrowing.html"
+      ],
+      "text": "Quel mot-clé est utilisé pour déclarer un type qui peut être soit un type soit `null` en TypeScript ?",
+      "choices": [
+        "undefined",
+        "nullable",
+        "nullish",
+        "null"
+      ],
+      "marked_answer_index": 2,
+      "marked_answer": "nullish",
+      "explanation": "Le mot-clé 'nullish' est utilisé pour indiquer un type qui peut être soit un type donné soit 'null' ou 'undefined' en TypeScript.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "case_id": "TS-ADV-01",
+      "question_index": 3,
+      "learning_objective": "Type narrowing (typeof, truthiness, discriminated unions).",
+      "rubric": "Answers must agree with the cited handbook page; code snippets must be valid TypeScript.",
+      "references": [
+        "https://www.typescriptlang.org/docs/handbook/2/narrowing.html"
+      ],
+      "text": "Quelle est la différence entre 'interface' et 'type' en TypeScript ?",
+      "choices": [
+        "Les interfaces ne peuvent pas être étendues, alors que les types le peuvent.",
+        "Les types peuvent représenter des unions, tandis que les interfaces ne le peuvent pas.",
+        "Les interfaces sont plus performantes que les types.",
+        "Il n'y a aucune différence, ils sont interchangeables."
+      ],
+      "marked_answer_index": 1,
+      "marked_answer": "Les types peuvent représenter des unions, tandis que les interfaces ne le peuvent pas.",
+      "explanation": "Les types peuvent représenter des unions et des intersections, tandis que les interfaces sont principalement utilisées pour définir des structures d'objets et peuvent être étendues.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "case_id": "TS-ADV-01",
+      "question_index": 4,
+      "learning_objective": "Type narrowing (typeof, truthiness, discriminated unions).",
+      "rubric": "Answers must agree with the cited handbook page; code snippets must be valid TypeScript.",
+      "references": [
+        "https://www.typescriptlang.org/docs/handbook/2/narrowing.html"
+      ],
+      "text": "Comment peut-on déclarer un type générique en TypeScript ?",
+      "choices": [
+        "function myFunction<T>(arg: T): T {}",
+        "function myFunction(arg: T): T {} where T is type",
+        "function myFunction<T>(arg: T): void {}",
+        "function myFunction(arg: T): void {} where T is type"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "function myFunction<T>(arg: T): T {}",
+      "explanation": "La syntaxe correcte pour déclarer un type générique en TypeScript est d'utiliser des chevrons <T> après le nom de la fonction, ce qui permet de définir un type générique.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "case_id": "TS-ADV-01",
+      "question_index": 5,
+      "learning_objective": "Type narrowing (typeof, truthiness, discriminated unions).",
+      "rubric": "Answers must agree with the cited handbook page; code snippets must be valid TypeScript.",
+      "references": [
+        "https://www.typescriptlang.org/docs/handbook/2/narrowing.html"
+      ],
+      "text": "Quel est l'objectif principal des 'Decorators' en TypeScript ?",
+      "choices": [
+        "Modifier le comportement d'une classe ou d'une méthode au moment de l'exécution",
+        "Créer des types de données immuables",
+        "Définir des interfaces",
+        "Gérer les erreurs de manière asynchrone"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "Modifier le comportement d'une classe ou d'une méthode au moment de l'exécution",
+      "explanation": "Les 'Decorators' sont utilisés pour ajouter des métadonnées ou modifier le comportement d'une classe, d'une méthode ou d'une propriété au moment de l'exécution.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "case_id": "TS-ADV-01",
+      "question_index": 1,
+      "learning_objective": "Type narrowing (typeof, truthiness, discriminated unions).",
+      "rubric": "Answers must agree with the cited handbook page; code snippets must be valid TypeScript.",
+      "references": [
+        "https://www.typescriptlang.org/docs/handbook/2/narrowing.html"
+      ],
+      "text": "Quel type de vérification TypeScript utilise-t-il pour déterminer le type d'une variable à l'exécution ?",
+      "choices": [
+        "Type Guards",
+        "Type Assertions",
+        "Union Types",
+        "Intersection Types"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "Type Guards",
+      "explanation": "Les Type Guards permettent de vérifier le type d'une variable à l'exécution en utilisant des conditions.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "case_id": "TS-ADV-01",
+      "question_index": 2,
+      "learning_objective": "Type narrowing (typeof, truthiness, discriminated unions).",
+      "rubric": "Answers must agree with the cited handbook page; code snippets must be valid TypeScript.",
+      "references": [
+        "https://www.typescriptlang.org/docs/handbook/2/narrowing.html"
+      ],
+      "text": "Quel est l'effet de l'utilisation de 'as const' sur un tableau en TypeScript ?",
+      "choices": [
+        "Il rend le tableau immuable",
+        "Il transforme le tableau en tuple",
+        "Il change le type des éléments en 'any'",
+        "Il supprime les types des éléments"
+      ],
+      "marked_answer_index": 1,
+      "marked_answer": "Il transforme le tableau en tuple",
+      "explanation": "'as const' transforme le tableau en tuple, ce qui signifie que les types des éléments sont fixés et ne peuvent pas être modifiés.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "case_id": "TS-ADV-01",
+      "question_index": 3,
+      "learning_objective": "Type narrowing (typeof, truthiness, discriminated unions).",
+      "rubric": "Answers must agree with the cited handbook page; code snippets must be valid TypeScript.",
+      "references": [
+        "https://www.typescriptlang.org/docs/handbook/2/narrowing.html"
+      ],
+      "text": "Quelle est la principale différence entre 'unknown' et 'any' en TypeScript ?",
+      "choices": [
+        "'unknown' est plus permissif que 'any'",
+        "'any' nécessite une vérification de type",
+        "'unknown' nécessite une vérification de type avant d'être utilisé",
+        "'unknown' est un sous-type de 'any'"
+      ],
+      "marked_answer_index": 2,
+      "marked_answer": "'unknown' nécessite une vérification de type avant d'être utilisé",
+      "explanation": "'unknown' nécessite une vérification de type avant d'être utilisé, tandis que 'any' permet d'ignorer les vérifications de type.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "case_id": "TS-ADV-01",
+      "question_index": 4,
+      "learning_objective": "Type narrowing (typeof, truthiness, discriminated unions).",
+      "rubric": "Answers must agree with the cited handbook page; code snippets must be valid TypeScript.",
+      "references": [
+        "https://www.typescriptlang.org/docs/handbook/2/narrowing.html"
+      ],
+      "text": "Quel est le principal avantage d'utiliser les 'Mapped Types' en TypeScript ?",
+      "choices": [
+        "Ils permettent de créer des types basés sur des types existants",
+        "Ils améliorent la performance d'exécution",
+        "Ils simplifient la syntaxe des types",
+        "Ils empêchent les erreurs de typage"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "Ils permettent de créer des types basés sur des types existants",
+      "explanation": "Les 'Mapped Types' permettent de créer de nouveaux types en se basant sur des types existants, ce qui favorise la réutilisation du code.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "case_id": "TS-ADV-01",
+      "question_index": 5,
+      "learning_objective": "Type narrowing (typeof, truthiness, discriminated unions).",
+      "rubric": "Answers must agree with the cited handbook page; code snippets must be valid TypeScript.",
+      "references": [
+        "https://www.typescriptlang.org/docs/handbook/2/narrowing.html"
+      ],
+      "text": "Quel est l'impact de l'utilisation de 'strictNullChecks' dans un projet TypeScript ?",
+      "choices": [
+        "Il permet d'utiliser null et undefined sans vérification",
+        "Il rend tous les types non nullables par défaut",
+        "Il nécessite des vérifications explicites pour null et undefined",
+        "Il améliore la performance du compilateur"
+      ],
+      "marked_answer_index": 2,
+      "marked_answer": "Il nécessite des vérifications explicites pour null et undefined",
+      "explanation": "L'option 'strictNullChecks' nécessite des vérifications explicites pour null et undefined, ce qui aide à éviter les erreurs liées aux valeurs nulles.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "C",
+      "prompt_version": "quiz-objective-v2",
+      "case_id": "TS-ADV-01",
+      "question_index": 1,
+      "learning_objective": "Type narrowing (typeof, truthiness, discriminated unions).",
+      "rubric": "Answers must agree with the cited handbook page; code snippets must be valid TypeScript.",
+      "references": [
+        "https://www.typescriptlang.org/docs/handbook/2/narrowing.html"
+      ],
+      "text": "Quel est le résultat de l'expression suivante : `typeof 'Hello'` ?",
+      "choices": [
+        "string",
+        "number",
+        "boolean",
+        "undefined"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "string",
+      "explanation": "L'opérateur `typeof` renvoie 'string' pour les chaînes de caractères.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "C",
+      "prompt_version": "quiz-objective-v2",
+      "case_id": "TS-ADV-01",
+      "question_index": 2,
+      "learning_objective": "Type narrowing (typeof, truthiness, discriminated unions).",
+      "rubric": "Answers must agree with the cited handbook page; code snippets must be valid TypeScript.",
+      "references": [
+        "https://www.typescriptlang.org/docs/handbook/2/narrowing.html"
+      ],
+      "text": "Quelle est la bonne façon d'utiliser un union discriminée pour gérer un type d'objet ?",
+      "choices": [
+        "type Shape = { kind: 'circle'; radius: number; } | { kind: 'square'; side: number; };",
+        "type Shape = { radius: number; } | { side: number; };",
+        "interface Shape { kind: string; }",
+        "type Shape = { kind: 'circle'; radius: number; } & { kind: 'square'; side: number; };"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "type Shape = { kind: 'circle'; radius: number; } | { kind: 'square'; side: number; };",
+      "explanation": "L'union discriminée utilise une propriété `kind` pour identifier le type d'objet.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "C",
+      "prompt_version": "quiz-objective-v2",
+      "case_id": "TS-ADV-01",
+      "question_index": 3,
+      "learning_objective": "Type narrowing (typeof, truthiness, discriminated unions).",
+      "rubric": "Answers must agree with the cited handbook page; code snippets must be valid TypeScript.",
+      "references": [
+        "https://www.typescriptlang.org/docs/handbook/2/narrowing.html"
+      ],
+      "text": "Comment TypeScript peut-il réduire le type d'une variable à l'intérieur d'une condition ?",
+      "choices": [
+        "En utilisant `as` pour forcer le type",
+        "En utilisant `typeof` dans une condition",
+        "En utilisant `instanceof` uniquement",
+        "En déclarant le type explicitement"
+      ],
+      "marked_answer_index": 1,
+      "marked_answer": "En utilisant `typeof` dans une condition",
+      "explanation": "L'utilisation de `typeof` dans une condition permet à TypeScript de réduire le type de la variable à celui correspondant au type vérifié.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "C",
+      "prompt_version": "quiz-objective-v2",
+      "case_id": "TS-ADV-01",
+      "question_index": 4,
+      "learning_objective": "Type narrowing (typeof, truthiness, discriminated unions).",
+      "rubric": "Answers must agree with the cited handbook page; code snippets must be valid TypeScript.",
+      "references": [
+        "https://www.typescriptlang.org/docs/handbook/2/narrowing.html"
+      ],
+      "text": "Quelle est la sortie de ce code : `function checkValue(val: number | string) { if (typeof val === 'string') { return val.length; } return val; }` ?",
+      "choices": [
+        "Retourne la longueur de la chaîne",
+        "Retourne le nombre",
+        "Retourne undefined",
+        "Lance une erreur"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "Retourne la longueur de la chaîne",
+      "explanation": "Le code vérifie si `val` est une chaîne et retourne sa longueur, sinon retourne le nombre.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    },
+    {
+      "condition": "C",
+      "prompt_version": "quiz-objective-v2",
+      "case_id": "TS-ADV-01",
+      "question_index": 5,
+      "learning_objective": "Type narrowing (typeof, truthiness, discriminated unions).",
+      "rubric": "Answers must agree with the cited handbook page; code snippets must be valid TypeScript.",
+      "references": [
+        "https://www.typescriptlang.org/docs/handbook/2/narrowing.html"
+      ],
+      "text": "Quel est le type de retour de la fonction suivante : `function getValue(value: number | null): number { return value || 0; }` ?",
+      "choices": [
+        "number",
+        "null",
+        "undefined",
+        "string"
+      ],
+      "marked_answer_index": 0,
+      "marked_answer": "number",
+      "explanation": "La fonction retourne un nombre, car elle utilise une expression qui garantit que le retour est toujours un nombre.",
+      "human_status": "NOT_REVIEWED_BY_HUMAN",
+      "ratings": {
+        "technical": null,
+        "relevance": null,
+        "difficulty": null,
+        "clarity": null,
+        "uniqueness": null,
+        "distractors": null,
+        "explanation": null
+      },
+      "technical": null,
+      "evidence": null,
+      "defect": null,
+      "severity": null,
+      "recommended_correction": null,
+      "reviewer": null,
+      "reviewed_at": null
+    }
+  ]
+}

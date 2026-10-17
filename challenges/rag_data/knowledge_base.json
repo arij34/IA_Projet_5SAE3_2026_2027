@@ -1,0 +1,169 @@
+{
+  "kb_version": "challenges-kb-v1",
+  "revision": "Revised 2026-10-17 after a source check: py-dict-basics, py-attribute-lookup, dj-queryset-lazy, re-usestate-updater, ts-typeof-truthiness, dj-model-meta and ts-equality-in-instanceof were corrected. Some corrected statements come from sibling official pages rather than the page in source_url: Python glossary (hashable), Python stdtypes (3.7 dict order), Python descriptor HOWTO (descriptor precedence), Django QuerySet API reference (stepped slicing).",
+  "notes": "Short paraphrased study notes written by the project team from the official documentation pages named in source_url. They are NOT verbatim quotations and are NOT generated quiz answers. Each note must be re-checked against its source_url before the knowledge base is extended or published; the authoritative text and licence are those of the source page.",
+  "chunks": [
+    {
+      "id": "py-list-methods",
+      "categories": ["python"],
+      "difficulty": ["BEGINNER"],
+      "keywords": "list append extend insert remove pop sort reverse liste méthodes collections",
+      "source_title": "The Python Tutorial - Data Structures (more on lists)",
+      "source_url": "https://docs.python.org/3/tutorial/datastructures.html",
+      "text": "Lists have methods such as append(x) (add one item at the end), extend(iterable), insert(i, x), remove(x) (removes the first item equal to x and raises ValueError if there is none), pop([i]) (removes and returns the item at index i, or the last item) and count(x). Methods that only modify the list in place, such as insert, remove, sort and reverse, return None rather than the list."
+    },
+    {
+      "id": "py-tuples-sets",
+      "categories": ["python"],
+      "difficulty": ["BEGINNER"],
+      "keywords": "tuple set immutable union intersection difference doublons tuples ensembles collections",
+      "source_title": "The Python Tutorial - Data Structures (tuples and sets)",
+      "source_url": "https://docs.python.org/3/tutorial/datastructures.html",
+      "text": "A tuple is an immutable sequence; a tuple with one item needs a trailing comma, as in ('hello',). A set is an unordered collection with no duplicate elements and supports union (|), intersection (&), difference (-) and symmetric difference (^). An empty set must be created with set(), because {} creates an empty dictionary."
+    },
+    {
+      "id": "py-dict-basics",
+      "categories": ["python"],
+      "difficulty": ["BEGINNER", "INTERMEDIATE"],
+      "keywords": "dict dictionary key value keys hashable immutable KeyError dictionnaire clés collections",
+      "source_title": "The Python Tutorial - Data Structures (dictionaries)",
+      "source_url": "https://docs.python.org/3/tutorial/datastructures.html",
+      "text": "A dictionary is a collection of key: value pairs indexed by keys. Keys must be hashable (the tutorial phrases this as 'immutable types'): strings, numbers and tuples of hashable items qualify, while lists cannot be used as keys, nor can tuples that contain a mutable item. Storing a value under an existing key replaces the old value, reading a missing key with d[key] raises KeyError, 'key in d' tests for a key, and list(d) returns the keys in insertion order (guaranteed by the language since Python 3.7; an implementation detail of CPython 3.6). Dictionaries can be built with dict(), with a literal or with a dict comprehension."
+    },
+    {
+      "id": "py-class-vs-instance-attributes",
+      "categories": ["python"],
+      "difficulty": ["INTERMEDIATE", "ADVANCED"],
+      "keywords": "class attribute instance attribute shared mutable list __init__ self classes attributs de classe",
+      "source_title": "The Python Tutorial - Classes (class and instance variables)",
+      "source_url": "https://docs.python.org/3/tutorial/classes.html",
+      "text": "Instance variables hold data unique to each instance, while class variables hold attributes and methods shared by all instances of the class. Sharing can surprise you with mutable objects such as lists and dictionaries: a list defined at class level is the same object for every instance, so appending to it through one instance is visible from all of them. Per-instance mutable data should be created inside __init__ instead."
+    },
+    {
+      "id": "py-attribute-lookup",
+      "categories": ["python"],
+      "difficulty": ["ADVANCED"],
+      "keywords": "attribute lookup shadowing instance class assignment self.x object model attributs classes",
+      "source_title": "The Python Tutorial - Classes (instance objects and scopes)",
+      "source_url": "https://docs.python.org/3/tutorial/classes.html",
+      "text": "For ordinary attributes, reading an attribute on an instance looks first in the instance, then in its class and, through inheritance, in the base classes. Assigning self.x = value normally creates or updates an instance attribute and does not modify a class attribute of the same name; it only hides (shadows) it for that instance. This simplified rule has exceptions: if the class attribute is a descriptor (for example a property or a method), the descriptor protocol applies, and a data descriptor takes precedence over the instance dictionary. A method call x.f() is equivalent to MyClass.f(x), which is why methods receive the instance as their first argument."
+    },
+    {
+      "id": "py-inheritance",
+      "categories": ["python"],
+      "difficulty": ["INTERMEDIATE", "ADVANCED"],
+      "keywords": "inheritance isinstance issubclass base class derived override héritage classes",
+      "source_title": "The Python Tutorial - Classes (inheritance)",
+      "source_url": "https://docs.python.org/3/tutorial/classes.html",
+      "text": "A derived class is written class Derived(Base). Attribute lookup goes to the base class when the name is not found in the derived class, and a derived class may override base methods. isinstance(obj, cls) checks the type of an instance (including subclasses) and issubclass(cls, base) checks class inheritance. By convention a single leading underscore marks a name as non-public; a double leading underscore triggers name mangling."
+    },
+    {
+      "id": "dj-model-basics",
+      "categories": ["django"],
+      "difficulty": ["BEGINNER"],
+      "keywords": "model fields database table CharField max_length primary key id migrations makemigrations modèles champs",
+      "source_title": "Django documentation - Models",
+      "source_url": "https://docs.djangoproject.com/en/stable/topics/db/models/",
+      "text": "A model is a Python class that subclasses django.db.models.Model. Each model attribute represents a database field, and the model generally maps to a single database table. Field types such as CharField (which requires max_length) determine the column type. If no primary key is declared, Django adds an automatic id primary key. After changing models, makemigrations creates migration files and migrate applies them to the database."
+    },
+    {
+      "id": "dj-model-relationships",
+      "categories": ["django"],
+      "difficulty": ["BEGINNER", "INTERMEDIATE"],
+      "keywords": "ForeignKey ManyToManyField OneToOneField on_delete related_name relationships relations modèles",
+      "source_title": "Django documentation - Models (relationships)",
+      "source_url": "https://docs.djangoproject.com/en/stable/topics/db/models/",
+      "text": "Django supports the three common relationship types: many-to-one with ForeignKey (declared on the 'many' side, with a required on_delete argument), many-to-many with ManyToManyField, and one-to-one with OneToOneField. The related_name option sets the name of the reverse relation used from the related model."
+    },
+    {
+      "id": "dj-model-meta",
+      "categories": ["django"],
+      "difficulty": ["INTERMEDIATE"],
+      "keywords": "Meta ordering verbose_name __str__ field options null blank choices default model options",
+      "source_title": "Django documentation - Models (field options and Meta)",
+      "source_url": "https://docs.djangoproject.com/en/stable/topics/db/models/",
+      "text": "Field options include null (store NULL in the database, a storage setting) and blank (allow empty values in validation, a separate validation setting; the two are independent), choices, default and primary_key. Model metadata is declared in an inner class Meta, for example ordering or verbose_name. Defining __str__ gives instances a readable representation, and custom methods on a model hold row-level logic."
+    },
+    {
+      "id": "dj-queryset-lazy",
+      "categories": ["django"],
+      "difficulty": ["INTERMEDIATE", "ADVANCED"],
+      "keywords": "QuerySet lazy evaluation cache iteration slicing len list bool exists count requêtes paresseux",
+      "source_title": "Django documentation - Making queries (QuerySets are lazy)",
+      "source_url": "https://docs.djangoproject.com/en/stable/topics/db/queries/",
+      "text": "QuerySets are lazy: creating or refining a QuerySet does not hit the database. The query runs when the QuerySet is evaluated, for example by iterating it, calling len() or list() on it, or testing it as a boolean. Once a QuerySet has been evaluated, its results are cached on that same QuerySet object and reused when it is evaluated again; a new QuerySet derived with filter() runs a new query. Slicing an unevaluated QuerySet returns a new unevaluated QuerySet (it becomes LIMIT/OFFSET in SQL), but a slice that uses the step parameter executes the query immediately and returns a list, as does slicing an already evaluated QuerySet."
+    },
+    {
+      "id": "dj-queryset-filtering",
+      "categories": ["django"],
+      "difficulty": ["INTERMEDIATE"],
+      "keywords": "filter exclude get DoesNotExist MultipleObjectsReturned chaining lookups __gte __contains __icontains Q F filtrer",
+      "source_title": "Django documentation - Making queries (retrieving objects)",
+      "source_url": "https://docs.djangoproject.com/en/stable/topics/db/queries/",
+      "text": "filter() and exclude() each return a new QuerySet and can be chained; they never modify the original. get() returns exactly one object and raises DoesNotExist if none matches or MultipleObjectsReturned if several do. Field lookups use the form field__lookuptype=value, for example age__gte=18 or name__icontains='x', and double underscores also span relationships. Q objects combine conditions with OR, and F() expressions refer to field values at the database level."
+    },
+    {
+      "id": "re-usestate-basics",
+      "categories": ["react"],
+      "difficulty": ["BEGINNER", "INTERMEDIATE"],
+      "keywords": "useState hook state set function snapshot render top level hooks état composant",
+      "source_title": "React reference - useState",
+      "source_url": "https://react.dev/reference/react/useState",
+      "text": "useState(initialState) returns an array of exactly two values: the current state and a set function. Hooks must be called at the top level of a component, not in loops or conditions. The set function only updates the state for the next render; code that runs right after calling it in the same event handler still sees the old value. If the new value is identical according to Object.is, React skips re-rendering."
+    },
+    {
+      "id": "re-usestate-updater",
+      "categories": ["react"],
+      "difficulty": ["INTERMEDIATE", "ADVANCED"],
+      "keywords": "updater function setState previous state batching immutable objects arrays replace mutate lazy initializer",
+      "source_title": "React reference - useState (updater functions and objects)",
+      "source_url": "https://react.dev/reference/react/useState",
+      "text": "When the next state depends on the previous one, pass an updater function such as setAge(a => a + 1); calling setAge(age + 1) three times in one handler only adds one because each call uses the same age snapshot, while three updater calls add three. State should be treated as read-only: replace objects and arrays with new copies instead of mutating them, and note that setting an object replaces the state rather than merging it. Pass a function to useState (a pure initializer taking no arguments) so the initial value is computed at initialization, not on every render; in development, Strict Mode calls initializers and updaters twice to expose impurities."
+    },
+    {
+      "id": "re-useeffect-dependencies",
+      "categories": ["react"],
+      "difficulty": ["INTERMEDIATE", "ADVANCED"],
+      "keywords": "useEffect dependencies array cleanup mount unmount external system Strict Mode effet dépendances",
+      "source_title": "React reference - useEffect",
+      "source_url": "https://react.dev/reference/react/useEffect",
+      "text": "useEffect(setup, dependencies?) synchronizes a component with an external system and runs after the render is committed to the screen. Without a dependency array the effect runs after every render; with an empty array [] it runs after the initial mount; otherwise it re-runs when a dependency changed (compared with Object.is). A cleanup function returned by setup runs before the effect re-runs and when the component unmounts. In development, Strict Mode runs one extra setup and cleanup cycle on mount."
+    },
+    {
+      "id": "re-useeffect-usage",
+      "categories": ["react"],
+      "difficulty": ["INTERMEDIATE"],
+      "keywords": "useEffect when not to use event handlers derived data reactive values dependencies fetching subscription",
+      "source_title": "React reference - useEffect (usage notes)",
+      "source_url": "https://react.dev/reference/react/useEffect",
+      "text": "Effects are for synchronizing with external systems such as network requests, subscriptions or the browser DOM; they are not needed to compute values from props or state during rendering or to respond to user events, which belong in the render logic and event handlers. Every reactive value (props, state, variables declared in the component) read inside an effect must be listed in its dependencies."
+    },
+    {
+      "id": "ts-typeof-truthiness",
+      "categories": ["typescript"],
+      "difficulty": ["BEGINNER", "INTERMEDIATE", "ADVANCED"],
+      "keywords": "narrowing typeof truthiness falsy null undefined type guard rétrécissement types",
+      "source_title": "TypeScript Handbook - Narrowing (typeof and truthiness)",
+      "source_url": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+      "text": "Narrowing refines a union type inside a branch using control-flow analysis. A typeof check narrows according to the string it is compared with; typeof returns strings such as 'string', 'number', 'boolean', 'undefined', 'object' and 'function'. 'object' is not a primitive type: typeof x === 'object' covers arrays and other objects and, because typeof null is 'object', also includes null, so it does not exclude null. Truthiness checks (if, &&, ||, !) exclude null and undefined but also falsy values such as 0, NaN, '' and 0n, which can wrongly exclude valid values."
+    },
+    {
+      "id": "ts-equality-in-instanceof",
+      "categories": ["typescript"],
+      "difficulty": ["INTERMEDIATE", "ADVANCED"],
+      "keywords": "equality narrowing in operator instanceof type predicate user-defined type guard is",
+      "source_title": "TypeScript Handbook - Narrowing (equality, in, instanceof, predicates)",
+      "source_url": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+      "text": "Equality checks with ===, !==, == and != narrow types; x != null excludes both null and undefined. The in operator ('swim' in animal) narrows to the union members that have or may have that property (an optional property appears in both branches), and instanceof narrows to the class tested. A user-defined type guard is a function whose return type is a type predicate such as pet is Fish; when it returns true TypeScript narrows the argument to that type."
+    },
+    {
+      "id": "ts-discriminated-unions",
+      "categories": ["typescript"],
+      "difficulty": ["ADVANCED"],
+      "keywords": "discriminated union literal kind tag switch never exhaustiveness checking union discriminée",
+      "source_title": "TypeScript Handbook - Narrowing (discriminated unions)",
+      "source_url": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+      "text": "In a discriminated union every member has a common property with a literal type, the discriminant, for example kind: 'circle' or kind: 'square'. Checking that property (with if or switch) narrows the value to the matching member, so member-specific properties become accessible. Exhaustiveness checking assigns the value to a variable of type never in the default branch, so adding a new union member without handling it becomes a compile-time error."
+    }
+  ]
+}

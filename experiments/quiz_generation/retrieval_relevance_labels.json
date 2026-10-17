@@ -1,0 +1,43 @@
+{
+  "labels_version": "retrieval-labels-v1",
+  "status": "PROPOSED_BY_AI_ASSISTANT_PENDING_HUMAN_CONFIRMATION",
+  "dataset_version": "quiz-eval-cases-v1",
+  "kb_version": "challenges-kb-v1",
+  "definitions": {
+    "relevant": "The note's content directly supports questions about the case's learning_objective.",
+    "borderline": "Same technology and page, adjacent to the objective but not named by it. Excluded from strict precision, included in lenient precision.",
+    "not_relevant": "Every other note of the same category (implicit: any id not listed)."
+  },
+  "provenance": "Labels were written after reading each note and each case learning_objective, independently of retriever scores. They were NOT produced by running the retriever. The author is an AI assistant, not a human domain expert, so a human must confirm them. The retriever's objective-bonus rule was tuned earlier on these same six cases (CH-13), so these cases are not an independent test set; no held-out cases exist.",
+  "cases": {
+    "PY-BEG-01": {
+      "relevant": ["py-list-methods", "py-tuples-sets", "py-dict-basics"],
+      "borderline": []
+    },
+    "PY-ADV-01": {
+      "relevant": ["py-class-vs-instance-attributes", "py-attribute-lookup"],
+      "borderline": ["py-inheritance"]
+    },
+    "DJ-BEG-01": {
+      "relevant": ["dj-model-basics", "dj-model-relationships"],
+      "borderline": ["dj-model-meta"]
+    },
+    "DJ-INT-01": {
+      "relevant": ["dj-queryset-lazy", "dj-queryset-filtering"],
+      "borderline": []
+    },
+    "RE-INT-01": {
+      "relevant": [
+        "re-usestate-basics",
+        "re-usestate-updater",
+        "re-useeffect-dependencies",
+        "re-useeffect-usage"
+      ],
+      "borderline": []
+    },
+    "TS-ADV-01": {
+      "relevant": ["ts-typeof-truthiness", "ts-discriminated-unions"],
+      "borderline": ["ts-equality-in-instanceof"]
+    }
+  }
+}

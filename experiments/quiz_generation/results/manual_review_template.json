@@ -1,0 +1,59 @@
+{
+  "instructions": "For each generated question, compare to the case references/rubric. Set factual_accuracy to correct/incorrect/unverifiable, ambiguous to true/false, relevant and difficulty_ok to true/false. null means Not measured.",
+  "cases": [
+    {
+      "case_id": "PY-BEG-01",
+      "references": [
+        "https://docs.python.org/3/tutorial/datastructures.html"
+      ],
+      "rubric": "Each question must be answerable from the cited tutorial page; exactly one choice correct; no Python-version-specific claim unless stated."
+    },
+    {
+      "case_id": "PY-ADV-01",
+      "references": [
+        "https://docs.python.org/3/tutorial/classes.html"
+      ],
+      "rubric": "Subtle cases must be decidable from the cited page; reject questions relying on unstated interpreter behaviour."
+    },
+    {
+      "case_id": "DJ-BEG-01",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/models/"
+      ],
+      "rubric": "Answers must agree with the cited model documentation of the stable Django release."
+    },
+    {
+      "case_id": "DJ-INT-01",
+      "references": [
+        "https://docs.djangoproject.com/en/stable/topics/db/queries/"
+      ],
+      "rubric": "Answers must agree with the cited queries documentation; reject invented ORM methods."
+    },
+    {
+      "case_id": "RE-INT-01",
+      "references": [
+        "https://react.dev/reference/react/useState",
+        "https://react.dev/reference/react/useEffect"
+      ],
+      "rubric": "Answers must agree with the cited react.dev reference pages; reject class-component-only or deprecated guidance."
+    },
+    {
+      "case_id": "TS-ADV-01",
+      "references": [
+        "https://www.typescriptlang.org/docs/handbook/2/narrowing.html"
+      ],
+      "rubric": "Answers must agree with the cited handbook page; code snippets must be valid TypeScript."
+    }
+  ],
+  "review_fields": [
+    "case_id",
+    "condition",
+    "question_index",
+    "factual_accuracy",
+    "ambiguous",
+    "relevant",
+    "difficulty_ok",
+    "reviewer_notes"
+  ],
+  "reviews": []
+}

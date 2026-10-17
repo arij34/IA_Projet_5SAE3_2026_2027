@@ -1,0 +1,1703 @@
+{
+  "experiment": "rag-and-prompt-context-optimization-v2",
+  "supersedes_note": "Results of rag_optimization_mock.json (v1) are kept unchanged; v1 reported only URL-based relevance.",
+  "mode": "real",
+  "real_api_calls": 18,
+  "interpretation": "Real-model run (single batch). Structural validity is automatic; factual accuracy and grounding still require manual review.",
+  "dataset_version": "quiz-eval-cases-v1",
+  "kb_version": "challenges-kb-v1",
+  "environment": {
+    "python": "3.13.7",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "django": "6.1.2",
+    "model": "gpt-4o-mini",
+    "temperature": 0.4,
+    "token_estimate": "prompt_chars/4 (estimate, not a tokenizer)"
+  },
+  "lean_settings": {
+    "top_k": 2,
+    "max_context_chars": 1500
+  },
+  "summary": {
+    "B": {
+      "prompt_version": "quiz-gen-v1",
+      "cases": 6,
+      "prompt_chars_mean": 1141.5,
+      "estimated_input_tokens_mean": 285.5,
+      "cases_with_context": 0,
+      "url_precision_mean": "Not applicable",
+      "url_reference_coverage_mean": "Not applicable",
+      "objective_precision_strict_mean": "Not applicable",
+      "objective_precision_lenient_mean": "Not applicable",
+      "objective_recall_mean": "Not applicable",
+      "context_chars_mean": 0.0,
+      "structural": {
+        "prompt_version": "quiz-gen-v1",
+        "calls_attempted": 6,
+        "api_errors": {
+          "numerator": 0,
+          "denominator": 6
+        },
+        "schema_validity": {
+          "numerator": 6,
+          "denominator": 6
+        },
+        "question_count_compliance": {
+          "numerator": 6,
+          "denominator": 6
+        },
+        "answer_validity": {
+          "numerator": 6,
+          "denominator": 6
+        },
+        "production_parser_acceptance": {
+          "numerator": 6,
+          "denominator": 6
+        },
+        "duplicate_flagged_heuristic": {
+          "numerator": 0,
+          "denominator": 6
+        },
+        "latency_seconds": {
+          "mean": 5.217,
+          "n": 6
+        },
+        "tokens": {
+          "prompt": 1797,
+          "completion": 2699,
+          "n": 6
+        },
+        "estimated_cost_usd": "Not measured",
+        "factual_accuracy": "Not measured (manual review required)",
+        "relevance_difficulty": "Not measured (manual review required)"
+      },
+      "source_grounded_correctness": "Not measured (manual review required)"
+    },
+    "R": {
+      "prompt_version": "quiz-gen-v1-rag",
+      "cases": 6,
+      "prompt_chars_mean": 3189.333,
+      "estimated_input_tokens_mean": 797.333,
+      "cases_with_context": 6,
+      "url_precision_mean": 0.917,
+      "url_reference_coverage_mean": 1.0,
+      "objective_precision_strict_mean": 0.75,
+      "objective_precision_lenient_mean": 0.917,
+      "objective_recall_mean": 0.875,
+      "context_chars_mean": 1292.167,
+      "structural": {
+        "prompt_version": "quiz-gen-v1-rag",
+        "calls_attempted": 6,
+        "api_errors": {
+          "numerator": 0,
+          "denominator": 6
+        },
+        "schema_validity": {
+          "numerator": 6,
+          "denominator": 6
+        },
+        "question_count_compliance": {
+          "numerator": 6,
+          "denominator": 6
+        },
+        "answer_validity": {
+          "numerator": 6,
+          "denominator": 6
+        },
+        "production_parser_acceptance": {
+          "numerator": 6,
+          "denominator": 6
+        },
+        "duplicate_flagged_heuristic": {
+          "numerator": 1,
+          "denominator": 6
+        },
+        "latency_seconds": {
+          "mean": 6.096,
+          "n": 6
+        },
+        "tokens": {
+          "prompt": 4437,
+          "completion": 3039,
+          "n": 6
+        },
+        "estimated_cost_usd": "Not measured",
+        "factual_accuracy": "Not measured (manual review required)",
+        "relevance_difficulty": "Not measured (manual review required)"
+      },
+      "source_grounded_correctness": "Not measured (manual review required)"
+    },
+    "L": {
+      "prompt_version": "quiz-gen-v1-rag-lean",
+      "cases": 6,
+      "prompt_chars_mean": 1978.833,
+      "estimated_input_tokens_mean": 494.667,
+      "cases_with_context": 6,
+      "url_precision_mean": 0.917,
+      "url_reference_coverage_mean": 1.0,
+      "objective_precision_strict_mean": 0.917,
+      "objective_precision_lenient_mean": 0.917,
+      "objective_recall_mean": 0.778,
+      "context_chars_mean": 944.833,
+      "structural": {
+        "prompt_version": "quiz-gen-v1-rag-lean",
+        "calls_attempted": 6,
+        "api_errors": {
+          "numerator": 0,
+          "denominator": 6
+        },
+        "schema_validity": {
+          "numerator": 6,
+          "denominator": 6
+        },
+        "question_count_compliance": {
+          "numerator": 6,
+          "denominator": 6
+        },
+        "answer_validity": {
+          "numerator": 6,
+          "denominator": 6
+        },
+        "production_parser_acceptance": {
+          "numerator": 6,
+          "denominator": 6
+        },
+        "duplicate_flagged_heuristic": {
+          "numerator": 0,
+          "denominator": 6
+        },
+        "latency_seconds": {
+          "mean": 4.683,
+          "n": 6
+        },
+        "tokens": {
+          "prompt": 2723,
+          "completion": 2451,
+          "n": 6
+        },
+        "estimated_cost_usd": "Not measured",
+        "factual_accuracy": "Not measured (manual review required)",
+        "relevance_difficulty": "Not measured (manual review required)"
+      },
+      "source_grounded_correctness": "Not measured (manual review required)"
+    },
+    "lean_vs_rag_estimated_input_tokens_change_pct": -38.0
+  },
+  "context_size": {
+    "B": {
+      "prompt_version": "quiz-gen-v1",
+      "prompt_chars_mean": 1141.5,
+      "retrieved_context_chars_mean": 0.0,
+      "estimated_input_tokens_mean": 285.5,
+      "estimate_note": "prompt_chars/4; not a tokenizer, not real usage"
+    },
+    "R": {
+      "prompt_version": "quiz-gen-v1-rag",
+      "prompt_chars_mean": 3189.333,
+      "retrieved_context_chars_mean": 1292.167,
+      "estimated_input_tokens_mean": 797.333,
+      "estimate_note": "prompt_chars/4; not a tokenizer, not real usage"
+    },
+    "L": {
+      "prompt_version": "quiz-gen-v1-rag-lean",
+      "prompt_chars_mean": 1978.833,
+      "retrieved_context_chars_mean": 944.833,
+      "estimated_input_tokens_mean": 494.667,
+      "estimate_note": "prompt_chars/4; not a tokenizer, not real usage"
+    }
+  },
+  "retrieval_labels": {
+    "version": "retrieval-labels-v1",
+    "status": "PROPOSED_BY_AI_ASSISTANT_PENDING_HUMAN_CONFIRMATION",
+    "provenance": "Labels were written after reading each note and each case learning_objective, independently of retriever scores. They were NOT produced by running the retriever. The author is an AI assistant, not a human domain expert, so a human must confirm them. The retriever's objective-bonus rule was tuned earlier on these same six cases (CH-13), so these cases are not an independent test set; no held-out cases exist."
+  },
+  "retrieval_evaluation": {
+    "mean_over_cases": {
+      "with_objective_full": {
+        "url_precision": 0.917,
+        "url_reference_coverage": 1.0,
+        "objective_precision_strict": 0.75,
+        "objective_precision_lenient": 0.917,
+        "objective_recall": 0.875,
+        "context_chars": 1292.167
+      },
+      "with_objective_lean": {
+        "url_precision": 0.917,
+        "url_reference_coverage": 1.0,
+        "objective_precision_strict": 0.917,
+        "objective_precision_lenient": 0.917,
+        "objective_recall": 0.778,
+        "context_chars": 944.833
+      },
+      "no_objective": {
+        "url_precision": 0.889,
+        "url_reference_coverage": 1.0,
+        "objective_precision_strict": 0.722,
+        "objective_precision_lenient": 0.889,
+        "objective_recall": 0.875,
+        "context_chars": 1332.667
+      }
+    },
+    "per_case": [
+      {
+        "case_id": "PY-BEG-01",
+        "setting": "with_objective_full",
+        "retrieved_ids": [
+          "py-tuples-sets",
+          "py-dict-basics",
+          "py-list-methods"
+        ],
+        "retrieved_count": 3,
+        "context_chars": 1342,
+        "url_match_count": 3,
+        "url_precision": 1.0,
+        "url_reference_coverage": 1.0,
+        "objective_relevant_retrieved": [
+          "py-tuples-sets",
+          "py-dict-basics",
+          "py-list-methods"
+        ],
+        "objective_borderline_retrieved": [],
+        "objective_not_relevant_retrieved": [],
+        "objective_precision_strict": 1.0,
+        "objective_precision_lenient": 1.0,
+        "objective_recall": 1.0
+      },
+      {
+        "case_id": "PY-ADV-01",
+        "setting": "with_objective_full",
+        "retrieved_ids": [
+          "py-attribute-lookup",
+          "py-class-vs-instance-attributes",
+          "py-inheritance"
+        ],
+        "retrieved_count": 3,
+        "context_chars": 1523,
+        "url_match_count": 3,
+        "url_precision": 1.0,
+        "url_reference_coverage": 1.0,
+        "objective_relevant_retrieved": [
+          "py-attribute-lookup",
+          "py-class-vs-instance-attributes"
+        ],
+        "objective_borderline_retrieved": [
+          "py-inheritance"
+        ],
+        "objective_not_relevant_retrieved": [],
+        "objective_precision_strict": 0.667,
+        "objective_precision_lenient": 1.0,
+        "objective_recall": 1.0
+      },
+      {
+        "case_id": "DJ-BEG-01",
+        "setting": "with_objective_full",
+        "retrieved_ids": [
+          "dj-model-basics",
+          "dj-model-relationships",
+          "dj-model-meta"
+        ],
+        "retrieved_count": 3,
+        "context_chars": 1152,
+        "url_match_count": 3,
+        "url_precision": 1.0,
+        "url_reference_coverage": 1.0,
+        "objective_relevant_retrieved": [
+          "dj-model-basics",
+          "dj-model-relationships"
+        ],
+        "objective_borderline_retrieved": [
+          "dj-model-meta"
+        ],
+        "objective_not_relevant_retrieved": [],
+        "objective_precision_strict": 0.667,
+        "objective_precision_lenient": 1.0,
+        "objective_recall": 1.0
+      },
+      {
+        "case_id": "DJ-INT-01",
+        "setting": "with_objective_full",
+        "retrieved_ids": [
+          "dj-queryset-lazy",
+          "dj-model-relationships"
+        ],
+        "retrieved_count": 2,
+        "context_chars": 943,
+        "url_match_count": 1,
+        "url_precision": 0.5,
+        "url_reference_coverage": 1.0,
+        "objective_relevant_retrieved": [
+          "dj-queryset-lazy"
+        ],
+        "objective_borderline_retrieved": [],
+        "objective_not_relevant_retrieved": [
+          "dj-model-relationships"
+        ],
+        "objective_precision_strict": 0.5,
+        "objective_precision_lenient": 0.5,
+        "objective_recall": 0.5
+      },
+      {
+        "case_id": "RE-INT-01",
+        "setting": "with_objective_full",
+        "retrieved_ids": [
+          "re-useeffect-dependencies",
+          "re-usestate-basics",
+          "re-useeffect-usage"
+        ],
+        "retrieved_count": 3,
+        "context_chars": 1318,
+        "url_match_count": 3,
+        "url_precision": 1.0,
+        "url_reference_coverage": 1.0,
+        "objective_relevant_retrieved": [
+          "re-useeffect-dependencies",
+          "re-usestate-basics",
+          "re-useeffect-usage"
+        ],
+        "objective_borderline_retrieved": [],
+        "objective_not_relevant_retrieved": [],
+        "objective_precision_strict": 1.0,
+        "objective_precision_lenient": 1.0,
+        "objective_recall": 0.75
+      },
+      {
+        "case_id": "TS-ADV-01",
+        "setting": "with_objective_full",
+        "retrieved_ids": [
+          "ts-typeof-truthiness",
+          "ts-discriminated-unions",
+          "ts-equality-in-instanceof"
+        ],
+        "retrieved_count": 3,
+        "context_chars": 1475,
+        "url_match_count": 3,
+        "url_precision": 1.0,
+        "url_reference_coverage": 1.0,
+        "objective_relevant_retrieved": [
+          "ts-typeof-truthiness",
+          "ts-discriminated-unions"
+        ],
+        "objective_borderline_retrieved": [
+          "ts-equality-in-instanceof"
+        ],
+        "objective_not_relevant_retrieved": [],
+        "objective_precision_strict": 0.667,
+        "objective_precision_lenient": 1.0,
+        "objective_recall": 1.0
+      },
+      {
+        "case_id": "PY-BEG-01",
+        "setting": "with_objective_lean",
+        "retrieved_ids": [
+          "py-tuples-sets",
+          "py-dict-basics"
+        ],
+        "retrieved_count": 2,
+        "context_chars": 958,
+        "url_match_count": 2,
+        "url_precision": 1.0,
+        "url_reference_coverage": 1.0,
+        "objective_relevant_retrieved": [
+          "py-tuples-sets",
+          "py-dict-basics"
+        ],
+        "objective_borderline_retrieved": [],
+        "objective_not_relevant_retrieved": [],
+        "objective_precision_strict": 1.0,
+        "objective_precision_lenient": 1.0,
+        "objective_recall": 0.667
+      },
+      {
+        "case_id": "PY-ADV-01",
+        "setting": "with_objective_lean",
+        "retrieved_ids": [
+          "py-attribute-lookup",
+          "py-class-vs-instance-attributes"
+        ],
+        "retrieved_count": 2,
+        "context_chars": 1091,
+        "url_match_count": 2,
+        "url_precision": 1.0,
+        "url_reference_coverage": 1.0,
+        "objective_relevant_retrieved": [
+          "py-attribute-lookup",
+          "py-class-vs-instance-attributes"
+        ],
+        "objective_borderline_retrieved": [],
+        "objective_not_relevant_retrieved": [],
+        "objective_precision_strict": 1.0,
+        "objective_precision_lenient": 1.0,
+        "objective_recall": 1.0
+      },
+      {
+        "case_id": "DJ-BEG-01",
+        "setting": "with_objective_lean",
+        "retrieved_ids": [
+          "dj-model-basics",
+          "dj-model-relationships"
+        ],
+        "retrieved_count": 2,
+        "context_chars": 741,
+        "url_match_count": 2,
+        "url_precision": 1.0,
+        "url_reference_coverage": 1.0,
+        "objective_relevant_retrieved": [
+          "dj-model-basics",
+          "dj-model-relationships"
+        ],
+        "objective_borderline_retrieved": [],
+        "objective_not_relevant_retrieved": [],
+        "objective_precision_strict": 1.0,
+        "objective_precision_lenient": 1.0,
+        "objective_recall": 1.0
+      },
+      {
+        "case_id": "DJ-INT-01",
+        "setting": "with_objective_lean",
+        "retrieved_ids": [
+          "dj-queryset-lazy",
+          "dj-model-relationships"
+        ],
+        "retrieved_count": 2,
+        "context_chars": 943,
+        "url_match_count": 1,
+        "url_precision": 0.5,
+        "url_reference_coverage": 1.0,
+        "objective_relevant_retrieved": [
+          "dj-queryset-lazy"
+        ],
+        "objective_borderline_retrieved": [],
+        "objective_not_relevant_retrieved": [
+          "dj-model-relationships"
+        ],
+        "objective_precision_strict": 0.5,
+        "objective_precision_lenient": 0.5,
+        "objective_recall": 0.5
+      },
+      {
+        "case_id": "RE-INT-01",
+        "setting": "with_objective_lean",
+        "retrieved_ids": [
+          "re-useeffect-dependencies",
+          "re-usestate-basics"
+        ],
+        "retrieved_count": 2,
+        "context_chars": 918,
+        "url_match_count": 2,
+        "url_precision": 1.0,
+        "url_reference_coverage": 1.0,
+        "objective_relevant_retrieved": [
+          "re-useeffect-dependencies",
+          "re-usestate-basics"
+        ],
+        "objective_borderline_retrieved": [],
+        "objective_not_relevant_retrieved": [],
+        "objective_precision_strict": 1.0,
+        "objective_precision_lenient": 1.0,
+        "objective_recall": 0.5
+      },
+      {
+        "case_id": "TS-ADV-01",
+        "setting": "with_objective_lean",
+        "retrieved_ids": [
+          "ts-typeof-truthiness",
+          "ts-discriminated-unions"
+        ],
+        "retrieved_count": 2,
+        "context_chars": 1018,
+        "url_match_count": 2,
+        "url_precision": 1.0,
+        "url_reference_coverage": 1.0,
+        "objective_relevant_retrieved": [
+          "ts-typeof-truthiness",
+          "ts-discriminated-unions"
+        ],
+        "objective_borderline_retrieved": [],
+        "objective_not_relevant_retrieved": [],
+        "objective_precision_strict": 1.0,
+        "objective_precision_lenient": 1.0,
+        "objective_recall": 1.0
+      },
+      {
+        "case_id": "PY-BEG-01",
+        "setting": "no_objective",
+        "retrieved_ids": [
+          "py-dict-basics",
+          "py-tuples-sets",
+          "py-list-methods"
+        ],
+        "retrieved_count": 3,
+        "context_chars": 1342,
+        "url_match_count": 3,
+        "url_precision": 1.0,
+        "url_reference_coverage": 1.0,
+        "objective_relevant_retrieved": [
+          "py-dict-basics",
+          "py-tuples-sets",
+          "py-list-methods"
+        ],
+        "objective_borderline_retrieved": [],
+        "objective_not_relevant_retrieved": [],
+        "objective_precision_strict": 1.0,
+        "objective_precision_lenient": 1.0,
+        "objective_recall": 1.0
+      },
+      {
+        "case_id": "PY-ADV-01",
+        "setting": "no_objective",
+        "retrieved_ids": [
+          "py-inheritance",
+          "py-class-vs-instance-attributes",
+          "py-attribute-lookup"
+        ],
+        "retrieved_count": 3,
+        "context_chars": 1523,
+        "url_match_count": 3,
+        "url_precision": 1.0,
+        "url_reference_coverage": 1.0,
+        "objective_relevant_retrieved": [
+          "py-class-vs-instance-attributes",
+          "py-attribute-lookup"
+        ],
+        "objective_borderline_retrieved": [
+          "py-inheritance"
+        ],
+        "objective_not_relevant_retrieved": [],
+        "objective_precision_strict": 0.667,
+        "objective_precision_lenient": 1.0,
+        "objective_recall": 1.0
+      },
+      {
+        "case_id": "DJ-BEG-01",
+        "setting": "no_objective",
+        "retrieved_ids": [
+          "dj-model-basics",
+          "dj-model-relationships",
+          "dj-model-meta"
+        ],
+        "retrieved_count": 3,
+        "context_chars": 1152,
+        "url_match_count": 3,
+        "url_precision": 1.0,
+        "url_reference_coverage": 1.0,
+        "objective_relevant_retrieved": [
+          "dj-model-basics",
+          "dj-model-relationships"
+        ],
+        "objective_borderline_retrieved": [
+          "dj-model-meta"
+        ],
+        "objective_not_relevant_retrieved": [],
+        "objective_precision_strict": 0.667,
+        "objective_precision_lenient": 1.0,
+        "objective_recall": 1.0
+      },
+      {
+        "case_id": "DJ-INT-01",
+        "setting": "no_objective",
+        "retrieved_ids": [
+          "dj-model-relationships",
+          "dj-model-meta",
+          "dj-queryset-filtering"
+        ],
+        "retrieved_count": 3,
+        "context_chars": 1186,
+        "url_match_count": 1,
+        "url_precision": 0.333,
+        "url_reference_coverage": 1.0,
+        "objective_relevant_retrieved": [
+          "dj-queryset-filtering"
+        ],
+        "objective_borderline_retrieved": [],
+        "objective_not_relevant_retrieved": [
+          "dj-model-relationships",
+          "dj-model-meta"
+        ],
+        "objective_precision_strict": 0.333,
+        "objective_precision_lenient": 0.333,
+        "objective_recall": 0.5
+      },
+      {
+        "case_id": "RE-INT-01",
+        "setting": "no_objective",
+        "retrieved_ids": [
+          "re-usestate-basics",
+          "re-useeffect-usage",
+          "re-useeffect-dependencies"
+        ],
+        "retrieved_count": 3,
+        "context_chars": 1318,
+        "url_match_count": 3,
+        "url_precision": 1.0,
+        "url_reference_coverage": 1.0,
+        "objective_relevant_retrieved": [
+          "re-usestate-basics",
+          "re-useeffect-usage",
+          "re-useeffect-dependencies"
+        ],
+        "objective_borderline_retrieved": [],
+        "objective_not_relevant_retrieved": [],
+        "objective_precision_strict": 1.0,
+        "objective_precision_lenient": 1.0,
+        "objective_recall": 0.75
+      },
+      {
+        "case_id": "TS-ADV-01",
+        "setting": "no_objective",
+        "retrieved_ids": [
+          "ts-equality-in-instanceof",
+          "ts-discriminated-unions",
+          "ts-typeof-truthiness"
+        ],
+        "retrieved_count": 3,
+        "context_chars": 1475,
+        "url_match_count": 3,
+        "url_precision": 1.0,
+        "url_reference_coverage": 1.0,
+        "objective_relevant_retrieved": [
+          "ts-discriminated-unions",
+          "ts-typeof-truthiness"
+        ],
+        "objective_borderline_retrieved": [
+          "ts-equality-in-instanceof"
+        ],
+        "objective_not_relevant_retrieved": [],
+        "objective_precision_strict": 0.667,
+        "objective_precision_lenient": 1.0,
+        "objective_recall": 1.0
+      }
+    ]
+  },
+  "limitations": [
+    "url_* metrics only check the source page; they do not measure content relevance.",
+    "objective_* metrics use labels written by an AI assistant that still need human confirmation.",
+    "The same six cases were used to tune the retriever (CH-13) and to evaluate it: not independent, no held-out set.",
+    "Six cases and one deterministic run: descriptive only, no significance claim.",
+    "Token figures are character-based estimates; mock outputs say nothing about quality or real token usage."
+  ],
+  "records": [
+    {
+      "mode": "real",
+      "case_id": "PY-BEG-01",
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "repeat": 1,
+      "model": "gpt-4o-mini",
+      "retrieval": {
+        "retrieved_ids": [],
+        "retrieved_count": 0,
+        "context_chars": 0,
+        "url_match_count": 0,
+        "url_precision": null,
+        "url_reference_coverage": 0.0,
+        "objective_relevant_retrieved": [],
+        "objective_borderline_retrieved": [],
+        "objective_not_relevant_retrieved": [],
+        "objective_precision_strict": null,
+        "objective_precision_lenient": null,
+        "objective_recall": 0.0
+      },
+      "prompt_chars": 1137,
+      "estimated_input_tokens": 284,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "real",
+      "latency_seconds": 4.166,
+      "usage": {
+        "prompt_tokens": 299,
+        "completion_tokens": 391,
+        "total_tokens": 690,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "raw_output": "{\n  \"title\": \"Quiz Fondamentaux de Python\",\n  \"questions\": [\n    {\n      \"text\": \"Quelle est la syntaxe correcte pour imprimer 'Bonjour le monde' en Python ?\",\n      \"choices\": [\"print('Bonjour le monde')\", \"echo 'Bonjour le monde'\", \"console.log('Bonjour le monde')\", \"printf('Bonjour le monde')\"],\n      \"correct_index\": 0,\n      \"explanation\": \"La fonction print() est utilisée pour afficher des messages en Python.\"\n    },\n    {\n      \"text\": \"Quel type de données est utilisé pour stocker une séquence de caractères en Python ?\",\n      \"choices\": [\"list\", \"tuple\", \"string\", \"dictionary\"],\n      \"correct_index\": 2,\n      \"explanation\": \"Les chaînes de caractères sont représentées par le type 'string' en Python.\"\n    },\n    {\n      \"text\": \"Comment déclare-t-on une liste en Python ?\",\n      \"choices\": [\"[]\", \"()\", \"{}\", \"<>\"],\n      \"correct_index\": 0,\n      \"explanation\": \"Les listes en Python sont définies avec des crochets [].\"\n    },\n    {\n      \"text\": \"Quel mot-clé est utilisé pour définir une fonction en Python ?\",\n      \"choices\": [\"define\", \"func\", \"def\", \"function\"],\n      \"correct_index\": 2,\n      \"explanation\": \"Le mot-clé 'def' est utilisé pour définir une fonction en Python.\"\n    },\n    {\n      \"text\": \"Quelle méthode est utilisée pour ajouter un élément à la fin d'une liste en Python ?\",\n      \"choices\": [\"add()\", \"append()\", \"insert()\", \"extend()\"],\n      \"correct_index\": 1,\n      \"explanation\": \"La méthode 'append()' permet d'ajouter un élément à la fin d'une liste.\"\n    }\n  ]\n}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "real",
+      "case_id": "PY-BEG-01",
+      "condition": "R",
+      "prompt_version": "quiz-gen-v1-rag",
+      "repeat": 1,
+      "model": "gpt-4o-mini",
+      "retrieval": {
+        "retrieved_ids": [
+          "py-tuples-sets",
+          "py-dict-basics",
+          "py-list-methods"
+        ],
+        "retrieved_count": 3,
+        "context_chars": 1342,
+        "url_match_count": 3,
+        "url_precision": 1.0,
+        "url_reference_coverage": 1.0,
+        "objective_relevant_retrieved": [
+          "py-tuples-sets",
+          "py-dict-basics",
+          "py-list-methods"
+        ],
+        "objective_borderline_retrieved": [],
+        "objective_not_relevant_retrieved": [],
+        "objective_precision_strict": 1.0,
+        "objective_precision_lenient": 1.0,
+        "objective_recall": 1.0
+      },
+      "prompt_chars": 3270,
+      "estimated_input_tokens": 818,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "real",
+      "latency_seconds": 4.324,
+      "usage": {
+        "prompt_tokens": 786,
+        "completion_tokens": 406,
+        "total_tokens": 1192,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "raw_output": "{\n  \"title\": \"Quiz Python Débutant\",\n  \"questions\": [\n    {\n      \"text\": \"Quel type de collection est immuable en Python ?\",\n      \"choices\": [\"Tuple\", \"Liste\", \"Dictionnaire\", \"Ensemble\"],\n      \"correct_index\": 0,\n      \"explanation\": \"Un tuple est une séquence immuable, ce qui signifie que ses éléments ne peuvent pas être modifiés après sa création.\"\n    },\n    {\n      \"text\": \"Quelle méthode permet d'ajouter un élément à la fin d'une liste en Python ?\",\n      \"choices\": [\"append()\", \"add()\", \"insert()\", \"extend()\"],\n      \"correct_index\": 0,\n      \"explanation\": \"La méthode append(x) ajoute un élément x à la fin de la liste.\"\n    },\n    {\n      \"text\": \"Quel est le type de collection qui ne peut pas contenir d'éléments dupliqués ?\",\n      \"choices\": [\"Dictionnaire\", \"Liste\", \"Ensemble\", \"Tuple\"],\n      \"correct_index\": 2,\n      \"explanation\": \"Un ensemble est une collection non ordonnée qui ne peut contenir d'éléments dupliqués.\"\n    },\n    {\n      \"text\": \"Quelle structure de données utilise des paires clé-valeur ?\",\n      \"choices\": [\"Liste\", \"Dictionnaire\", \"Tuple\", \"Ensemble\"],\n      \"correct_index\": 1,\n      \"explanation\": \"Un dictionnaire est une collection de paires clé-valeur, indexées par des clés.\"\n    },\n    {\n      \"text\": \"Quelle méthode d'une liste permet de retirer le premier élément égal à une valeur donnée ?\",\n      \"choices\": [\"remove()\", \"pop()\", \"delete()\", \"discard()\"],\n      \"correct_index\": 0,\n      \"explanation\": \"La méthode remove(x) retire le premier élément de la liste qui est égal à x.\"\n    }\n  ]\n}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "real",
+      "case_id": "PY-BEG-01",
+      "condition": "L",
+      "prompt_version": "quiz-gen-v1-rag-lean",
+      "repeat": 1,
+      "model": "gpt-4o-mini",
+      "retrieval": {
+        "retrieved_ids": [
+          "py-tuples-sets",
+          "py-dict-basics"
+        ],
+        "retrieved_count": 2,
+        "context_chars": 958,
+        "url_match_count": 2,
+        "url_precision": 1.0,
+        "url_reference_coverage": 1.0,
+        "objective_relevant_retrieved": [
+          "py-tuples-sets",
+          "py-dict-basics"
+        ],
+        "objective_borderline_retrieved": [],
+        "objective_not_relevant_retrieved": [],
+        "objective_precision_strict": 1.0,
+        "objective_precision_lenient": 1.0,
+        "objective_recall": 0.667
+      },
+      "prompt_chars": 1996,
+      "estimated_input_tokens": 499,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "real",
+      "latency_seconds": 3.713,
+      "usage": {
+        "prompt_tokens": 471,
+        "completion_tokens": 334,
+        "total_tokens": 805,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "raw_output": "{\"title\":\"Quiz Python - Niveau Débutant\",\"questions\":[{\"text\":\"Qu'est-ce qu'un tuple en Python ?\",\"choices\":[\"Une séquence immuable\",\"Une collection ordonnée\",\"Une liste mutable\",\"Un dictionnaire\"],\"correct_index\":0,\"explanation\":\"Un tuple est une séquence immuable.\"},{\"text\":\"Comment crée-t-on un ensemble vide en Python ?\",\"choices\":[\"set()\",\"{}\",\"[]\",\"()\"],\"correct_index\":0,\"explanation\":\"Un ensemble vide doit être créé avec set(), car {} crée un dictionnaire vide.\"},{\"text\":\"Quel type de données peut être utilisé comme clé dans un dictionnaire ?\",\"choices\":[\"Une liste\",\"Un ensemble\",\"Un tuple contenant un élément mutable\",\"Une chaîne de caractères\"],\"correct_index\":3,\"explanation\":\"Les clés d'un dictionnaire doivent être des types immuables, comme les chaînes de caractères.\"},{\"text\":\"Que se passe-t-il si vous essayez d'accéder à une clé manquante dans un dictionnaire ?\",\"choices\":[\"Cela retourne None\",\"Cela lève une exception KeyError\",\"Cela crée la clé avec une valeur par défaut\",\"Cela retourne une liste vide\"],\"correct_index\":1,\"explanation\":\"Accéder à une clé manquante dans un dictionnaire lève une exception KeyError.\"},{\"text\":\"Comment peut-on tester si une clé existe dans un dictionnaire ?\",\"choices\":[\"key in d\",\"d.has_key(key)\",\"d.contains(key)\",\"key.exists(d)\"],\"correct_index\":0,\"explanation\":\"On peut tester l'existence d'une clé avec 'key in d'.\"}]}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "real",
+      "case_id": "PY-ADV-01",
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "repeat": 1,
+      "model": "gpt-4o-mini",
+      "retrieval": {
+        "retrieved_ids": [],
+        "retrieved_count": 0,
+        "context_chars": 0,
+        "url_match_count": 0,
+        "url_precision": null,
+        "url_reference_coverage": 0.0,
+        "objective_relevant_retrieved": [],
+        "objective_borderline_retrieved": [],
+        "objective_not_relevant_retrieved": [],
+        "objective_precision_strict": null,
+        "objective_precision_lenient": null,
+        "objective_recall": 0.0
+      },
+      "prompt_chars": 1147,
+      "estimated_input_tokens": 287,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "real",
+      "latency_seconds": 5.376,
+      "usage": {
+        "prompt_tokens": 299,
+        "completion_tokens": 475,
+        "total_tokens": 774,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "raw_output": "{\n  \"title\": \"Quiz avancé sur Python\",\n  \"questions\": [\n    {\n      \"text\": \"Quel est le résultat de l'expression suivante : 'abc' + 'def' * 2 ?\",\n      \"choices\": [\"abcdefdef\", \"abcdef\", \"abcde\", \"abcdf\"],\n      \"correct_index\": 0,\n      \"explanation\": \"L'opérateur '+' concatène les chaînes, tandis que '*' répète la chaîne.\"\n    },\n    {\n      \"text\": \"Quelle méthode est utilisée pour ajouter un élément à la fin d'une liste en Python ?\",\n      \"choices\": [\"append()\", \"add()\", \"insert()\", \"extend()\"],\n      \"correct_index\": 0,\n      \"explanation\": \"La méthode append() ajoute un élément à la fin d'une liste.\"\n    },\n    {\n      \"text\": \"Quel est le comportement de la fonction range(5) dans une boucle for ?\",\n      \"choices\": [\"Elle génère une liste de 0 à 4\", \"Elle génère une liste de 1 à 5\", \"Elle génère une liste de 0 à 5\", \"Elle génère une liste vide\"],\n      \"correct_index\": 0,\n      \"explanation\": \"La fonction range(5) génère des nombres de 0 à 4, soit cinq valeurs.\"\n    },\n    {\n      \"text\": \"Quel est le résultat de la comparaison suivante : (1, 2) < (1, 2, 3) ?\",\n      \"choices\": [\"True\", \"False\", \"Erreur\", \"None\"],\n      \"correct_index\": 0,\n      \"explanation\": \"Les tuples sont comparés élément par élément, ici (1, 2) est considéré comme inférieur à (1, 2, 3).\"\n    },\n    {\n      \"text\": \"Quelle est la complexité temporelle d'une recherche dans un dictionnaire Python ?\",\n      \"choices\": [\"O(1)\", \"O(n)\", \"O(log n)\", \"O(n^2)\"],\n      \"correct_index\": 0,\n      \"explanation\": \"Les dictionnaires en Python ont une complexité de recherche moyenne de O(1) grâce à leur implémentation par hachage.\"\n    }\n  ]\n}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "real",
+      "case_id": "PY-ADV-01",
+      "condition": "R",
+      "prompt_version": "quiz-gen-v1-rag",
+      "repeat": 1,
+      "model": "gpt-4o-mini",
+      "retrieval": {
+        "retrieved_ids": [
+          "py-attribute-lookup",
+          "py-class-vs-instance-attributes",
+          "py-inheritance"
+        ],
+        "retrieved_count": 3,
+        "context_chars": 1523,
+        "url_match_count": 3,
+        "url_precision": 1.0,
+        "url_reference_coverage": 1.0,
+        "objective_relevant_retrieved": [
+          "py-attribute-lookup",
+          "py-class-vs-instance-attributes"
+        ],
+        "objective_borderline_retrieved": [
+          "py-inheritance"
+        ],
+        "objective_not_relevant_retrieved": [],
+        "objective_precision_strict": 0.667,
+        "objective_precision_lenient": 1.0,
+        "objective_recall": 1.0
+      },
+      "prompt_chars": 3442,
+      "estimated_input_tokens": 860,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "real",
+      "latency_seconds": 7.776,
+      "usage": {
+        "prompt_tokens": 765,
+        "completion_tokens": 707,
+        "total_tokens": 1472,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "raw_output": "{\n  \"title\": \"Quiz sur les fondamentaux de Python\",\n  \"questions\": [\n    {\n      \"text\": \"Quelle est la différence principale entre une variable d'instance et une variable de classe en Python ?\",\n      \"choices\": [\n        \"Les variables d'instance sont uniques à chaque instance, tandis que les variables de classe sont partagées par toutes les instances.\",\n        \"Les variables de classe ne peuvent pas être modifiées.\",\n        \"Les variables d'instance sont toujours immuables.\",\n        \"Les variables de classe sont créées dans la méthode __init__.\"\n      ],\n      \"correct_index\": 0,\n      \"explanation\": \"Les variables d'instance contiennent des données uniques à chaque instance, tandis que les variables de classe sont partagées entre toutes les instances, ce qui peut entraîner des surprises avec des objets mutables.\"\n    },\n    {\n      \"text\": \"Que se passe-t-il si une méthode d'une classe dérivée a le même nom qu'une méthode de la classe de base ?\",\n      \"choices\": [\n        \"La méthode de la classe de base est toujours appelée.\",\n        \"La méthode de la classe dérivée écrase la méthode de la classe de base.\",\n        \"Une erreur est levée.\",\n        \"Les deux méthodes sont appelées en séquence.\"\n      ],\n      \"correct_index\": 1,\n      \"explanation\": \"Une méthode dans une classe dérivée peut écraser une méthode de la classe de base, ce qui permet de modifier ou d'étendre le comportement de la méthode de base.\"\n    },\n    {\n      \"text\": \"Quel est l'effet d'assigner une liste à une variable de classe en Python ?\",\n      \"choices\": [\n        \"Chaque instance aura sa propre copie de la liste.\",\n        \"La liste sera partagée entre toutes les instances.\",\n        \"La liste ne pourra pas être modifiée.\",\n        \"Une erreur sera levée lors de l'assignation.\"\n      ],\n      \"correct_index\": 1,\n      \"explanation\": \"Une liste définie au niveau de la classe est le même objet pour chaque instance, donc les modifications apportées par une instance seront visibles par toutes les autres instances.\"\n    },\n    {\n      \"text\": \"Que signifie le préfixe double underscore (__) dans le nom d'un attribut d'une classe en Python ?\",\n      \"choices\": [\n        \"Il rend l'attribut public.\",\n        \"Il déclenche le nommage des attributs pour éviter les collisions de noms.\",\n        \"Il empêche l'attribut d'être modifié.\",\n        \"Il indique que l'attribut est une méthode.\"\n      ],\n      \"correct_index\": 1,\n      \"explanation\": \"Un double underscore devant un nom d'attribut déclenche le nommage des attributs, ce qui aide à éviter les collisions de noms dans les classes dérivées.\"\n    },\n    {\n      \"text\": \"Quelle fonction permet de vérifier si un objet est une instance d'une classe ou d'une sous-classe de celle-ci ?\",\n      \"choices\": [\n        \"issubclass()\",\n        \"isinstance()\",\n        \"type()\",\n        \"checkinstance()\"\n      ],\n      \"correct_index\": 1,\n      \"explanation\": \"La fonction isinstance(obj, cls) est utilisée pour vérifier si un objet est une instance d'une classe donnée ou d'une sous-classe de celle-ci.\"\n    }\n  ]\n}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "real",
+      "case_id": "PY-ADV-01",
+      "condition": "L",
+      "prompt_version": "quiz-gen-v1-rag-lean",
+      "repeat": 1,
+      "model": "gpt-4o-mini",
+      "retrieval": {
+        "retrieved_ids": [
+          "py-attribute-lookup",
+          "py-class-vs-instance-attributes"
+        ],
+        "retrieved_count": 2,
+        "context_chars": 1091,
+        "url_match_count": 2,
+        "url_precision": 1.0,
+        "url_reference_coverage": 1.0,
+        "objective_relevant_retrieved": [
+          "py-attribute-lookup",
+          "py-class-vs-instance-attributes"
+        ],
+        "objective_borderline_retrieved": [],
+        "objective_not_relevant_retrieved": [],
+        "objective_precision_strict": 1.0,
+        "objective_precision_lenient": 1.0,
+        "objective_recall": 1.0
+      },
+      "prompt_chars": 2137,
+      "estimated_input_tokens": 534,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "real",
+      "latency_seconds": 5.052,
+      "usage": {
+        "prompt_tokens": 466,
+        "completion_tokens": 489,
+        "total_tokens": 955,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "raw_output": "{\"title\":\"Quiz Python - Niveau Avancé\",\"questions\":[{\"text\":\"Quel est l'effet de l'affectation d'un attribut dans une méthode d'instance ?\",\"choices\":[\"Cela crée ou met à jour un attribut d'instance\",\"Cela modifie l'attribut de classe\",\"Cela crée un nouvel attribut de classe\",\"Cela n'a aucun effet\"],\"correct_index\":0,\"explanation\":\"L'affectation self.x = value crée ou met à jour un attribut d'instance et n'affecte pas l'attribut de classe.\"},{\"text\":\"Quelle est la conséquence de l'utilisation d'une liste comme variable de classe ?\",\"choices\":[\"Chaque instance a sa propre liste\",\"Les modifications affectent toutes les instances\",\"La liste ne peut pas être modifiée\",\"Les instances ne peuvent pas accéder à la liste\"],\"correct_index\":1,\"explanation\":\"Une liste définie au niveau de la classe est le même objet pour toutes les instances, donc les modifications sont visibles par toutes.\"},{\"text\":\"Quel est le rôle d'un descripteur en Python ?\",\"choices\":[\"Il permet de créer des variables de classe\",\"Il gère l'accès aux attributs d'instance\",\"Il optimise les performances des classes\",\"Il empêche l'héritage\"],\"correct_index\":1,\"explanation\":\"Un descripteur gère l'accès aux attributs, prenant la priorité sur les attributs d'instance en cas de conflit.\"},{\"text\":\"Comment les méthodes d'une classe reçoivent-elles l'instance sur laquelle elles sont appelées ?\",\"choices\":[\"Par un argument explicite\",\"Implicitement, comme premier argument\",\"Par le biais d'un décorateur\",\"Elles ne reçoivent pas l'instance\"],\"correct_index\":1,\"explanation\":\"Les méthodes reçoivent l'instance comme premier argument, ce qui est équivalent à MyClass.f(x).\"},{\"text\":\"Quel est un piège courant lors de l'utilisation de variables d'instance et de classe ?\",\"choices\":[\"Les variables d'instance sont toujours immuables\",\"Les variables de classe ne peuvent pas être accédées par les instances\",\"Les variables d'instance peuvent masquer les variables de classe\",\"Les variables de classe ne peuvent pas être modifiées\"],\"correct_index\":2,\"explanation\":\"Les variables d'instance peuvent masquer les variables de classe du même nom, ce qui peut prêter à confusion.\"}]}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "real",
+      "case_id": "DJ-BEG-01",
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "repeat": 1,
+      "model": "gpt-4o-mini",
+      "retrieval": {
+        "retrieved_ids": [],
+        "retrieved_count": 0,
+        "context_chars": 0,
+        "url_match_count": 0,
+        "url_precision": null,
+        "url_reference_coverage": 0.0,
+        "objective_relevant_retrieved": [],
+        "objective_borderline_retrieved": [],
+        "objective_not_relevant_retrieved": [],
+        "objective_precision_strict": null,
+        "objective_precision_lenient": null,
+        "objective_recall": 0.0
+      },
+      "prompt_chars": 1126,
+      "estimated_input_tokens": 282,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "real",
+      "latency_seconds": 4.366,
+      "usage": {
+        "prompt_tokens": 300,
+        "completion_tokens": 404,
+        "total_tokens": 704,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "raw_output": "{\n  \"title\": \"Quiz sur Django pour Débutants\",\n  \"questions\": [\n    {\n      \"text\": \"Quel est le fichier principal où l'on définit les modèles dans une application Django ?\",\n      \"choices\": [\"models.py\", \"views.py\", \"urls.py\", \"admin.py\"],\n      \"correct_index\": 0,\n      \"explanation\": \"Les modèles sont définis dans le fichier models.py.\"\n    },\n    {\n      \"text\": \"Quelle commande est utilisée pour créer une nouvelle application dans un projet Django ?\",\n      \"choices\": [\"django-admin startapp\", \"django-admin createapp\", \"python manage.py newapp\", \"python manage.py startapp\"],\n      \"correct_index\": 3,\n      \"explanation\": \"La commande correcte pour créer une nouvelle application est 'python manage.py startapp'.\"\n    },\n    {\n      \"text\": \"Quel décorateur est utilisé pour créer une vue basée sur une fonction dans Django ?\",\n      \"choices\": [\"@app.route\", \"@view\", \"@login_required\", \"@require_http_methods\"],\n      \"correct_index\": 2,\n      \"explanation\": \"Le décorateur @login_required est utilisé pour protéger les vues en exigeant une connexion.\"\n    },\n    {\n      \"text\": \"Quel fichier contient les configurations des URL pour une application Django ?\",\n      \"choices\": [\"settings.py\", \"urls.py\", \"views.py\", \"models.py\"],\n      \"correct_index\": 1,\n      \"explanation\": \"Les configurations des URL sont définies dans le fichier urls.py.\"\n    },\n    {\n      \"text\": \"Quel outil Django est principalement utilisé pour tester les modèles et les vues ?\",\n      \"choices\": [\"Django Test Client\", \"Django Debug Toolbar\", \"Django Shell\", \"Django Admin\"],\n      \"correct_index\": 0,\n      \"explanation\": \"Le Django Test Client est utilisé pour tester les modèles et les vues.\"\n    }\n  ]\n}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "real",
+      "case_id": "DJ-BEG-01",
+      "condition": "R",
+      "prompt_version": "quiz-gen-v1-rag",
+      "repeat": 1,
+      "model": "gpt-4o-mini",
+      "retrieval": {
+        "retrieved_ids": [
+          "dj-model-basics",
+          "dj-model-relationships",
+          "dj-model-meta"
+        ],
+        "retrieved_count": 3,
+        "context_chars": 1152,
+        "url_match_count": 3,
+        "url_precision": 1.0,
+        "url_reference_coverage": 1.0,
+        "objective_relevant_retrieved": [
+          "dj-model-basics",
+          "dj-model-relationships"
+        ],
+        "objective_borderline_retrieved": [
+          "dj-model-meta"
+        ],
+        "objective_not_relevant_retrieved": [],
+        "objective_precision_strict": 0.667,
+        "objective_precision_lenient": 1.0,
+        "objective_recall": 1.0
+      },
+      "prompt_chars": 3049,
+      "estimated_input_tokens": 762,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "real",
+      "latency_seconds": 4.044,
+      "usage": {
+        "prompt_tokens": 694,
+        "completion_tokens": 394,
+        "total_tokens": 1088,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "raw_output": "{\n  \"title\": \"Quiz sur Django pour Débutants\",\n  \"questions\": [\n    {\n      \"text\": \"Quel type de classe est un modèle dans Django ?\",\n      \"choices\": [\"Une classe Python qui hérite de django.db.models.Model\", \"Une classe Java\", \"Une classe C++\", \"Une classe HTML\"],\n      \"correct_index\": 0,\n      \"explanation\": \"Un modèle est une classe Python qui hérite de django.db.models.Model.\"\n    },\n    {\n      \"text\": \"Quel champ est utilisé pour établir une relation de plusieurs à un dans Django ?\",\n      \"choices\": [\"ManyToManyField\", \"ForeignKey\", \"OneToOneField\", \"CharField\"],\n      \"correct_index\": 1,\n      \"explanation\": \"Django utilise ForeignKey pour établir une relation de plusieurs à un.\"\n    },\n    {\n      \"text\": \"Quel attribut permet de définir un champ comme clé primaire dans un modèle Django ?\",\n      \"choices\": [\"primary_key\", \"unique\", \"default\", \"null\"],\n      \"correct_index\": 0,\n      \"explanation\": \"L'attribut primary_key définit un champ comme clé primaire dans un modèle.\"\n    },\n    {\n      \"text\": \"Quelle méthode permet de donner une représentation lisible d'une instance d'un modèle ?\",\n      \"choices\": [\"__repr__\", \"__str__\", \"__init__\", \"__call__\"],\n      \"correct_index\": 1,\n      \"explanation\": \"La méthode __str__ permet de donner une représentation lisible d'une instance.\"\n    },\n    {\n      \"text\": \"Quelle commande est utilisée pour appliquer les migrations dans Django ?\",\n      \"choices\": [\"makemigrations\", \"migrate\", \"runserver\", \"startapp\"],\n      \"correct_index\": 1,\n      \"explanation\": \"La commande migrate applique les migrations à la base de données.\"\n    }\n  ]\n}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "real",
+      "case_id": "DJ-BEG-01",
+      "condition": "L",
+      "prompt_version": "quiz-gen-v1-rag-lean",
+      "repeat": 1,
+      "model": "gpt-4o-mini",
+      "retrieval": {
+        "retrieved_ids": [
+          "dj-model-basics",
+          "dj-model-relationships"
+        ],
+        "retrieved_count": 2,
+        "context_chars": 741,
+        "url_match_count": 2,
+        "url_precision": 1.0,
+        "url_reference_coverage": 1.0,
+        "objective_relevant_retrieved": [
+          "dj-model-basics",
+          "dj-model-relationships"
+        ],
+        "objective_borderline_retrieved": [],
+        "objective_not_relevant_retrieved": [],
+        "objective_precision_strict": 1.0,
+        "objective_precision_lenient": 1.0,
+        "objective_recall": 1.0
+      },
+      "prompt_chars": 1754,
+      "estimated_input_tokens": 438,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "real",
+      "latency_seconds": 3.888,
+      "usage": {
+        "prompt_tokens": 397,
+        "completion_tokens": 334,
+        "total_tokens": 731,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "raw_output": "{\"title\":\"Quiz Django - Niveau Débutant\",\"questions\":[{\"text\":\"Qu'est-ce qu'un modèle dans Django ?\",\"choices\":[\"Une classe Python qui hérite de django.db.models.Model\",\"Un fichier de configuration\",\"Une vue HTML\",\"Un type de base de données\"],\"correct_index\":0,\"explanation\":\"Un modèle est une classe Python qui hérite de django.db.models.Model.\"},{\"text\":\"Quel champ de modèle est utilisé pour une relation plusieurs-à-un ?\",\"choices\":[\"ManyToManyField\",\"OneToOneField\",\"ForeignKey\",\"CharField\"],\"correct_index\":2,\"explanation\":\"Le champ ForeignKey est utilisé pour établir une relation plusieurs-à-un.\"},{\"text\":\"Que fait la commande 'makemigrations' dans Django ?\",\"choices\":[\"Elle crée des fichiers de migration\",\"Elle applique les migrations à la base de données\",\"Elle supprime les modèles\",\"Elle génère des fichiers statiques\"],\"correct_index\":0,\"explanation\":\"La commande 'makemigrations' crée des fichiers de migration après avoir modifié les modèles.\"},{\"text\":\"Quel type de champ nécessite un argument 'max_length' ?\",\"choices\":[\"IntegerField\",\"CharField\",\"DateField\",\"BooleanField\"],\"correct_index\":1,\"explanation\":\"Le champ CharField nécessite un argument 'max_length' pour définir la longueur maximale.\"},{\"text\":\"Quelle option permet de définir le nom de la relation inverse dans un modèle ?\",\"choices\":[\"related_name\",\"related_query_name\",\"verbose_name\",\"db_column\"],\"correct_index\":0,\"explanation\":\"L'option related_name définit le nom de la relation inverse utilisée depuis le modèle lié.\"}]}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "real",
+      "case_id": "DJ-INT-01",
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "repeat": 1,
+      "model": "gpt-4o-mini",
+      "retrieval": {
+        "retrieved_ids": [],
+        "retrieved_count": 0,
+        "context_chars": 0,
+        "url_match_count": 0,
+        "url_precision": null,
+        "url_reference_coverage": 0.0,
+        "objective_relevant_retrieved": [],
+        "objective_borderline_retrieved": [],
+        "objective_not_relevant_retrieved": [],
+        "objective_precision_strict": null,
+        "objective_precision_lenient": null,
+        "objective_recall": 0.0
+      },
+      "prompt_chars": 1144,
+      "estimated_input_tokens": 286,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "real",
+      "latency_seconds": 5.523,
+      "usage": {
+        "prompt_tokens": 300,
+        "completion_tokens": 419,
+        "total_tokens": 719,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "raw_output": "{\n  \"title\": \"Quiz sur Django\",\n  \"questions\": [\n    {\n      \"text\": \"Quel décorateur est utilisé pour créer une vue basée sur une fonction dans Django ?\",\n      \"choices\": [\"@app.route\", \"@login_required\", \"@require_http_methods\", \"@api_view\"],\n      \"correct_index\": 3,\n      \"explanation\": \"Le décorateur @api_view est utilisé pour définir une vue qui peut traiter des requêtes HTTP dans une API Django.\"\n    },\n    {\n      \"text\": \"Quelle commande permet de créer une nouvelle application Django ?\",\n      \"choices\": [\"django-admin startproject\", \"django-admin startapp\", \"python manage.py runserver\", \"python manage.py makemigrations\"],\n      \"correct_index\": 1,\n      \"explanation\": \"La commande django-admin startapp est utilisée pour créer une nouvelle application dans un projet Django.\"\n    },\n    {\n      \"text\": \"Quelle méthode est utilisée pour sérialiser des données dans Django REST Framework ?\",\n      \"choices\": [\"serialize()\", \"to_representation()\", \"create()\", \"save()\"],\n      \"correct_index\": 1,\n      \"explanation\": \"La méthode to_representation() est utilisée pour sérialiser des données dans Django REST Framework.\"\n    },\n    {\n      \"text\": \"Quel fichier est utilisé pour définir les modèles dans une application Django ?\",\n      \"choices\": [\"models.py\", \"views.py\", \"urls.py\", \"admin.py\"],\n      \"correct_index\": 0,\n      \"explanation\": \"Le fichier models.py est utilisé pour définir les modèles dans une application Django.\"\n    },\n    {\n      \"text\": \"Quelle commande exécute les tests dans un projet Django ?\",\n      \"choices\": [\"python manage.py test\", \"python manage.py runserver\", \"django-admin test\", \"python manage.py check\"],\n      \"correct_index\": 0,\n      \"explanation\": \"La commande python manage.py test est utilisée pour exécuter les tests dans un projet Django.\"\n    }\n  ]\n}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "real",
+      "case_id": "DJ-INT-01",
+      "condition": "R",
+      "prompt_version": "quiz-gen-v1-rag",
+      "repeat": 1,
+      "model": "gpt-4o-mini",
+      "retrieval": {
+        "retrieved_ids": [
+          "dj-queryset-lazy",
+          "dj-model-relationships"
+        ],
+        "retrieved_count": 2,
+        "context_chars": 943,
+        "url_match_count": 1,
+        "url_precision": 0.5,
+        "url_reference_coverage": 1.0,
+        "objective_relevant_retrieved": [
+          "dj-queryset-lazy"
+        ],
+        "objective_borderline_retrieved": [],
+        "objective_not_relevant_retrieved": [
+          "dj-model-relationships"
+        ],
+        "objective_precision_strict": 0.5,
+        "objective_precision_lenient": 0.5,
+        "objective_recall": 0.5
+      },
+      "prompt_chars": 2765,
+      "estimated_input_tokens": 691,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "real",
+      "latency_seconds": 5.115,
+      "usage": {
+        "prompt_tokens": 655,
+        "completion_tokens": 490,
+        "total_tokens": 1145,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "raw_output": "{\n  \"title\": \"Quiz sur Django\",\n  \"questions\": [\n    {\n      \"text\": \"Quel type de relation est utilisé pour une relation plusieurs-à-un dans Django ?\",\n      \"choices\": [\"ForeignKey\", \"ManyToManyField\", \"OneToOneField\", \"RelatedField\"],\n      \"correct_index\": 0,\n      \"explanation\": \"La relation plusieurs-à-un est définie avec ForeignKey, qui doit être déclarée du côté 'many' avec un argument on_delete requis.\"\n    },\n    {\n      \"text\": \"Que se passe-t-il lorsqu'un QuerySet est évalué pour la première fois ?\",\n      \"choices\": [\"Il exécute la requête SQL\", \"Il renvoie une liste vide\", \"Il crée un nouveau QuerySet\", \"Il cache les résultats pour une utilisation future\"],\n      \"correct_index\": 0,\n      \"explanation\": \"Lorsqu'un QuerySet est évalué, il exécute la requête SQL et les résultats sont ensuite mis en cache pour les évaluations futures.\"\n    },\n    {\n      \"text\": \"Quel champ est utilisé pour établir une relation plusieurs-à-plusieurs dans Django ?\",\n      \"choices\": [\"ForeignKey\", \"ManyToManyField\", \"OneToOneField\", \"RelatedField\"],\n      \"correct_index\": 1,\n      \"explanation\": \"Django utilise ManyToManyField pour établir une relation plusieurs-à-plusieurs entre les modèles.\"\n    },\n    {\n      \"text\": \"Que fait la méthode filter() sur un QuerySet ?\",\n      \"choices\": [\"Elle exécute immédiatement la requête\", \"Elle renvoie un nouveau QuerySet\", \"Elle modifie le QuerySet existant\", \"Elle retourne une liste d'objets\"],\n      \"correct_index\": 1,\n      \"explanation\": \"La méthode filter() crée un nouveau QuerySet qui est dérivé du QuerySet existant, sans exécuter immédiatement la requête.\"\n    },\n    {\n      \"text\": \"Quel champ est utilisé pour établir une relation un-à-un dans Django ?\",\n      \"choices\": [\"ForeignKey\", \"ManyToManyField\", \"OneToOneField\", \"SingleField\"],\n      \"correct_index\": 2,\n      \"explanation\": \"Django utilise OneToOneField pour établir une relation un-à-un entre les modèles.\"\n    }\n  ]\n}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": true,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "real",
+      "case_id": "DJ-INT-01",
+      "condition": "L",
+      "prompt_version": "quiz-gen-v1-rag-lean",
+      "repeat": 1,
+      "model": "gpt-4o-mini",
+      "retrieval": {
+        "retrieved_ids": [
+          "dj-queryset-lazy",
+          "dj-model-relationships"
+        ],
+        "retrieved_count": 2,
+        "context_chars": 943,
+        "url_match_count": 1,
+        "url_precision": 0.5,
+        "url_reference_coverage": 1.0,
+        "objective_relevant_retrieved": [
+          "dj-queryset-lazy"
+        ],
+        "objective_borderline_retrieved": [],
+        "objective_not_relevant_retrieved": [
+          "dj-model-relationships"
+        ],
+        "objective_precision_strict": 0.5,
+        "objective_precision_lenient": 0.5,
+        "objective_recall": 0.5
+      },
+      "prompt_chars": 2004,
+      "estimated_input_tokens": 501,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "real",
+      "latency_seconds": 5.34,
+      "usage": {
+        "prompt_tokens": 464,
+        "completion_tokens": 414,
+        "total_tokens": 878,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "raw_output": "{\"title\":\"Quiz Django - Niveau Intermédiaire\",\"questions\":[{\"text\":\"Quel est l'effet de l'évaluation d'un QuerySet dans Django ?\",\"choices\":[\"Il exécute la requête et met en cache les résultats\",\"Il crée un nouveau QuerySet sans exécuter la requête\",\"Il renvoie toujours une liste vide\",\"Il modifie la base de données\"],\"correct_index\":0,\"explanation\":\"L'évaluation d'un QuerySet exécute la requête et met en cache les résultats sur l'objet QuerySet.\"},{\"text\":\"Quel type de relation est représenté par un ForeignKey dans Django ?\",\"choices\":[\"Un à un\",\"Un à plusieurs\",\"Plusieurs à plusieurs\",\"Plusieurs à un\"],\"correct_index\":1,\"explanation\":\"Un ForeignKey représente une relation de type plusieurs à un, déclarée du côté 'plusieurs'.\"},{\"text\":\"Que se passe-t-il lorsque vous appliquez un slicing avec un paramètre 'step' sur un QuerySet non évalué ?\",\"choices\":[\"La requête est exécutée immédiatement\",\"Un nouveau QuerySet est créé sans évaluation\",\"La requête est annulée\",\"Les résultats sont mis en cache\"],\"correct_index\":0,\"explanation\":\"Slicing avec un paramètre 'step' sur un QuerySet non évalué exécute la requête immédiatement et renvoie une liste.\"},{\"text\":\"Quelle option permet de définir le nom de la relation inverse dans un modèle Django ?\",\"choices\":[\"related_name\",\"related_query\",\"reverse_name\",\"inverse_relation\"],\"correct_index\":0,\"explanation\":\"L'option 'related_name' définit le nom de la relation inverse utilisée depuis le modèle lié.\"},{\"text\":\"Quel type de champ est utilisé pour représenter une relation plusieurs à plusieurs dans Django ?\",\"choices\":[\"ForeignKey\",\"OneToOneField\",\"ManyToManyField\",\"RelatedField\"],\"correct_index\":2,\"explanation\":\"Le champ ManyToManyField est utilisé pour représenter une relation plusieurs à plusieurs dans Django.\"}]}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "real",
+      "case_id": "RE-INT-01",
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "repeat": 1,
+      "model": "gpt-4o-mini",
+      "retrieval": {
+        "retrieved_ids": [],
+        "retrieved_count": 0,
+        "context_chars": 0,
+        "url_match_count": 0,
+        "url_precision": null,
+        "url_reference_coverage": 0.0,
+        "objective_relevant_retrieved": [],
+        "objective_borderline_retrieved": [],
+        "objective_not_relevant_retrieved": [],
+        "objective_precision_strict": null,
+        "objective_precision_lenient": null,
+        "objective_recall": 0.0
+      },
+      "prompt_chars": 1147,
+      "estimated_input_tokens": 287,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "real",
+      "latency_seconds": 6.078,
+      "usage": {
+        "prompt_tokens": 299,
+        "completion_tokens": 463,
+        "total_tokens": 762,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "raw_output": "{\n  \"title\": \"Quiz sur React\",\n  \"questions\": [\n    {\n      \"text\": \"Quel hook est utilisé pour gérer l'état dans un composant fonctionnel ?\",\n      \"choices\": [\"useState\", \"useEffect\", \"useContext\", \"useReducer\"],\n      \"correct_index\": 0,\n      \"explanation\": \"Le hook useState permet de déclarer des variables d'état dans un composant fonctionnel.\"\n    },\n    {\n      \"text\": \"Quelle méthode est utilisée pour créer un composant React ?\",\n      \"choices\": [\"React.createElement\", \"React.Component\", \"React.FunctionComponent\", \"React.ComponentClass\"],\n      \"correct_index\": 1,\n      \"explanation\": \"React.Component est la classe de base pour créer des composants React basés sur des classes.\"\n    },\n    {\n      \"text\": \"Comment peut-on éviter les rendus inutiles d'un composant ?\",\n      \"choices\": [\"Utiliser useMemo\", \"Utiliser useEffect\", \"Utiliser useReducer\", \"Utiliser useCallback\"],\n      \"correct_index\": 3,\n      \"explanation\": \"Le hook useCallback mémorise une fonction et évite les rendus inutiles en ne créant pas une nouvelle instance à chaque rendu.\"\n    },\n    {\n      \"text\": \"Quel est le rôle de useEffect dans un composant React ?\",\n      \"choices\": [\"Gérer l'état\", \"Effectuer des effets de bord\", \"Rendre le composant\", \"Définir des props\"],\n      \"correct_index\": 1,\n      \"explanation\": \"useEffect est utilisé pour gérer les effets de bord, comme les appels API ou la manipulation du DOM.\"\n    },\n    {\n      \"text\": \"Quelle syntaxe est correcte pour passer des props à un composant ?\",\n      \"choices\": [\"<MonComposant props={value} />\", \"<MonComposant props:value />\", \"<MonComposant value />\", \"<MonComposant(value) />\"],\n      \"correct_index\": 0,\n      \"explanation\": \"La syntaxe <MonComposant props={value} /> est correcte pour passer des props à un composant en JSX.\"\n    }\n  ]\n}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "real",
+      "case_id": "RE-INT-01",
+      "condition": "R",
+      "prompt_version": "quiz-gen-v1-rag",
+      "repeat": 1,
+      "model": "gpt-4o-mini",
+      "retrieval": {
+        "retrieved_ids": [
+          "re-useeffect-dependencies",
+          "re-usestate-basics",
+          "re-useeffect-usage"
+        ],
+        "retrieved_count": 3,
+        "context_chars": 1318,
+        "url_match_count": 3,
+        "url_precision": 1.0,
+        "url_reference_coverage": 1.0,
+        "objective_relevant_retrieved": [
+          "re-useeffect-dependencies",
+          "re-usestate-basics",
+          "re-useeffect-usage"
+        ],
+        "objective_borderline_retrieved": [],
+        "objective_not_relevant_retrieved": [],
+        "objective_precision_strict": 1.0,
+        "objective_precision_lenient": 1.0,
+        "objective_recall": 0.75
+      },
+      "prompt_chars": 3156,
+      "estimated_input_tokens": 789,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "real",
+      "latency_seconds": 10.273,
+      "usage": {
+        "prompt_tokens": 713,
+        "completion_tokens": 513,
+        "total_tokens": 1226,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "raw_output": "{\n  \"title\": \"Quiz sur React - Composants et Hooks\",\n  \"questions\": [\n    {\n      \"text\": \"Quel hook est utilisé pour gérer l'état d'un composant dans React ?\",\n      \"choices\": [\"useState\", \"useEffect\", \"useContext\", \"useReducer\"],\n      \"correct_index\": 0,\n      \"explanation\": \"useState est le hook utilisé pour déclarer un état local dans un composant fonctionnel.\"\n    },\n    {\n      \"text\": \"Quel est le comportement de useEffect sans tableau de dépendances ?\",\n      \"choices\": [\"Il s'exécute uniquement au premier rendu\", \"Il s'exécute après chaque rendu\", \"Il ne s'exécute jamais\", \"Il s'exécute uniquement lors du démontage\"],\n      \"correct_index\": 1,\n      \"explanation\": \"Sans tableau de dépendances, useEffect s'exécute après chaque rendu du composant.\"\n    },\n    {\n      \"text\": \"Que doit-on faire pour que useEffect réagisse à un changement d'une valeur spécifique ?\",\n      \"choices\": [\"Ajouter la valeur dans un tableau de dépendances\", \"Ne rien faire\", \"Utiliser un autre hook\", \"Définir un état local\"],\n      \"correct_index\": 0,\n      \"explanation\": \"Pour que useEffect réagisse à un changement, il faut inclure la valeur dans le tableau de dépendances.\"\n    },\n    {\n      \"text\": \"Quel est le rôle principal d'un hook dans un composant React ?\",\n      \"choices\": [\"Rendre le composant plus rapide\", \"Gérer l'état et les effets secondaires\", \"Rendre le composant plus complexe\", \"Avoir accès à des méthodes de classe\"],\n      \"correct_index\": 1,\n      \"explanation\": \"Les hooks permettent de gérer l'état et les effets secondaires dans les composants fonctionnels.\"\n    },\n    {\n      \"text\": \"Que se passe-t-il si le nouvel état passé à setState est identique à l'état actuel ?\",\n      \"choices\": [\"Le composant se re-rendra\", \"Le composant ne se re-rendra pas\", \"Une erreur se produira\", \"Le composant se démontera\"],\n      \"correct_index\": 1,\n      \"explanation\": \"Si le nouvel état est identique à l'état actuel, React ne re-rendra pas le composant pour optimiser les performances.\"\n    }\n  ]\n}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "real",
+      "case_id": "RE-INT-01",
+      "condition": "L",
+      "prompt_version": "quiz-gen-v1-rag-lean",
+      "repeat": 1,
+      "model": "gpt-4o-mini",
+      "retrieval": {
+        "retrieved_ids": [
+          "re-useeffect-dependencies",
+          "re-usestate-basics"
+        ],
+        "retrieved_count": 2,
+        "context_chars": 918,
+        "url_match_count": 2,
+        "url_precision": 1.0,
+        "url_reference_coverage": 1.0,
+        "objective_relevant_retrieved": [
+          "re-useeffect-dependencies",
+          "re-usestate-basics"
+        ],
+        "objective_borderline_retrieved": [],
+        "objective_not_relevant_retrieved": [],
+        "objective_precision_strict": 1.0,
+        "objective_precision_lenient": 1.0,
+        "objective_recall": 0.5
+      },
+      "prompt_chars": 1896,
+      "estimated_input_tokens": 474,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "real",
+      "latency_seconds": 5.247,
+      "usage": {
+        "prompt_tokens": 427,
+        "completion_tokens": 466,
+        "total_tokens": 893,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "raw_output": "{\"title\":\"Quiz sur React - Niveau Intermédiaire\",\"questions\":[{\"text\":\"Quel est le rôle principal du hook useEffect dans un composant React ?\",\"choices\":[\"Synchroniser un composant avec un système externe\",\"Gérer l'état local du composant\",\"Rendre le composant plus performant\",\"Gérer les événements utilisateurs\"],\"correct_index\":0,\"explanation\":\"useEffect permet de synchroniser un composant avec un système externe après que le rendu soit effectué.\"},{\"text\":\"Que se passe-t-il si useEffect est utilisé sans tableau de dépendances ?\",\"choices\":[\"Il ne s'exécute qu'une seule fois\",\"Il s'exécute après chaque rendu\",\"Il provoque une erreur\",\"Il ne s'exécute jamais\"],\"correct_index\":1,\"explanation\":\"Sans tableau de dépendances, useEffect s'exécute après chaque rendu du composant.\"},{\"text\":\"Quelle est la structure de retour de useState ?\",\"choices\":[\"Un objet avec l'état et une fonction de mise à jour\",\"Un tableau avec l'état actuel et une fonction de mise à jour\",\"Une promesse avec l'état et une fonction de mise à jour\",\"Un tableau avec l'état et une fonction de récupération\"],\"correct_index\":1,\"explanation\":\"useState retourne un tableau contenant l'état actuel et une fonction pour le mettre à jour.\"},{\"text\":\"Dans quel cas React évite de re-rendre un composant après un appel à la fonction de mise à jour de useState ?\",\"choices\":[\"Lorsque l'état est nul\",\"Lorsque le nouvel état est identique à l'ancien selon Object.is\",\"Lorsque le composant est dans un état de chargement\",\"Lorsque le composant est monté\"],\"correct_index\":1,\"explanation\":\"React évite de re-rendre le composant si le nouvel état est identique à l'ancien selon Object.is.\"},{\"text\":\"Où doivent être appelés les hooks comme useState et useEffect ?\",\"choices\":[\"À l'intérieur de boucles\",\"À l'intérieur de conditions\",\"Au niveau supérieur d'un composant\",\"N'importe où dans le composant\"],\"correct_index\":2,\"explanation\":\"Les hooks doivent être appelés au niveau supérieur d'un composant, pas dans des boucles ou des conditions.\"}]}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "real",
+      "case_id": "TS-ADV-01",
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "repeat": 1,
+      "model": "gpt-4o-mini",
+      "retrieval": {
+        "retrieved_ids": [],
+        "retrieved_count": 0,
+        "context_chars": 0,
+        "url_match_count": 0,
+        "url_precision": null,
+        "url_reference_coverage": 0.0,
+        "objective_relevant_retrieved": [],
+        "objective_borderline_retrieved": [],
+        "objective_not_relevant_retrieved": [],
+        "objective_precision_strict": null,
+        "objective_precision_lenient": null,
+        "objective_recall": 0.0
+      },
+      "prompt_chars": 1148,
+      "estimated_input_tokens": 287,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "real",
+      "latency_seconds": 5.792,
+      "usage": {
+        "prompt_tokens": 300,
+        "completion_tokens": 547,
+        "total_tokens": 847,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "raw_output": "{\n  \"title\": \"Quiz avancé sur TypeScript\",\n  \"questions\": [\n    {\n      \"text\": \"Quel type permet de représenter une valeur qui peut être soit un nombre, soit une chaîne de caractères en TypeScript ?\",\n      \"choices\": [\"number | string\", \"string & number\", \"number & string\", \"string | number\"],\n      \"correct_index\": 0,\n      \"explanation\": \"Le type 'number | string' utilise l'union pour permettre à une variable d'être soit un nombre, soit une chaîne de caractères.\"\n    },\n    {\n      \"text\": \"Quelle fonctionnalité de TypeScript permet de restreindre le type d'une variable en fonction de son type actuel ?\",\n      \"choices\": [\"Type Guards\", \"Type Assertions\", \"Type Aliases\", \"Type Inference\"],\n      \"correct_index\": 0,\n      \"explanation\": \"Les 'Type Guards' permettent de vérifier le type d'une variable à l'exécution et d'affiner son type en conséquence.\"\n    },\n    {\n      \"text\": \"Quel est l'effet de l'utilisation de 'as const' sur un tableau en TypeScript ?\",\n      \"choices\": [\"Il le transforme en tuple immuable\", \"Il le rend extensible\", \"Il change son type en 'any'\", \"Il le rend mutable\"],\n      \"correct_index\": 0,\n      \"explanation\": \"'as const' transforme un tableau en tuple immuable, ce qui signifie que ses éléments ne peuvent pas être modifiés.\"\n    },\n    {\n      \"text\": \"Quelle est la conséquence de l'utilisation de 'strictNullChecks' dans un projet TypeScript ?\",\n      \"choices\": [\"Les types null et undefined sont exclus des types\", \"Les types null et undefined sont autorisés par défaut\", \"Les types doivent être explicitement définis comme nullables\", \"Les types primitifs ne peuvent pas être utilisés\"],\n      \"correct_index\": 2,\n      \"explanation\": \"Avec 'strictNullChecks' activé, les types doivent être explicitement définis comme nullables pour accepter null et undefined.\"\n    },\n    {\n      \"text\": \"Quel est le but de l'opérateur 'in' en TypeScript ?\",\n      \"choices\": [\"Vérifier si une clé existe dans un objet\", \"Déterminer le type d'une variable\", \"Créer un type union\", \"Définir une fonction générique\"],\n      \"correct_index\": 0,\n      \"explanation\": \"L'opérateur 'in' est utilisé pour vérifier si une clé spécifique existe dans un objet, ce qui est utile pour le narrowing des types.\"\n    }\n  ]\n}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "real",
+      "case_id": "TS-ADV-01",
+      "condition": "R",
+      "prompt_version": "quiz-gen-v1-rag",
+      "repeat": 1,
+      "model": "gpt-4o-mini",
+      "retrieval": {
+        "retrieved_ids": [
+          "ts-typeof-truthiness",
+          "ts-discriminated-unions",
+          "ts-equality-in-instanceof"
+        ],
+        "retrieved_count": 3,
+        "context_chars": 1475,
+        "url_match_count": 3,
+        "url_precision": 1.0,
+        "url_reference_coverage": 1.0,
+        "objective_relevant_retrieved": [
+          "ts-typeof-truthiness",
+          "ts-discriminated-unions"
+        ],
+        "objective_borderline_retrieved": [
+          "ts-equality-in-instanceof"
+        ],
+        "objective_not_relevant_retrieved": [],
+        "objective_precision_strict": 0.667,
+        "objective_precision_lenient": 1.0,
+        "objective_recall": 1.0
+      },
+      "prompt_chars": 3454,
+      "estimated_input_tokens": 864,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "real",
+      "latency_seconds": 5.043,
+      "usage": {
+        "prompt_tokens": 824,
+        "completion_tokens": 529,
+        "total_tokens": 1353,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "raw_output": "{\n  \"title\": \"Quiz avancé sur TypeScript\",\n  \"questions\": [\n    {\n      \"text\": \"Quel opérateur permet de vérifier si une propriété existe dans un objet et de réduire le type en conséquence ?\",\n      \"choices\": [\"in\", \"typeof\", \"instanceof\", \"==\"],\n      \"correct_index\": 0,\n      \"explanation\": \"L'opérateur 'in' permet de vérifier si une propriété existe dans un objet, ce qui aide à réduire le type aux membres de l'union qui possèdent cette propriété.\"\n    },\n    {\n      \"text\": \"Comment TypeScript gère-t-il les types union dans une vérification exhaustive ?\",\n      \"choices\": [\"En assignant à un type 'never'\", \"En retournant une erreur à l'exécution\", \"En ignorant les nouveaux membres\", \"En les traitant comme des types inconnus\"],\n      \"correct_index\": 0,\n      \"explanation\": \"TypeScript utilise une vérification exhaustive pour assigner à un type 'never' dans la branche par défaut, ce qui entraîne une erreur de compilation si un nouveau membre de l'union n'est pas géré.\"\n    },\n    {\n      \"text\": \"Quel type de vérification exclut à la fois null et undefined ?\",\n      \"choices\": [\"x != null\", \"typeof\", \"instanceof\", \"in\"],\n      \"correct_index\": 0,\n      \"explanation\": \"La vérification 'x != null' exclut à la fois null et undefined, permettant ainsi de réduire le type de manière efficace.\"\n    },\n    {\n      \"text\": \"Quel est le comportement de 'typeof' lorsqu'il est utilisé sur une variable qui peut être null ?\",\n      \"choices\": [\"Il retourne 'object'\", \"Il retourne 'undefined'\", \"Il lance une erreur\", \"Il retourne 'null'\"],\n      \"correct_index\": 0,\n      \"explanation\": \"'typeof' retourne 'object' pour une variable qui est null, ce qui peut prêter à confusion car cela inclut également d'autres types d'objets.\"\n    },\n    {\n      \"text\": \"Quelle méthode permet de créer une fonction de garde de type personnalisée en TypeScript ?\",\n      \"choices\": [\"Type predicate\", \"Instanceof\", \"Discriminated union\", \"Type assertion\"],\n      \"correct_index\": 0,\n      \"explanation\": \"Une fonction de garde de type personnalisée en TypeScript utilise un type predicate pour affiner le type de ses arguments, permettant une vérification plus précise.\"\n    }\n  ]\n}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "real",
+      "case_id": "TS-ADV-01",
+      "condition": "L",
+      "prompt_version": "quiz-gen-v1-rag-lean",
+      "repeat": 1,
+      "model": "gpt-4o-mini",
+      "retrieval": {
+        "retrieved_ids": [
+          "ts-typeof-truthiness",
+          "ts-discriminated-unions"
+        ],
+        "retrieved_count": 2,
+        "context_chars": 1018,
+        "url_match_count": 2,
+        "url_precision": 1.0,
+        "url_reference_coverage": 1.0,
+        "objective_relevant_retrieved": [
+          "ts-typeof-truthiness",
+          "ts-discriminated-unions"
+        ],
+        "objective_borderline_retrieved": [],
+        "objective_not_relevant_retrieved": [],
+        "objective_precision_strict": 1.0,
+        "objective_precision_lenient": 1.0,
+        "objective_recall": 1.0
+      },
+      "prompt_chars": 2086,
+      "estimated_input_tokens": 522,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "real",
+      "latency_seconds": 4.855,
+      "usage": {
+        "prompt_tokens": 498,
+        "completion_tokens": 414,
+        "total_tokens": 912,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "raw_output": "{\"title\":\"Quiz TypeScript - Niveau Avancé\",\"questions\":[{\"text\":\"Quel type de vérification permet de réduire un type d'union en utilisant une propriété commune dans un union discriminé ?\",\"choices\":[\"Vérification de type\",\"Vérification de propriété\",\"Vérification de valeur\",\"Vérification d'instance\"],\"correct_index\":0,\"explanation\":\"La vérification de type permet de réduire un type d'union en utilisant une propriété commune dans un union discriminé.\"},{\"text\":\"Quelle méthode de contrôle de flux exclut les valeurs null et undefined mais peut également exclure des valeurs valides comme 0 ou '' ?\",\"choices\":[\"Vérification de type\",\"Vérification de vérité\",\"Vérification de propriété\",\"Vérification de valeur\"],\"correct_index\":1,\"explanation\":\"La vérification de vérité exclut null et undefined mais aussi d'autres valeurs falsy comme 0 ou ''.\"},{\"text\":\"Dans un union discriminé, quelle propriété est utilisée pour effectuer une vérification d'exhaustivité ?\",\"choices\":[\"La propriété de type\",\"La propriété de valeur\",\"La propriété discriminante\",\"La propriété d'instance\"],\"correct_index\":2,\"explanation\":\"La propriété discriminante est utilisée pour effectuer une vérification d'exhaustivité dans un union discriminé.\"},{\"text\":\"Quel est le résultat de typeof null en TypeScript ?\",\"choices\":[\"'null'\",\"'object'\",\"'undefined'\",\"'function'\"],\"correct_index\":1,\"explanation\":\"En TypeScript, typeof null retourne 'object', ce qui peut prêter à confusion.\"},{\"text\":\"Quel type de vérification permet d'accéder aux propriétés spécifiques d'un membre après avoir vérifié son type ?\",\"choices\":[\"Vérification de type\",\"Vérification de propriété\",\"Vérification de valeur\",\"Vérification d'instance\"],\"correct_index\":0,\"explanation\":\"La vérification de type permet d'accéder aux propriétés spécifiques d'un membre après avoir vérifié son type.\"}]}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    }
+  ]
+}

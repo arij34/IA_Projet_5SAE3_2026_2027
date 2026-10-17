@@ -1,0 +1,585 @@
+{
+  "mode": "real",
+  "real_api_calls": 12,
+  "interpretation": "Real-model run; factual accuracy still requires manual review.",
+  "model": "gpt-4o-mini",
+  "dataset_version": "quiz-eval-cases-v1",
+  "case_count": 6,
+  "pricing": "Not provided: cost not computed",
+  "summary": {
+    "A": {
+      "prompt_version": "quiz-baseline-v0",
+      "calls_attempted": 6,
+      "api_errors": {
+        "numerator": 0,
+        "denominator": 6
+      },
+      "schema_validity": {
+        "numerator": 6,
+        "denominator": 6
+      },
+      "question_count_compliance": {
+        "numerator": 6,
+        "denominator": 6
+      },
+      "answer_validity": {
+        "numerator": 6,
+        "denominator": 6
+      },
+      "production_parser_acceptance": {
+        "numerator": 6,
+        "denominator": 6
+      },
+      "duplicate_flagged_heuristic": {
+        "numerator": 0,
+        "denominator": 6
+      },
+      "latency_seconds": {
+        "mean": 6.061,
+        "n": 6
+      },
+      "tokens": {
+        "prompt": 515,
+        "completion": 2961,
+        "n": 6
+      },
+      "estimated_cost_usd": "Not measured",
+      "factual_accuracy": "Not measured (manual review required)",
+      "relevance_difficulty": "Not measured (manual review required)"
+    },
+    "B": {
+      "prompt_version": "quiz-gen-v1",
+      "calls_attempted": 6,
+      "api_errors": {
+        "numerator": 0,
+        "denominator": 6
+      },
+      "schema_validity": {
+        "numerator": 6,
+        "denominator": 6
+      },
+      "question_count_compliance": {
+        "numerator": 6,
+        "denominator": 6
+      },
+      "answer_validity": {
+        "numerator": 6,
+        "denominator": 6
+      },
+      "production_parser_acceptance": {
+        "numerator": 6,
+        "denominator": 6
+      },
+      "duplicate_flagged_heuristic": {
+        "numerator": 0,
+        "denominator": 6
+      },
+      "latency_seconds": {
+        "mean": 5.074,
+        "n": 6
+      },
+      "tokens": {
+        "prompt": 1797,
+        "completion": 2660,
+        "n": 6
+      },
+      "estimated_cost_usd": "Not measured",
+      "factual_accuracy": "Not measured (manual review required)",
+      "relevance_difficulty": "Not measured (manual review required)"
+    }
+  },
+  "records": [
+    {
+      "timestamp": "2026-10-15T21:50:37.507982+00:00",
+      "mode": "real",
+      "case_id": "PY-BEG-01",
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "repeat": 1,
+      "model": "gpt-4o-mini",
+      "settings": {
+        "temperature": 0.4,
+        "response_format": "json_object"
+      },
+      "api_status": "ok",
+      "error": null,
+      "scenario": "real",
+      "latency_seconds": 7.086,
+      "usage": {
+        "prompt_tokens": 86,
+        "completion_tokens": 449,
+        "total_tokens": 535,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "raw_output": "{\n  \"title\": \"Quiz Python Débutant\",\n  \"questions\": [\n    {\n      \"text\": \"Quelle est la bonne façon de déclarer une variable en Python ?\",\n      \"choices\": [\"x = 5\", \"5 = x\", \"var x = 5\", \"let x = 5\"],\n      \"correct_index\": 0,\n      \"explanation\": \"En Python, on utilise la syntaxe 'x = 5' pour assigner la valeur 5 à la variable x.\"\n    },\n    {\n      \"text\": \"Comment afficher du texte à l'écran en Python ?\",\n      \"choices\": [\"print('Hello, World!')\", \"echo 'Hello, World!'\", \"console.log('Hello, World!')\", \"write('Hello, World!')\"],\n      \"correct_index\": 0,\n      \"explanation\": \"La fonction 'print()' est utilisée pour afficher du texte à l'écran en Python.\"\n    },\n    {\n      \"text\": \"Quelle est la structure de contrôle utilisée pour faire une condition en Python ?\",\n      \"choices\": [\"if...else\", \"switch\", \"case\", \"for\"],\n      \"correct_index\": 0,\n      \"explanation\": \"En Python, on utilise 'if...else' pour effectuer des conditions.\"\n    },\n    {\n      \"text\": \"Quel symbole est utilisé pour les commentaires en Python ?\",\n      \"choices\": [\"//\", \"#\", \"/*\", \"--\"],\n      \"correct_index\": 1,\n      \"explanation\": \"En Python, le symbole '#' est utilisé pour commencer un commentaire.\"\n    },\n    {\n      \"text\": \"Comment créer une liste en Python ?\",\n      \"choices\": [\"list = (1, 2, 3)\", \"list = [1, 2, 3]\", \"list = {1, 2, 3}\", \"list = <1, 2, 3>\"],\n      \"correct_index\": 1,\n      \"explanation\": \"En Python, une liste est créée en utilisant des crochets, comme dans 'list = [1, 2, 3]'.\"\n    }\n  ]\n}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "timestamp": "2026-10-15T21:50:43.039260+00:00",
+      "mode": "real",
+      "case_id": "PY-BEG-01",
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "repeat": 1,
+      "model": "gpt-4o-mini",
+      "settings": {
+        "temperature": 0.4,
+        "response_format": "json_object"
+      },
+      "api_status": "ok",
+      "error": null,
+      "scenario": "real",
+      "latency_seconds": 5.521,
+      "usage": {
+        "prompt_tokens": 299,
+        "completion_tokens": 396,
+        "total_tokens": 695,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "raw_output": "{\n  \"title\": \"Quiz Fondamentaux de Python\",\n  \"questions\": [\n    {\n      \"text\": \"Quelle est la bonne syntaxe pour déclarer une variable en Python ?\",\n      \"choices\": [\"ma_variable = 10\", \"10 = ma_variable\", \"variable ma_variable = 10\", \"ma_variable : 10\"],\n      \"correct_index\": 0,\n      \"explanation\": \"En Python, on utilise le signe égal '=' pour assigner une valeur à une variable.\"\n    },\n    {\n      \"text\": \"Quel type de données est utilisé pour stocker une séquence de caractères en Python ?\",\n      \"choices\": [\"int\", \"float\", \"str\", \"list\"],\n      \"correct_index\": 2,\n      \"explanation\": \"Le type 'str' est utilisé pour représenter des chaînes de caractères en Python.\"\n    },\n    {\n      \"text\": \"Comment peut-on créer une liste en Python ?\",\n      \"choices\": [\"liste = {}\", \"liste = []\", \"liste = ()\", \"liste = <>\"],\n      \"correct_index\": 1,\n      \"explanation\": \"Les listes en Python sont créées en utilisant des crochets '[]'.\"\n    },\n    {\n      \"text\": \"Quelle fonction permet d'afficher un message à l'écran en Python ?\",\n      \"choices\": [\"echo()\", \"print()\", \"display()\", \"show()\"],\n      \"correct_index\": 1,\n      \"explanation\": \"La fonction 'print()' est utilisée pour afficher des messages à l'écran en Python.\"\n    },\n    {\n      \"text\": \"Quel est le résultat de l'expression 3 * 4 ?\",\n      \"choices\": [\"12\", \"7\", \"34\", \"1\"],\n      \"correct_index\": 0,\n      \"explanation\": \"L'opération 3 multiplié par 4 donne 12.\"\n    }\n  ]\n}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "timestamp": "2026-10-15T21:50:50.185941+00:00",
+      "mode": "real",
+      "case_id": "PY-ADV-01",
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "repeat": 1,
+      "model": "gpt-4o-mini",
+      "settings": {
+        "temperature": 0.4,
+        "response_format": "json_object"
+      },
+      "api_status": "ok",
+      "error": null,
+      "scenario": "real",
+      "latency_seconds": 7.143,
+      "usage": {
+        "prompt_tokens": 85,
+        "completion_tokens": 444,
+        "total_tokens": 529,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "raw_output": "{\n  \"title\": \"Quiz Avancé sur Python\",\n  \"questions\": [\n    {\n      \"text\": \"Quelle est la sortie de ce code : `print((lambda x: x * 2)(3))` ?\",\n      \"choices\": [\"6\", \"3\", \"None\", \"Erreur\"],\n      \"correct_index\": 0,\n      \"explanation\": \"La fonction lambda prend 3 comme argument et le multiplie par 2, donc la sortie est 6.\"\n    },\n    {\n      \"text\": \"Quel module Python permet de gérer les threads ?\",\n      \"choices\": [\"thread\", \"threading\", \"multiprocessing\", \"concurrent\"],\n      \"correct_index\": 1,\n      \"explanation\": \"Le module 'threading' est utilisé pour créer et gérer des threads en Python.\"\n    },\n    {\n      \"text\": \"Quel est le résultat de `list(map(str, [1, 2, 3]))` ?\",\n      \"choices\": [\"['1', '2', '3']\", \"[1, 2, 3]\", \"['1', 2, 3]\", \"Erreur\"],\n      \"correct_index\": 0,\n      \"explanation\": \"La fonction map applique la fonction str à chaque élément de la liste, convertissant les entiers en chaînes.\"\n    },\n    {\n      \"text\": \"Quelle méthode est utilisée pour ajouter un élément à la fin d'une liste en Python ?\",\n      \"choices\": [\"append()\", \"add()\", \"insert()\", \"extend()\"],\n      \"correct_index\": 0,\n      \"explanation\": \"La méthode 'append()' ajoute un élément à la fin d'une liste.\"\n    },\n    {\n      \"text\": \"Quelle est la complexité temporelle de l'accès à un élément d'une liste en Python ?\",\n      \"choices\": [\"O(1)\", \"O(n)\", \"O(log n)\", \"O(n^2)\"],\n      \"correct_index\": 0,\n      \"explanation\": \"L'accès à un élément d'une liste par son index est une opération en temps constant, donc O(1).\"\n    }\n  ]\n}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "timestamp": "2026-10-15T21:50:55.557033+00:00",
+      "mode": "real",
+      "case_id": "PY-ADV-01",
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "repeat": 1,
+      "model": "gpt-4o-mini",
+      "settings": {
+        "temperature": 0.4,
+        "response_format": "json_object"
+      },
+      "api_status": "ok",
+      "error": null,
+      "scenario": "real",
+      "latency_seconds": 5.368,
+      "usage": {
+        "prompt_tokens": 299,
+        "completion_tokens": 461,
+        "total_tokens": 760,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "raw_output": "{\n  \"title\": \"Quiz sur les fondamentaux de Python\",\n  \"questions\": [\n    {\n      \"text\": \"Quelle est la complexité temporelle de l'opération d'ajout d'un élément à une liste Python ?\",\n      \"choices\": [\"O(1)\", \"O(n)\", \"O(log n)\", \"O(n^2)\"],\n      \"correct_index\": 0,\n      \"explanation\": \"L'ajout d'un élément à la fin d'une liste Python est en moyenne O(1), grâce à l'allocation dynamique.\"\n    },\n    {\n      \"text\": \"Quel est le résultat de l'expression '5' + 5 en Python 3 ?\",\n      \"choices\": [\"Erreur de type\", \"55\", \"10\", \"TypeError\"],\n      \"correct_index\": 0,\n      \"explanation\": \"L'expression génère une erreur de type car on ne peut pas additionner une chaîne et un entier.\"\n    },\n    {\n      \"text\": \"Quelle méthode permet de supprimer un élément d'un dictionnaire en Python ?\",\n      \"choices\": [\"remove()\", \"delete()\", \"pop()\", \"discard()\"],\n      \"correct_index\": 2,\n      \"explanation\": \"La méthode pop() permet de supprimer un élément d'un dictionnaire et de retourner sa valeur.\"\n    },\n    {\n      \"text\": \"Quel est le comportement de la méthode sort() sur une liste en Python ?\",\n      \"choices\": [\"Retourne une nouvelle liste triée\", \"Trie la liste en place et retourne None\", \"Trie la liste en place et retourne la liste\", \"Lève une exception si la liste est vide\"],\n      \"correct_index\": 1,\n      \"explanation\": \"La méthode sort() trie la liste en place et ne retourne rien (None).\"\n    },\n    {\n      \"text\": \"Quelle est la portée d'une variable définie à l'intérieur d'une fonction en Python ?\",\n      \"choices\": [\"Globale\", \"Locale\", \"Non définie\", \"Module\"],\n      \"correct_index\": 1,\n      \"explanation\": \"Une variable définie à l'intérieur d'une fonction a une portée locale, accessible uniquement dans cette fonction.\"\n    }\n  ]\n}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "timestamp": "2026-10-15T21:51:01.468751+00:00",
+      "mode": "real",
+      "case_id": "DJ-BEG-01",
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "repeat": 1,
+      "model": "gpt-4o-mini",
+      "settings": {
+        "temperature": 0.4,
+        "response_format": "json_object"
+      },
+      "api_status": "ok",
+      "error": null,
+      "scenario": "real",
+      "latency_seconds": 5.908,
+      "usage": {
+        "prompt_tokens": 86,
+        "completion_tokens": 498,
+        "total_tokens": 584,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "raw_output": "{\n  \"title\": \"Quiz Django - Niveau Débutant\",\n  \"questions\": [\n    {\n      \"text\": \"Quel est le langage principal utilisé pour développer des applications Django ?\",\n      \"choices\": [\"Python\", \"JavaScript\", \"Ruby\", \"Java\"],\n      \"correct_index\": 0,\n      \"explanation\": \"Django est un framework web écrit en Python, ce qui en fait le langage principal utilisé pour le développement d'applications avec ce framework.\"\n    },\n    {\n      \"text\": \"Quel fichier contient les paramètres de configuration d'un projet Django ?\",\n      \"choices\": [\"settings.py\", \"urls.py\", \"views.py\", \"models.py\"],\n      \"correct_index\": 0,\n      \"explanation\": \"Le fichier 'settings.py' contient toutes les configurations nécessaires pour un projet Django, y compris les paramètres de base de données, de sécurité, et d'applications installées.\"\n    },\n    {\n      \"text\": \"Quelle commande est utilisée pour créer un nouveau projet Django ?\",\n      \"choices\": [\"django-admin startproject\", \"django-admin createproject\", \"python manage.py startproject\", \"python manage.py newproject\"],\n      \"correct_index\": 0,\n      \"explanation\": \"La commande 'django-admin startproject' est utilisée pour créer un nouveau projet Django et initialise la structure de répertoires nécessaire.\"\n    },\n    {\n      \"text\": \"Quel est le rôle des 'migrations' dans Django ?\",\n      \"choices\": [\"Gérer les fichiers statiques\", \"Synchroniser la base de données avec les modèles\", \"Gérer les utilisateurs\", \"Créer des vues\"],\n      \"correct_index\": 1,\n      \"explanation\": \"Les 'migrations' dans Django sont utilisées pour synchroniser la structure de la base de données avec les modèles définis dans le code, permettant ainsi de gérer les modifications de manière efficace.\"\n    },\n    {\n      \"text\": \"Quel est l'outil de gestion de base de données intégré à Django ?\",\n      \"choices\": [\"Django ORM\", \"SQLAlchemy\", \"Peewee\", \"Pandas\"],\n      \"correct_index\": 0,\n      \"explanation\": \"Django utilise un ORM (Object-Relational Mapping) intégré qui permet de manipuler la base de données à l'aide d'objets Python, ce qui simplifie les interactions avec la base de données.\"\n    }\n  ]\n}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "timestamp": "2026-10-15T21:51:05.884401+00:00",
+      "mode": "real",
+      "case_id": "DJ-BEG-01",
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "repeat": 1,
+      "model": "gpt-4o-mini",
+      "settings": {
+        "temperature": 0.4,
+        "response_format": "json_object"
+      },
+      "api_status": "ok",
+      "error": null,
+      "scenario": "real",
+      "latency_seconds": 4.412,
+      "usage": {
+        "prompt_tokens": 300,
+        "completion_tokens": 419,
+        "total_tokens": 719,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "raw_output": "{\n  \"title\": \"Quiz Django - Débutant\",\n  \"questions\": [\n    {\n      \"text\": \"Quel est le fichier principal où sont définies les configurations d'un projet Django ?\",\n      \"choices\": [\"settings.py\", \"urls.py\", \"views.py\", \"models.py\"],\n      \"correct_index\": 0,\n      \"explanation\": \"Le fichier settings.py contient toutes les configurations de votre projet Django.\"\n    },\n    {\n      \"text\": \"Quelle commande est utilisée pour créer une nouvelle application dans un projet Django ?\",\n      \"choices\": [\"django-admin startproject\", \"django-admin startapp\", \"python manage.py runserver\", \"python manage.py makemigrations\"],\n      \"correct_index\": 1,\n      \"explanation\": \"La commande 'django-admin startapp' est utilisée pour créer une nouvelle application dans un projet Django.\"\n    },\n    {\n      \"text\": \"Quel est le rôle des modèles dans Django ?\",\n      \"choices\": [\"Gérer les requêtes HTTP\", \"Définir la structure des données\", \"Rendre les templates\", \"Configurer les URL\"],\n      \"correct_index\": 1,\n      \"explanation\": \"Les modèles dans Django définissent la structure des données et les interactions avec la base de données.\"\n    },\n    {\n      \"text\": \"Quel est le format de réponse par défaut d'une vue Django ?\",\n      \"choices\": [\"JSON\", \"HTML\", \"XML\", \"Plain text\"],\n      \"correct_index\": 1,\n      \"explanation\": \"Par défaut, une vue Django renvoie une réponse au format HTML.\"\n    },\n    {\n      \"text\": \"Quelle méthode est utilisée pour tester une vue dans Django ?\",\n      \"choices\": [\"self.client.get()\", \"self.client.post()\", \"self.client.put()\", \"self.client.delete()\"],\n      \"correct_index\": 0,\n      \"explanation\": \"La méthode 'self.client.get()' est utilisée pour simuler une requête GET lors des tests d'une vue.\"\n    }\n  ]\n}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "timestamp": "2026-10-15T21:51:11.884447+00:00",
+      "mode": "real",
+      "case_id": "DJ-INT-01",
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "repeat": 1,
+      "model": "gpt-4o-mini",
+      "settings": {
+        "temperature": 0.4,
+        "response_format": "json_object"
+      },
+      "api_status": "ok",
+      "error": null,
+      "scenario": "real",
+      "latency_seconds": 5.998,
+      "usage": {
+        "prompt_tokens": 86,
+        "completion_tokens": 534,
+        "total_tokens": 620,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "raw_output": "{\n  \"title\": \"Quiz Django - Niveau Intermédiaire\",\n  \"questions\": [\n    {\n      \"text\": \"Quel est le but principal du fichier 'urls.py' dans un projet Django ?\",\n      \"choices\": [\n        \"Définir les modèles de données\",\n        \"Configurer les paramètres de la base de données\",\n        \"Mapper les URL aux vues correspondantes\",\n        \"Gérer les fichiers statiques\"\n      ],\n      \"correct_index\": 2,\n      \"explanation\": \"Le fichier 'urls.py' est utilisé pour mapper les URL aux vues correspondantes dans une application Django.\"\n    },\n    {\n      \"text\": \"Quelle commande est utilisée pour créer une nouvelle application Django ?\",\n      \"choices\": [\n        \"django-admin startproject\",\n        \"django-admin startapp\",\n        \"python manage.py runserver\",\n        \"python manage.py makemigrations\"\n      ],\n      \"correct_index\": 1,\n      \"explanation\": \"La commande 'django-admin startapp' est utilisée pour créer une nouvelle application dans un projet Django.\"\n    },\n    {\n      \"text\": \"Comment peut-on accéder à un modèle dans une vue Django ?\",\n      \"choices\": [\n        \"En utilisant le décorateur @model\",\n        \"En important le modèle directement\",\n        \"En utilisant le middleware approprié\",\n        \"En accédant à la base de données via un gestionnaire de contexte\"\n      ],\n      \"correct_index\": 1,\n      \"explanation\": \"Pour accéder à un modèle dans une vue, il suffit de l'importer directement dans le fichier de la vue.\"\n    },\n    {\n      \"text\": \"Quel est le rôle de la classe 'Meta' dans un modèle Django ?\",\n      \"choices\": [\n        \"Définir les champs du modèle\",\n        \"Configurer les options du modèle, comme le nom de la table\",\n        \"Gérer les migrations\",\n        \"Créer des relations entre les modèles\"\n      ],\n      \"correct_index\": 1,\n      \"explanation\": \"La classe 'Meta' permet de configurer des options pour le modèle, comme le nom de la table ou l'ordre des enregistrements.\"\n    },\n    {\n      \"text\": \"Quelle méthode est utilisée pour valider un formulaire dans Django ?\",\n      \"choices\": [\n        \"is_valid()\",\n        \"validate()\",\n        \"check()\",\n        \"submit()\"\n      ],\n      \"correct_index\": 0,\n      \"explanation\": \"La méthode 'is_valid()' est utilisée pour valider les données d'un formulaire dans Django.\"\n    }\n  ]\n}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "timestamp": "2026-10-15T21:51:16.738520+00:00",
+      "mode": "real",
+      "case_id": "DJ-INT-01",
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "repeat": 1,
+      "model": "gpt-4o-mini",
+      "settings": {
+        "temperature": 0.4,
+        "response_format": "json_object"
+      },
+      "api_status": "ok",
+      "error": null,
+      "scenario": "real",
+      "latency_seconds": 4.851,
+      "usage": {
+        "prompt_tokens": 300,
+        "completion_tokens": 439,
+        "total_tokens": 739,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "raw_output": "{\n  \"title\": \"Quiz sur Django\",\n  \"questions\": [\n    {\n      \"text\": \"Quel décorateur est utilisé pour créer une vue basée sur une fonction dans Django ?\",\n      \"choices\": [\"@app.route\", \"@login_required\", \"@csrf_exempt\", \"@api_view\"],\n      \"correct_index\": 1,\n      \"explanation\": \"Le décorateur @login_required est utilisé pour restreindre l'accès à une vue aux utilisateurs connectés.\"\n    },\n    {\n      \"text\": \"Quelle commande est utilisée pour créer une nouvelle migration dans Django ?\",\n      \"choices\": [\"python manage.py migrate\", \"python manage.py makemigrations\", \"python manage.py runserver\", \"python manage.py collectstatic\"],\n      \"correct_index\": 1,\n      \"explanation\": \"La commande 'python manage.py makemigrations' est utilisée pour créer de nouvelles migrations basées sur les modifications apportées aux modèles.\"\n    },\n    {\n      \"text\": \"Quel module est utilisé pour tester des vues dans Django ?\",\n      \"choices\": [\"django.test.Client\", \"django.test.RequestFactory\", \"django.test.TestCase\", \"django.test.Response\"],\n      \"correct_index\": 0,\n      \"explanation\": \"Le module django.test.Client permet de simuler des requêtes HTTP pour tester les vues.\"\n    },\n    {\n      \"text\": \"Quel champ de modèle est utilisé pour stocker des données de type texte long dans Django ?\",\n      \"choices\": [\"CharField\", \"TextField\", \"SlugField\", \"EmailField\"],\n      \"correct_index\": 1,\n      \"explanation\": \"Le champ TextField est utilisé pour stocker des chaînes de caractères longues dans les modèles Django.\"\n    },\n    {\n      \"text\": \"Quelle méthode est utilisée pour sérialiser des données dans Django REST Framework ?\",\n      \"choices\": [\"serialize()\", \"to_representation()\", \"create()\", \"validate()\"],\n      \"correct_index\": 1,\n      \"explanation\": \"La méthode to_representation() est utilisée pour sérialiser les données dans un format approprié dans Django REST Framework.\"\n    }\n  ]\n}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "timestamp": "2026-10-15T21:51:21.800411+00:00",
+      "mode": "real",
+      "case_id": "RE-INT-01",
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "repeat": 1,
+      "model": "gpt-4o-mini",
+      "settings": {
+        "temperature": 0.4,
+        "response_format": "json_object"
+      },
+      "api_status": "ok",
+      "error": null,
+      "scenario": "real",
+      "latency_seconds": 5.056,
+      "usage": {
+        "prompt_tokens": 86,
+        "completion_tokens": 469,
+        "total_tokens": 555,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "raw_output": "{\n  \"title\": \"Quiz sur React - Niveau Intermédiaire\",\n  \"questions\": [\n    {\n      \"text\": \"Quel hook est utilisé pour gérer l'état local dans un composant fonctionnel ?\",\n      \"choices\": [\"useState\", \"useEffect\", \"useContext\", \"useReducer\"],\n      \"correct_index\": 0,\n      \"explanation\": \"Le hook useState est utilisé pour déclarer des variables d'état dans les composants fonctionnels.\"\n    },\n    {\n      \"text\": \"Quelle méthode est appelée juste avant qu'un composant soit retiré du DOM ?\",\n      \"choices\": [\"componentWillUnmount\", \"componentDidMount\", \"componentDidUpdate\", \"render\"],\n      \"correct_index\": 0,\n      \"explanation\": \"La méthode componentWillUnmount est appelée juste avant qu'un composant soit retiré du DOM, permettant de nettoyer les ressources.\"\n    },\n    {\n      \"text\": \"Quel est le rôle du hook useEffect ?\",\n      \"choices\": [\"Gérer l'état local\", \"Effectuer des effets de bord\", \"Gérer le contexte\", \"Rendre des composants\"],\n      \"correct_index\": 1,\n      \"explanation\": \"Le hook useEffect permet d'effectuer des effets de bord dans les composants fonctionnels, comme les appels d'API ou la manipulation du DOM.\"\n    },\n    {\n      \"text\": \"Comment peut-on éviter le re-rendu d'un composant lorsque ses props n'ont pas changé ?\",\n      \"choices\": [\"React.memo\", \"useMemo\", \"useCallback\", \"PureComponent\"],\n      \"correct_index\": 0,\n      \"explanation\": \"React.memo est une fonction qui permet de mémoriser un composant et d'éviter son re-rendu si ses props n'ont pas changé.\"\n    },\n    {\n      \"text\": \"Quel est l'objectif principal de Redux dans une application React ?\",\n      \"choices\": [\"Gérer le routage\", \"Gérer l'état global\", \"Gérer les styles\", \"Gérer les effets de bord\"],\n      \"correct_index\": 1,\n      \"explanation\": \"Redux est une bibliothèque de gestion d'état qui permet de gérer l'état global d'une application React de manière prévisible.\"\n    }\n  ]\n}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "timestamp": "2026-10-15T21:51:27.182738+00:00",
+      "mode": "real",
+      "case_id": "RE-INT-01",
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "repeat": 1,
+      "model": "gpt-4o-mini",
+      "settings": {
+        "temperature": 0.4,
+        "response_format": "json_object"
+      },
+      "api_status": "ok",
+      "error": null,
+      "scenario": "real",
+      "latency_seconds": 5.379,
+      "usage": {
+        "prompt_tokens": 299,
+        "completion_tokens": 439,
+        "total_tokens": 738,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "raw_output": "{\n  \"title\": \"Quiz sur React\",\n  \"questions\": [\n    {\n      \"text\": \"Quel hook est utilisé pour gérer l'état dans un composant fonctionnel ?\",\n      \"choices\": [\"useState\", \"useEffect\", \"useContext\", \"useReducer\"],\n      \"correct_index\": 0,\n      \"explanation\": \"Le hook useState permet de déclarer une variable d'état dans un composant fonctionnel.\"\n    },\n    {\n      \"text\": \"Quelle méthode est utilisée pour créer un composant React ?\",\n      \"choices\": [\"React.createComponent\", \"React.Component\", \"function ComponentName()\", \"class ComponentName\"],\n      \"correct_index\": 2,\n      \"explanation\": \"Les composants fonctionnels sont créés en utilisant la syntaxe 'function ComponentName() {}'.\"\n    },\n    {\n      \"text\": \"Quel hook permet d'effectuer des effets de bord dans un composant fonctionnel ?\",\n      \"choices\": [\"useMemo\", \"useCallback\", \"useEffect\", \"useLayoutEffect\"],\n      \"correct_index\": 2,\n      \"explanation\": \"Le hook useEffect est utilisé pour gérer les effets de bord, comme les appels API ou les abonnements.\"\n    },\n    {\n      \"text\": \"Quelle est la méthode pour passer des props à un composant enfant ?\",\n      \"choices\": [\"<ChildComponent props={data} />\", \"<ChildComponent data={props} />\", \"<ChildComponent data={data} />\", \"<ChildComponent {data} />\"],\n      \"correct_index\": 2,\n      \"explanation\": \"On passe des props en utilisant la syntaxe <ChildComponent data={data} />.\"\n    },\n    {\n      \"text\": \"Quel hook est utilisé pour mémoriser une valeur calculée afin d'éviter des recalculs inutiles ?\",\n      \"choices\": [\"useMemo\", \"useRef\", \"useCallback\", \"useState\"],\n      \"correct_index\": 0,\n      \"explanation\": \"Le hook useMemo permet de mémoriser une valeur calculée pour optimiser les performances.\"\n    }\n  ]\n}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "timestamp": "2026-10-15T21:51:32.359340+00:00",
+      "mode": "real",
+      "case_id": "TS-ADV-01",
+      "condition": "A",
+      "prompt_version": "quiz-baseline-v0",
+      "repeat": 1,
+      "model": "gpt-4o-mini",
+      "settings": {
+        "temperature": 0.4,
+        "response_format": "json_object"
+      },
+      "api_status": "ok",
+      "error": null,
+      "scenario": "real",
+      "latency_seconds": 5.173,
+      "usage": {
+        "prompt_tokens": 86,
+        "completion_tokens": 567,
+        "total_tokens": 653,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "raw_output": "{\n  \"title\": \"Quiz Avancé sur TypeScript\",\n  \"questions\": [\n    {\n      \"text\": \"Quelle fonctionnalité de TypeScript permet de définir des types qui sont conditionnellement appliqués en fonction d'autres types ?\",\n      \"choices\": [\"Mapped Types\", \"Conditional Types\", \"Union Types\", \"Intersection Types\"],\n      \"correct_index\": 1,\n      \"explanation\": \"Les Conditional Types permettent de créer des types qui dépendent d'autres types, en utilisant la syntaxe 'A extends B ? C : D'.\"\n    },\n    {\n      \"text\": \"Quel mot-clé est utilisé pour définir une interface qui peut être étendue par d'autres interfaces en TypeScript ?\",\n      \"choices\": [\"extends\", \"implements\", \"inherits\", \"includes\"],\n      \"correct_index\": 0,\n      \"explanation\": \"Le mot-clé 'extends' est utilisé pour créer une interface qui hérite des propriétés d'une autre interface.\"\n    },\n    {\n      \"text\": \"Comment peut-on déclarer un type qui accepte une fonction prenant un nombre et retournant une chaîne en TypeScript ?\",\n      \"choices\": [\"type MyFunction = (num: number) => string;\", \"function MyFunction(num: number): string;\", \"MyFunction: (num: number) => string;\", \"let MyFunction: (num: number) => string;\"],\n      \"correct_index\": 0,\n      \"explanation\": \"La syntaxe 'type MyFunction = (num: number) => string;' est la manière correcte de déclarer un type pour une fonction en TypeScript.\"\n    },\n    {\n      \"text\": \"Quel est l'effet de l'utilisation du mot-clé 'readonly' sur une propriété d'une interface en TypeScript ?\",\n      \"choices\": [\"La propriété est immuable après l'initialisation.\", \"La propriété ne peut pas être utilisée dans des classes.\", \"La propriété est accessible uniquement en lecture.\", \"La propriété peut être redéfinie dans les sous-classes.\"],\n      \"correct_index\": 0,\n      \"explanation\": \"'readonly' rend une propriété immuable après son initialisation, ce qui signifie qu'elle ne peut pas être modifiée par la suite.\"\n    },\n    {\n      \"text\": \"Quel est l'objectif principal des 'Decorators' en TypeScript ?\",\n      \"choices\": [\"Modifier le comportement des classes et des méthodes.\", \"Gérer les types de données.\", \"Optimiser les performances du code.\", \"Créer des interfaces abstraites.\"],\n      \"correct_index\": 0,\n      \"explanation\": \"Les 'Decorators' permettent de modifier le comportement des classes, des méthodes, des propriétés ou des paramètres de manière déclarative.\"\n    }\n  ]\n}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "timestamp": "2026-10-15T21:51:37.273845+00:00",
+      "mode": "real",
+      "case_id": "TS-ADV-01",
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "repeat": 1,
+      "model": "gpt-4o-mini",
+      "settings": {
+        "temperature": 0.4,
+        "response_format": "json_object"
+      },
+      "api_status": "ok",
+      "error": null,
+      "scenario": "real",
+      "latency_seconds": 4.911,
+      "usage": {
+        "prompt_tokens": 300,
+        "completion_tokens": 506,
+        "total_tokens": 806,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "raw_output": "{\n  \"title\": \"Quiz Avancé sur TypeScript\",\n  \"questions\": [\n    {\n      \"text\": \"Quel type de données est utilisé pour représenter une valeur qui peut être soit un nombre, soit une chaîne de caractères en TypeScript ?\",\n      \"choices\": [\"union\", \"intersection\", \"tuple\", \"literal\"],\n      \"correct_index\": 0,\n      \"explanation\": \"Le type 'union' permet de définir un type qui peut être l'un ou l'autre des types spécifiés.\"\n    },\n    {\n      \"text\": \"Quelle fonctionnalité de TypeScript permet de restreindre le type d'une variable en fonction d'une condition ?\",\n      \"choices\": [\"type assertion\", \"type narrowing\", \"type inference\", \"type casting\"],\n      \"correct_index\": 1,\n      \"explanation\": \"Le 'type narrowing' est le processus par lequel TypeScript réduit le type d'une variable en fonction de la vérification des types.\"\n    },\n    {\n      \"text\": \"Quelle est la conséquence de l'utilisation excessive de 'any' dans TypeScript ?\",\n      \"choices\": [\"Amélioration de la sécurité des types\", \"Perte de l'inférence de type\", \"Augmentation de la performance\", \"Meilleure lisibilité du code\"],\n      \"correct_index\": 1,\n      \"explanation\": \"'any' désactive l'inférence de type, ce qui peut conduire à des erreurs non détectées à l'exécution.\"\n    },\n    {\n      \"text\": \"Quel mot-clé est utilisé pour définir un type d'objet avec des propriétés optionnelles en TypeScript ?\",\n      \"choices\": [\"required\", \"optional\", \"? (point d'interrogation)\", \"nullable\"],\n      \"correct_index\": 2,\n      \"explanation\": \"Le point d'interrogation '?' indique qu'une propriété est optionnelle dans un type d'objet.\"\n    },\n    {\n      \"text\": \"Quelle est la principale différence entre 'interface' et 'type' en TypeScript ?\",\n      \"choices\": [\"Les interfaces ne peuvent pas être étendues\", \"Les types peuvent représenter des unions\", \"Les interfaces ne peuvent pas avoir des méthodes\", \"Les types sont uniquement pour les primitives\"],\n      \"correct_index\": 1,\n      \"explanation\": \"Les 'types' peuvent représenter des unions, tandis que les 'interfaces' sont principalement utilisées pour définir des structures d'objet.\"\n    }\n  ]\n}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    }
+  ]
+}

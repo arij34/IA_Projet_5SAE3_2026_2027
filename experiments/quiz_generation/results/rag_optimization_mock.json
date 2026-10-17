@@ -1,0 +1,948 @@
+{
+  "experiment": "rag-and-prompt-context-optimization-v1",
+  "mode": "mock",
+  "real_api_calls": 0,
+  "interpretation": "MOCK / offline: retrieval relevance and prompt size are real deterministic measurements; model outputs are synthetic, so structural results validate the harness only and say nothing about answer quality, latency or token usage.",
+  "dataset_version": "quiz-eval-cases-v1",
+  "kb_version": "challenges-kb-v1",
+  "environment": {
+    "python": "3.13.7",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "django": "6.1.2",
+    "model": "mock",
+    "temperature": 0.4,
+    "token_estimate": "prompt_chars/4 (estimate, not a tokenizer)"
+  },
+  "lean_settings": {
+    "top_k": 2,
+    "max_context_chars": 1500
+  },
+  "summary": {
+    "B": {
+      "prompt_version": "quiz-gen-v1",
+      "cases": 6,
+      "prompt_chars_mean": 1141.5,
+      "estimated_input_tokens_mean": 285.5,
+      "cases_with_context": 0,
+      "retrieval_precision_mean": "Not applicable",
+      "reference_coverage_mean": "Not applicable",
+      "context_chars_mean": 0.0,
+      "structural": {
+        "prompt_version": "quiz-gen-v1",
+        "calls_attempted": 6,
+        "api_errors": {
+          "numerator": 0,
+          "denominator": 6
+        },
+        "schema_validity": {
+          "numerator": 6,
+          "denominator": 6
+        },
+        "question_count_compliance": {
+          "numerator": 6,
+          "denominator": 6
+        },
+        "answer_validity": {
+          "numerator": 6,
+          "denominator": 6
+        },
+        "production_parser_acceptance": {
+          "numerator": 6,
+          "denominator": 6
+        },
+        "duplicate_flagged_heuristic": {
+          "numerator": 0,
+          "denominator": 6
+        },
+        "latency_seconds": {
+          "mean": "Not measured",
+          "n": 0
+        },
+        "tokens": "Not measured",
+        "estimated_cost_usd": "Not measured",
+        "factual_accuracy": "Not measured (manual review required)",
+        "relevance_difficulty": "Not measured (manual review required)"
+      },
+      "source_grounded_correctness": "Not measured (manual review required)"
+    },
+    "R": {
+      "prompt_version": "quiz-gen-v1-rag",
+      "cases": 6,
+      "prompt_chars_mean": 3140.0,
+      "estimated_input_tokens_mean": 785.167,
+      "cases_with_context": 6,
+      "retrieval_precision_mean": 0.945,
+      "reference_coverage_mean": 1.0,
+      "context_chars_mean": 1221.5,
+      "structural": {
+        "prompt_version": "quiz-gen-v1-rag",
+        "calls_attempted": 6,
+        "api_errors": {
+          "numerator": 0,
+          "denominator": 6
+        },
+        "schema_validity": {
+          "numerator": 6,
+          "denominator": 6
+        },
+        "question_count_compliance": {
+          "numerator": 6,
+          "denominator": 6
+        },
+        "answer_validity": {
+          "numerator": 6,
+          "denominator": 6
+        },
+        "production_parser_acceptance": {
+          "numerator": 6,
+          "denominator": 6
+        },
+        "duplicate_flagged_heuristic": {
+          "numerator": 0,
+          "denominator": 6
+        },
+        "latency_seconds": {
+          "mean": "Not measured",
+          "n": 0
+        },
+        "tokens": "Not measured",
+        "estimated_cost_usd": "Not measured",
+        "factual_accuracy": "Not measured (manual review required)",
+        "relevance_difficulty": "Not measured (manual review required)"
+      },
+      "source_grounded_correctness": "Not measured (manual review required)"
+    },
+    "L": {
+      "prompt_version": "quiz-gen-v1-rag-lean",
+      "cases": 6,
+      "prompt_chars_mean": 1852.667,
+      "estimated_input_tokens_mean": 463.0,
+      "cases_with_context": 6,
+      "retrieval_precision_mean": 0.917,
+      "reference_coverage_mean": 1.0,
+      "context_chars_mean": 818.667,
+      "structural": {
+        "prompt_version": "quiz-gen-v1-rag-lean",
+        "calls_attempted": 6,
+        "api_errors": {
+          "numerator": 0,
+          "denominator": 6
+        },
+        "schema_validity": {
+          "numerator": 6,
+          "denominator": 6
+        },
+        "question_count_compliance": {
+          "numerator": 6,
+          "denominator": 6
+        },
+        "answer_validity": {
+          "numerator": 6,
+          "denominator": 6
+        },
+        "production_parser_acceptance": {
+          "numerator": 6,
+          "denominator": 6
+        },
+        "duplicate_flagged_heuristic": {
+          "numerator": 0,
+          "denominator": 6
+        },
+        "latency_seconds": {
+          "mean": "Not measured",
+          "n": 0
+        },
+        "tokens": "Not measured",
+        "estimated_cost_usd": "Not measured",
+        "factual_accuracy": "Not measured (manual review required)",
+        "relevance_difficulty": "Not measured (manual review required)"
+      },
+      "source_grounded_correctness": "Not measured (manual review required)"
+    },
+    "lean_vs_rag_estimated_input_tokens_change_pct": -41.0
+  },
+  "retrieval_query_comparison": [
+    {
+      "case_id": "PY-BEG-01",
+      "with_objective": {
+        "retrieved_ids": [
+          "py-tuples-sets",
+          "py-dict-basics",
+          "py-list-methods"
+        ],
+        "retrieved_count": 3,
+        "relevant_count": 3,
+        "precision": 1.0,
+        "reference_coverage": 1.0,
+        "context_chars": 1164
+      },
+      "category_and_difficulty_only": {
+        "retrieved_ids": [
+          "py-tuples-sets",
+          "py-list-methods",
+          "py-dict-basics"
+        ],
+        "retrieved_count": 3,
+        "relevant_count": 3,
+        "precision": 1.0,
+        "reference_coverage": 1.0,
+        "context_chars": 1164
+      }
+    },
+    {
+      "case_id": "PY-ADV-01",
+      "with_objective": {
+        "retrieved_ids": [
+          "py-attribute-lookup",
+          "py-class-vs-instance-attributes",
+          "py-inheritance"
+        ],
+        "retrieved_count": 3,
+        "relevant_count": 3,
+        "precision": 1.0,
+        "reference_coverage": 1.0,
+        "context_chars": 1273
+      },
+      "category_and_difficulty_only": {
+        "retrieved_ids": [
+          "py-attribute-lookup",
+          "py-inheritance",
+          "py-class-vs-instance-attributes"
+        ],
+        "retrieved_count": 3,
+        "relevant_count": 3,
+        "precision": 1.0,
+        "reference_coverage": 1.0,
+        "context_chars": 1273
+      }
+    },
+    {
+      "case_id": "DJ-BEG-01",
+      "with_objective": {
+        "retrieved_ids": [
+          "dj-model-basics",
+          "dj-model-relationships",
+          "dj-model-meta"
+        ],
+        "retrieved_count": 3,
+        "relevant_count": 3,
+        "precision": 1.0,
+        "reference_coverage": 1.0,
+        "context_chars": 1074
+      },
+      "category_and_difficulty_only": {
+        "retrieved_ids": [
+          "dj-model-basics",
+          "dj-model-relationships",
+          "dj-model-meta"
+        ],
+        "retrieved_count": 3,
+        "relevant_count": 3,
+        "precision": 1.0,
+        "reference_coverage": 1.0,
+        "context_chars": 1074
+      }
+    },
+    {
+      "case_id": "DJ-INT-01",
+      "with_objective": {
+        "retrieved_ids": [
+          "dj-queryset-lazy",
+          "dj-model-relationships",
+          "dj-queryset-filtering"
+        ],
+        "retrieved_count": 3,
+        "relevant_count": 2,
+        "precision": 0.667,
+        "reference_coverage": 1.0,
+        "context_chars": 1176
+      },
+      "category_and_difficulty_only": {
+        "retrieved_ids": [
+          "dj-model-relationships",
+          "dj-model-meta",
+          "dj-queryset-filtering"
+        ],
+        "retrieved_count": 3,
+        "relevant_count": 1,
+        "precision": 0.333,
+        "reference_coverage": 1.0,
+        "context_chars": 1108
+      }
+    },
+    {
+      "case_id": "RE-INT-01",
+      "with_objective": {
+        "retrieved_ids": [
+          "re-useeffect-dependencies",
+          "re-usestate-basics",
+          "re-useeffect-usage"
+        ],
+        "retrieved_count": 3,
+        "relevant_count": 3,
+        "precision": 1.0,
+        "reference_coverage": 1.0,
+        "context_chars": 1318
+      },
+      "category_and_difficulty_only": {
+        "retrieved_ids": [
+          "re-usestate-basics",
+          "re-useeffect-usage",
+          "re-useeffect-dependencies"
+        ],
+        "retrieved_count": 3,
+        "relevant_count": 3,
+        "precision": 1.0,
+        "reference_coverage": 1.0,
+        "context_chars": 1318
+      }
+    },
+    {
+      "case_id": "TS-ADV-01",
+      "with_objective": {
+        "retrieved_ids": [
+          "ts-typeof-truthiness",
+          "ts-discriminated-unions",
+          "ts-equality-in-instanceof"
+        ],
+        "retrieved_count": 3,
+        "relevant_count": 3,
+        "precision": 1.0,
+        "reference_coverage": 1.0,
+        "context_chars": 1324
+      },
+      "category_and_difficulty_only": {
+        "retrieved_ids": [
+          "ts-equality-in-instanceof",
+          "ts-typeof-truthiness",
+          "ts-discriminated-unions"
+        ],
+        "retrieved_count": 3,
+        "relevant_count": 3,
+        "precision": 1.0,
+        "reference_coverage": 1.0,
+        "context_chars": 1324
+      }
+    }
+  ],
+  "records": [
+    {
+      "mode": "mock",
+      "case_id": "PY-BEG-01",
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "repeat": 1,
+      "model": "mock",
+      "retrieval": {
+        "retrieved_ids": [],
+        "retrieved_count": 0,
+        "relevant_count": 0,
+        "precision": null,
+        "reference_coverage": 0.0,
+        "context_chars": 0
+      },
+      "prompt_chars": 1137,
+      "estimated_input_tokens": 284,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "valid",
+      "latency_seconds": null,
+      "usage": null,
+      "raw_output": "{\"title\": \"Python (synth\\u00e9tique)\", \"questions\": [{\"text\": \"Question synth\\u00e9tique 1 sur Python ?\", \"choices\": [\"Choix A 1\", \"Choix B 1\", \"Choix C 1\", \"Choix D 1\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 2 sur Python ?\", \"choices\": [\"Choix A 2\", \"Choix B 2\", \"Choix C 2\", \"Choix D 2\"], \"correct_index\": 1, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 3 sur Python ?\", \"choices\": [\"Choix A 3\", \"Choix B 3\", \"Choix C 3\", \"Choix D 3\"], \"correct_index\": 2, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 4 sur Python ?\", \"choices\": [\"Choix A 4\", \"Choix B 4\", \"Choix C 4\", \"Choix D 4\"], \"correct_index\": 3, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 5 sur Python ?\", \"choices\": [\"Choix A 5\", \"Choix B 5\", \"Choix C 5\", \"Choix D 5\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}]}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "mock",
+      "case_id": "PY-BEG-01",
+      "condition": "R",
+      "prompt_version": "quiz-gen-v1-rag",
+      "repeat": 1,
+      "model": "mock",
+      "retrieval": {
+        "retrieved_ids": [
+          "py-tuples-sets",
+          "py-dict-basics",
+          "py-list-methods"
+        ],
+        "retrieved_count": 3,
+        "relevant_count": 3,
+        "precision": 1.0,
+        "reference_coverage": 1.0,
+        "context_chars": 1164
+      },
+      "prompt_chars": 3092,
+      "estimated_input_tokens": 773,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "valid",
+      "latency_seconds": null,
+      "usage": null,
+      "raw_output": "{\"title\": \"Python (synth\\u00e9tique)\", \"questions\": [{\"text\": \"Question synth\\u00e9tique 1 sur Python ?\", \"choices\": [\"Choix A 1\", \"Choix B 1\", \"Choix C 1\", \"Choix D 1\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 2 sur Python ?\", \"choices\": [\"Choix A 2\", \"Choix B 2\", \"Choix C 2\", \"Choix D 2\"], \"correct_index\": 1, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 3 sur Python ?\", \"choices\": [\"Choix A 3\", \"Choix B 3\", \"Choix C 3\", \"Choix D 3\"], \"correct_index\": 2, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 4 sur Python ?\", \"choices\": [\"Choix A 4\", \"Choix B 4\", \"Choix C 4\", \"Choix D 4\"], \"correct_index\": 3, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 5 sur Python ?\", \"choices\": [\"Choix A 5\", \"Choix B 5\", \"Choix C 5\", \"Choix D 5\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}]}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "mock",
+      "case_id": "PY-BEG-01",
+      "condition": "L",
+      "prompt_version": "quiz-gen-v1-rag-lean",
+      "repeat": 1,
+      "model": "mock",
+      "retrieval": {
+        "retrieved_ids": [
+          "py-tuples-sets",
+          "py-dict-basics"
+        ],
+        "retrieved_count": 2,
+        "relevant_count": 2,
+        "precision": 1.0,
+        "reference_coverage": 1.0,
+        "context_chars": 780
+      },
+      "prompt_chars": 1818,
+      "estimated_input_tokens": 454,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "valid",
+      "latency_seconds": null,
+      "usage": null,
+      "raw_output": "{\"title\": \"Python (synth\\u00e9tique)\", \"questions\": [{\"text\": \"Question synth\\u00e9tique 1 sur Python ?\", \"choices\": [\"Choix A 1\", \"Choix B 1\", \"Choix C 1\", \"Choix D 1\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 2 sur Python ?\", \"choices\": [\"Choix A 2\", \"Choix B 2\", \"Choix C 2\", \"Choix D 2\"], \"correct_index\": 1, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 3 sur Python ?\", \"choices\": [\"Choix A 3\", \"Choix B 3\", \"Choix C 3\", \"Choix D 3\"], \"correct_index\": 2, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 4 sur Python ?\", \"choices\": [\"Choix A 4\", \"Choix B 4\", \"Choix C 4\", \"Choix D 4\"], \"correct_index\": 3, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 5 sur Python ?\", \"choices\": [\"Choix A 5\", \"Choix B 5\", \"Choix C 5\", \"Choix D 5\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}]}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "mock",
+      "case_id": "PY-ADV-01",
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "repeat": 1,
+      "model": "mock",
+      "retrieval": {
+        "retrieved_ids": [],
+        "retrieved_count": 0,
+        "relevant_count": 0,
+        "precision": null,
+        "reference_coverage": 0.0,
+        "context_chars": 0
+      },
+      "prompt_chars": 1147,
+      "estimated_input_tokens": 287,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "valid",
+      "latency_seconds": null,
+      "usage": null,
+      "raw_output": "{\"title\": \"Python (synth\\u00e9tique)\", \"questions\": [{\"text\": \"Question synth\\u00e9tique 1 sur Python ?\", \"choices\": [\"Choix A 1\", \"Choix B 1\", \"Choix C 1\", \"Choix D 1\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 2 sur Python ?\", \"choices\": [\"Choix A 2\", \"Choix B 2\", \"Choix C 2\", \"Choix D 2\"], \"correct_index\": 1, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 3 sur Python ?\", \"choices\": [\"Choix A 3\", \"Choix B 3\", \"Choix C 3\", \"Choix D 3\"], \"correct_index\": 2, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 4 sur Python ?\", \"choices\": [\"Choix A 4\", \"Choix B 4\", \"Choix C 4\", \"Choix D 4\"], \"correct_index\": 3, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 5 sur Python ?\", \"choices\": [\"Choix A 5\", \"Choix B 5\", \"Choix C 5\", \"Choix D 5\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}]}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "mock",
+      "case_id": "PY-ADV-01",
+      "condition": "R",
+      "prompt_version": "quiz-gen-v1-rag",
+      "repeat": 1,
+      "model": "mock",
+      "retrieval": {
+        "retrieved_ids": [
+          "py-attribute-lookup",
+          "py-class-vs-instance-attributes",
+          "py-inheritance"
+        ],
+        "retrieved_count": 3,
+        "relevant_count": 3,
+        "precision": 1.0,
+        "reference_coverage": 1.0,
+        "context_chars": 1273
+      },
+      "prompt_chars": 3192,
+      "estimated_input_tokens": 798,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "valid",
+      "latency_seconds": null,
+      "usage": null,
+      "raw_output": "{\"title\": \"Python (synth\\u00e9tique)\", \"questions\": [{\"text\": \"Question synth\\u00e9tique 1 sur Python ?\", \"choices\": [\"Choix A 1\", \"Choix B 1\", \"Choix C 1\", \"Choix D 1\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 2 sur Python ?\", \"choices\": [\"Choix A 2\", \"Choix B 2\", \"Choix C 2\", \"Choix D 2\"], \"correct_index\": 1, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 3 sur Python ?\", \"choices\": [\"Choix A 3\", \"Choix B 3\", \"Choix C 3\", \"Choix D 3\"], \"correct_index\": 2, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 4 sur Python ?\", \"choices\": [\"Choix A 4\", \"Choix B 4\", \"Choix C 4\", \"Choix D 4\"], \"correct_index\": 3, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 5 sur Python ?\", \"choices\": [\"Choix A 5\", \"Choix B 5\", \"Choix C 5\", \"Choix D 5\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}]}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "mock",
+      "case_id": "PY-ADV-01",
+      "condition": "L",
+      "prompt_version": "quiz-gen-v1-rag-lean",
+      "repeat": 1,
+      "model": "mock",
+      "retrieval": {
+        "retrieved_ids": [
+          "py-attribute-lookup",
+          "py-class-vs-instance-attributes"
+        ],
+        "retrieved_count": 2,
+        "relevant_count": 2,
+        "precision": 1.0,
+        "reference_coverage": 1.0,
+        "context_chars": 841
+      },
+      "prompt_chars": 1887,
+      "estimated_input_tokens": 472,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "valid",
+      "latency_seconds": null,
+      "usage": null,
+      "raw_output": "{\"title\": \"Python (synth\\u00e9tique)\", \"questions\": [{\"text\": \"Question synth\\u00e9tique 1 sur Python ?\", \"choices\": [\"Choix A 1\", \"Choix B 1\", \"Choix C 1\", \"Choix D 1\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 2 sur Python ?\", \"choices\": [\"Choix A 2\", \"Choix B 2\", \"Choix C 2\", \"Choix D 2\"], \"correct_index\": 1, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 3 sur Python ?\", \"choices\": [\"Choix A 3\", \"Choix B 3\", \"Choix C 3\", \"Choix D 3\"], \"correct_index\": 2, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 4 sur Python ?\", \"choices\": [\"Choix A 4\", \"Choix B 4\", \"Choix C 4\", \"Choix D 4\"], \"correct_index\": 3, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 5 sur Python ?\", \"choices\": [\"Choix A 5\", \"Choix B 5\", \"Choix C 5\", \"Choix D 5\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}]}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "mock",
+      "case_id": "DJ-BEG-01",
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "repeat": 1,
+      "model": "mock",
+      "retrieval": {
+        "retrieved_ids": [],
+        "retrieved_count": 0,
+        "relevant_count": 0,
+        "precision": null,
+        "reference_coverage": 0.0,
+        "context_chars": 0
+      },
+      "prompt_chars": 1126,
+      "estimated_input_tokens": 282,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "valid",
+      "latency_seconds": null,
+      "usage": null,
+      "raw_output": "{\"title\": \"Django (synth\\u00e9tique)\", \"questions\": [{\"text\": \"Question synth\\u00e9tique 1 sur Django ?\", \"choices\": [\"Choix A 1\", \"Choix B 1\", \"Choix C 1\", \"Choix D 1\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 2 sur Django ?\", \"choices\": [\"Choix A 2\", \"Choix B 2\", \"Choix C 2\", \"Choix D 2\"], \"correct_index\": 1, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 3 sur Django ?\", \"choices\": [\"Choix A 3\", \"Choix B 3\", \"Choix C 3\", \"Choix D 3\"], \"correct_index\": 2, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 4 sur Django ?\", \"choices\": [\"Choix A 4\", \"Choix B 4\", \"Choix C 4\", \"Choix D 4\"], \"correct_index\": 3, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 5 sur Django ?\", \"choices\": [\"Choix A 5\", \"Choix B 5\", \"Choix C 5\", \"Choix D 5\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}]}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "mock",
+      "case_id": "DJ-BEG-01",
+      "condition": "R",
+      "prompt_version": "quiz-gen-v1-rag",
+      "repeat": 1,
+      "model": "mock",
+      "retrieval": {
+        "retrieved_ids": [
+          "dj-model-basics",
+          "dj-model-relationships",
+          "dj-model-meta"
+        ],
+        "retrieved_count": 3,
+        "relevant_count": 3,
+        "precision": 1.0,
+        "reference_coverage": 1.0,
+        "context_chars": 1074
+      },
+      "prompt_chars": 2971,
+      "estimated_input_tokens": 743,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "valid",
+      "latency_seconds": null,
+      "usage": null,
+      "raw_output": "{\"title\": \"Django (synth\\u00e9tique)\", \"questions\": [{\"text\": \"Question synth\\u00e9tique 1 sur Django ?\", \"choices\": [\"Choix A 1\", \"Choix B 1\", \"Choix C 1\", \"Choix D 1\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 2 sur Django ?\", \"choices\": [\"Choix A 2\", \"Choix B 2\", \"Choix C 2\", \"Choix D 2\"], \"correct_index\": 1, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 3 sur Django ?\", \"choices\": [\"Choix A 3\", \"Choix B 3\", \"Choix C 3\", \"Choix D 3\"], \"correct_index\": 2, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 4 sur Django ?\", \"choices\": [\"Choix A 4\", \"Choix B 4\", \"Choix C 4\", \"Choix D 4\"], \"correct_index\": 3, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 5 sur Django ?\", \"choices\": [\"Choix A 5\", \"Choix B 5\", \"Choix C 5\", \"Choix D 5\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}]}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "mock",
+      "case_id": "DJ-BEG-01",
+      "condition": "L",
+      "prompt_version": "quiz-gen-v1-rag-lean",
+      "repeat": 1,
+      "model": "mock",
+      "retrieval": {
+        "retrieved_ids": [
+          "dj-model-basics",
+          "dj-model-relationships"
+        ],
+        "retrieved_count": 2,
+        "relevant_count": 2,
+        "precision": 1.0,
+        "reference_coverage": 1.0,
+        "context_chars": 741
+      },
+      "prompt_chars": 1754,
+      "estimated_input_tokens": 438,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "valid",
+      "latency_seconds": null,
+      "usage": null,
+      "raw_output": "{\"title\": \"Django (synth\\u00e9tique)\", \"questions\": [{\"text\": \"Question synth\\u00e9tique 1 sur Django ?\", \"choices\": [\"Choix A 1\", \"Choix B 1\", \"Choix C 1\", \"Choix D 1\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 2 sur Django ?\", \"choices\": [\"Choix A 2\", \"Choix B 2\", \"Choix C 2\", \"Choix D 2\"], \"correct_index\": 1, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 3 sur Django ?\", \"choices\": [\"Choix A 3\", \"Choix B 3\", \"Choix C 3\", \"Choix D 3\"], \"correct_index\": 2, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 4 sur Django ?\", \"choices\": [\"Choix A 4\", \"Choix B 4\", \"Choix C 4\", \"Choix D 4\"], \"correct_index\": 3, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 5 sur Django ?\", \"choices\": [\"Choix A 5\", \"Choix B 5\", \"Choix C 5\", \"Choix D 5\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}]}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "mock",
+      "case_id": "DJ-INT-01",
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "repeat": 1,
+      "model": "mock",
+      "retrieval": {
+        "retrieved_ids": [],
+        "retrieved_count": 0,
+        "relevant_count": 0,
+        "precision": null,
+        "reference_coverage": 0.0,
+        "context_chars": 0
+      },
+      "prompt_chars": 1144,
+      "estimated_input_tokens": 286,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "valid",
+      "latency_seconds": null,
+      "usage": null,
+      "raw_output": "{\"title\": \"Django (synth\\u00e9tique)\", \"questions\": [{\"text\": \"Question synth\\u00e9tique 1 sur Django ?\", \"choices\": [\"Choix A 1\", \"Choix B 1\", \"Choix C 1\", \"Choix D 1\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 2 sur Django ?\", \"choices\": [\"Choix A 2\", \"Choix B 2\", \"Choix C 2\", \"Choix D 2\"], \"correct_index\": 1, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 3 sur Django ?\", \"choices\": [\"Choix A 3\", \"Choix B 3\", \"Choix C 3\", \"Choix D 3\"], \"correct_index\": 2, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 4 sur Django ?\", \"choices\": [\"Choix A 4\", \"Choix B 4\", \"Choix C 4\", \"Choix D 4\"], \"correct_index\": 3, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 5 sur Django ?\", \"choices\": [\"Choix A 5\", \"Choix B 5\", \"Choix C 5\", \"Choix D 5\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}]}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "mock",
+      "case_id": "DJ-INT-01",
+      "condition": "R",
+      "prompt_version": "quiz-gen-v1-rag",
+      "repeat": 1,
+      "model": "mock",
+      "retrieval": {
+        "retrieved_ids": [
+          "dj-queryset-lazy",
+          "dj-model-relationships",
+          "dj-queryset-filtering"
+        ],
+        "retrieved_count": 3,
+        "relevant_count": 2,
+        "precision": 0.667,
+        "reference_coverage": 1.0,
+        "context_chars": 1176
+      },
+      "prompt_chars": 3126,
+      "estimated_input_tokens": 782,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "valid",
+      "latency_seconds": null,
+      "usage": null,
+      "raw_output": "{\"title\": \"Django (synth\\u00e9tique)\", \"questions\": [{\"text\": \"Question synth\\u00e9tique 1 sur Django ?\", \"choices\": [\"Choix A 1\", \"Choix B 1\", \"Choix C 1\", \"Choix D 1\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 2 sur Django ?\", \"choices\": [\"Choix A 2\", \"Choix B 2\", \"Choix C 2\", \"Choix D 2\"], \"correct_index\": 1, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 3 sur Django ?\", \"choices\": [\"Choix A 3\", \"Choix B 3\", \"Choix C 3\", \"Choix D 3\"], \"correct_index\": 2, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 4 sur Django ?\", \"choices\": [\"Choix A 4\", \"Choix B 4\", \"Choix C 4\", \"Choix D 4\"], \"correct_index\": 3, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 5 sur Django ?\", \"choices\": [\"Choix A 5\", \"Choix B 5\", \"Choix C 5\", \"Choix D 5\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}]}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "mock",
+      "case_id": "DJ-INT-01",
+      "condition": "L",
+      "prompt_version": "quiz-gen-v1-rag-lean",
+      "repeat": 1,
+      "model": "mock",
+      "retrieval": {
+        "retrieved_ids": [
+          "dj-queryset-lazy",
+          "dj-model-relationships"
+        ],
+        "retrieved_count": 2,
+        "relevant_count": 1,
+        "precision": 0.5,
+        "reference_coverage": 1.0,
+        "context_chars": 709
+      },
+      "prompt_chars": 1770,
+      "estimated_input_tokens": 442,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "valid",
+      "latency_seconds": null,
+      "usage": null,
+      "raw_output": "{\"title\": \"Django (synth\\u00e9tique)\", \"questions\": [{\"text\": \"Question synth\\u00e9tique 1 sur Django ?\", \"choices\": [\"Choix A 1\", \"Choix B 1\", \"Choix C 1\", \"Choix D 1\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 2 sur Django ?\", \"choices\": [\"Choix A 2\", \"Choix B 2\", \"Choix C 2\", \"Choix D 2\"], \"correct_index\": 1, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 3 sur Django ?\", \"choices\": [\"Choix A 3\", \"Choix B 3\", \"Choix C 3\", \"Choix D 3\"], \"correct_index\": 2, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 4 sur Django ?\", \"choices\": [\"Choix A 4\", \"Choix B 4\", \"Choix C 4\", \"Choix D 4\"], \"correct_index\": 3, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 5 sur Django ?\", \"choices\": [\"Choix A 5\", \"Choix B 5\", \"Choix C 5\", \"Choix D 5\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}]}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "mock",
+      "case_id": "RE-INT-01",
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "repeat": 1,
+      "model": "mock",
+      "retrieval": {
+        "retrieved_ids": [],
+        "retrieved_count": 0,
+        "relevant_count": 0,
+        "precision": null,
+        "reference_coverage": 0.0,
+        "context_chars": 0
+      },
+      "prompt_chars": 1147,
+      "estimated_input_tokens": 287,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "valid",
+      "latency_seconds": null,
+      "usage": null,
+      "raw_output": "{\"title\": \"React (synth\\u00e9tique)\", \"questions\": [{\"text\": \"Question synth\\u00e9tique 1 sur React ?\", \"choices\": [\"Choix A 1\", \"Choix B 1\", \"Choix C 1\", \"Choix D 1\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 2 sur React ?\", \"choices\": [\"Choix A 2\", \"Choix B 2\", \"Choix C 2\", \"Choix D 2\"], \"correct_index\": 1, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 3 sur React ?\", \"choices\": [\"Choix A 3\", \"Choix B 3\", \"Choix C 3\", \"Choix D 3\"], \"correct_index\": 2, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 4 sur React ?\", \"choices\": [\"Choix A 4\", \"Choix B 4\", \"Choix C 4\", \"Choix D 4\"], \"correct_index\": 3, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 5 sur React ?\", \"choices\": [\"Choix A 5\", \"Choix B 5\", \"Choix C 5\", \"Choix D 5\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}]}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "mock",
+      "case_id": "RE-INT-01",
+      "condition": "R",
+      "prompt_version": "quiz-gen-v1-rag",
+      "repeat": 1,
+      "model": "mock",
+      "retrieval": {
+        "retrieved_ids": [
+          "re-useeffect-dependencies",
+          "re-usestate-basics",
+          "re-useeffect-usage"
+        ],
+        "retrieved_count": 3,
+        "relevant_count": 3,
+        "precision": 1.0,
+        "reference_coverage": 1.0,
+        "context_chars": 1318
+      },
+      "prompt_chars": 3156,
+      "estimated_input_tokens": 789,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "valid",
+      "latency_seconds": null,
+      "usage": null,
+      "raw_output": "{\"title\": \"React (synth\\u00e9tique)\", \"questions\": [{\"text\": \"Question synth\\u00e9tique 1 sur React ?\", \"choices\": [\"Choix A 1\", \"Choix B 1\", \"Choix C 1\", \"Choix D 1\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 2 sur React ?\", \"choices\": [\"Choix A 2\", \"Choix B 2\", \"Choix C 2\", \"Choix D 2\"], \"correct_index\": 1, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 3 sur React ?\", \"choices\": [\"Choix A 3\", \"Choix B 3\", \"Choix C 3\", \"Choix D 3\"], \"correct_index\": 2, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 4 sur React ?\", \"choices\": [\"Choix A 4\", \"Choix B 4\", \"Choix C 4\", \"Choix D 4\"], \"correct_index\": 3, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 5 sur React ?\", \"choices\": [\"Choix A 5\", \"Choix B 5\", \"Choix C 5\", \"Choix D 5\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}]}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "mock",
+      "case_id": "RE-INT-01",
+      "condition": "L",
+      "prompt_version": "quiz-gen-v1-rag-lean",
+      "repeat": 1,
+      "model": "mock",
+      "retrieval": {
+        "retrieved_ids": [
+          "re-useeffect-dependencies",
+          "re-usestate-basics"
+        ],
+        "retrieved_count": 2,
+        "relevant_count": 2,
+        "precision": 1.0,
+        "reference_coverage": 1.0,
+        "context_chars": 918
+      },
+      "prompt_chars": 1896,
+      "estimated_input_tokens": 474,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "valid",
+      "latency_seconds": null,
+      "usage": null,
+      "raw_output": "{\"title\": \"React (synth\\u00e9tique)\", \"questions\": [{\"text\": \"Question synth\\u00e9tique 1 sur React ?\", \"choices\": [\"Choix A 1\", \"Choix B 1\", \"Choix C 1\", \"Choix D 1\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 2 sur React ?\", \"choices\": [\"Choix A 2\", \"Choix B 2\", \"Choix C 2\", \"Choix D 2\"], \"correct_index\": 1, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 3 sur React ?\", \"choices\": [\"Choix A 3\", \"Choix B 3\", \"Choix C 3\", \"Choix D 3\"], \"correct_index\": 2, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 4 sur React ?\", \"choices\": [\"Choix A 4\", \"Choix B 4\", \"Choix C 4\", \"Choix D 4\"], \"correct_index\": 3, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 5 sur React ?\", \"choices\": [\"Choix A 5\", \"Choix B 5\", \"Choix C 5\", \"Choix D 5\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}]}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "mock",
+      "case_id": "TS-ADV-01",
+      "condition": "B",
+      "prompt_version": "quiz-gen-v1",
+      "repeat": 1,
+      "model": "mock",
+      "retrieval": {
+        "retrieved_ids": [],
+        "retrieved_count": 0,
+        "relevant_count": 0,
+        "precision": null,
+        "reference_coverage": 0.0,
+        "context_chars": 0
+      },
+      "prompt_chars": 1148,
+      "estimated_input_tokens": 287,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "valid",
+      "latency_seconds": null,
+      "usage": null,
+      "raw_output": "{\"title\": \"TypeScript (synth\\u00e9tique)\", \"questions\": [{\"text\": \"Question synth\\u00e9tique 1 sur TypeScript ?\", \"choices\": [\"Choix A 1\", \"Choix B 1\", \"Choix C 1\", \"Choix D 1\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 2 sur TypeScript ?\", \"choices\": [\"Choix A 2\", \"Choix B 2\", \"Choix C 2\", \"Choix D 2\"], \"correct_index\": 1, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 3 sur TypeScript ?\", \"choices\": [\"Choix A 3\", \"Choix B 3\", \"Choix C 3\", \"Choix D 3\"], \"correct_index\": 2, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 4 sur TypeScript ?\", \"choices\": [\"Choix A 4\", \"Choix B 4\", \"Choix C 4\", \"Choix D 4\"], \"correct_index\": 3, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 5 sur TypeScript ?\", \"choices\": [\"Choix A 5\", \"Choix B 5\", \"Choix C 5\", \"Choix D 5\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}]}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "mock",
+      "case_id": "TS-ADV-01",
+      "condition": "R",
+      "prompt_version": "quiz-gen-v1-rag",
+      "repeat": 1,
+      "model": "mock",
+      "retrieval": {
+        "retrieved_ids": [
+          "ts-typeof-truthiness",
+          "ts-discriminated-unions",
+          "ts-equality-in-instanceof"
+        ],
+        "retrieved_count": 3,
+        "relevant_count": 3,
+        "precision": 1.0,
+        "reference_coverage": 1.0,
+        "context_chars": 1324
+      },
+      "prompt_chars": 3303,
+      "estimated_input_tokens": 826,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "valid",
+      "latency_seconds": null,
+      "usage": null,
+      "raw_output": "{\"title\": \"TypeScript (synth\\u00e9tique)\", \"questions\": [{\"text\": \"Question synth\\u00e9tique 1 sur TypeScript ?\", \"choices\": [\"Choix A 1\", \"Choix B 1\", \"Choix C 1\", \"Choix D 1\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 2 sur TypeScript ?\", \"choices\": [\"Choix A 2\", \"Choix B 2\", \"Choix C 2\", \"Choix D 2\"], \"correct_index\": 1, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 3 sur TypeScript ?\", \"choices\": [\"Choix A 3\", \"Choix B 3\", \"Choix C 3\", \"Choix D 3\"], \"correct_index\": 2, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 4 sur TypeScript ?\", \"choices\": [\"Choix A 4\", \"Choix B 4\", \"Choix C 4\", \"Choix D 4\"], \"correct_index\": 3, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 5 sur TypeScript ?\", \"choices\": [\"Choix A 5\", \"Choix B 5\", \"Choix C 5\", \"Choix D 5\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}]}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    },
+    {
+      "mode": "mock",
+      "case_id": "TS-ADV-01",
+      "condition": "L",
+      "prompt_version": "quiz-gen-v1-rag-lean",
+      "repeat": 1,
+      "model": "mock",
+      "retrieval": {
+        "retrieved_ids": [
+          "ts-typeof-truthiness",
+          "ts-discriminated-unions"
+        ],
+        "retrieved_count": 2,
+        "relevant_count": 2,
+        "precision": 1.0,
+        "reference_coverage": 1.0,
+        "context_chars": 923
+      },
+      "prompt_chars": 1991,
+      "estimated_input_tokens": 498,
+      "api_status": "ok",
+      "error": null,
+      "scenario": "valid",
+      "latency_seconds": null,
+      "usage": null,
+      "raw_output": "{\"title\": \"TypeScript (synth\\u00e9tique)\", \"questions\": [{\"text\": \"Question synth\\u00e9tique 1 sur TypeScript ?\", \"choices\": [\"Choix A 1\", \"Choix B 1\", \"Choix C 1\", \"Choix D 1\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 2 sur TypeScript ?\", \"choices\": [\"Choix A 2\", \"Choix B 2\", \"Choix C 2\", \"Choix D 2\"], \"correct_index\": 1, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 3 sur TypeScript ?\", \"choices\": [\"Choix A 3\", \"Choix B 3\", \"Choix C 3\", \"Choix D 3\"], \"correct_index\": 2, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 4 sur TypeScript ?\", \"choices\": [\"Choix A 4\", \"Choix B 4\", \"Choix C 4\", \"Choix D 4\"], \"correct_index\": 3, \"explanation\": \"Explication synth\\u00e9tique.\"}, {\"text\": \"Question synth\\u00e9tique 5 sur TypeScript ?\", \"choices\": [\"Choix A 5\", \"Choix B 5\", \"Choix C 5\", \"Choix D 5\"], \"correct_index\": 0, \"explanation\": \"Explication synth\\u00e9tique.\"}]}",
+      "quality": {
+        "schema_valid": true,
+        "count_ok": true,
+        "answers_valid": true,
+        "production_accepted": true,
+        "duplicate_flagged": false,
+        "failure_reasons": []
+      }
+    }
+  ]
+}
