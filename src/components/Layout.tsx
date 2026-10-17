@@ -8,6 +8,7 @@ function Layout() {
   const navigate = useNavigate()
   const { user, setUser } = useAuth()
   const isAuthenticated = Boolean(getToken())
+  const isApprovedFreelancer = isAuthenticated && user?.role === 'FREELANCER' && user?.moderation_status === 'OK'
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [hasScrolled, setHasScrolled] = useState(false)
 
@@ -66,6 +67,11 @@ function Layout() {
             </NavLink>
             {isAuthenticated ? (
               <>
+                {isApprovedFreelancer && (
+                  <NavLink className={navClassName} to="/challenges" onClick={closeMenu}>
+                    Challenges
+                  </NavLink>
+                )}
                 <NavLink className={navClassName} to="/profile" onClick={closeMenu}>
                   Mon profil
                 </NavLink>
@@ -124,7 +130,7 @@ function Layout() {
           <div>
             <h2>Ressources</h2>
             <span>Guides et conseils</span>
-            <span>Challenges</span>
+            {isApprovedFreelancer && <Link to="/challenges">Challenges</Link>}
             <span>Blog</span>
           </div>
           <div>

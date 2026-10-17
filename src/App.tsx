@@ -5,6 +5,9 @@ import Layout from './components/Layout'
 import AdminModerationPage from './pages/AdminModerationPage'
 import AdminDashboardLayout from './pages/AdminDashboardLayout'
 import AssistantPage from './pages/AssistantPage'
+import ChallengesPage from './pages/ChallengesPage'
+import ChallengeAttemptPage from './pages/ChallengeAttemptPage'
+import ChallengeResultsPage from './pages/ChallengeResultsPage'
 import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import NewProjectPage from './pages/NewProjectPage'
@@ -23,6 +26,19 @@ function ProjectOwnerRoute() {
   return <Outlet />
 }
 
+function FreelancerRoute() {
+  const location = useLocation()
+  const { user, isLoading } = useAuth()
+
+  if (!getToken()) return <Navigate to="/login" state={{ from: location.pathname }} replace />
+  if (isLoading) return <p className="loading-state" role="status">Chargement de votre profil...</p>
+  if (!user) return <Navigate to="/login" state={{ from: location.pathname }} replace />
+  if (user.role !== 'FREELANCER' || user.moderation_status !== 'OK') {
+    return <Navigate to="/profile" replace />
+  }
+  return <Outlet />
+}
+
 function App() {
   return (
     <Routes>
@@ -35,6 +51,11 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route element={<FreelancerRoute />}>
+          <Route path="/challenges" element={<ChallengesPage />} />
+          <Route path="/challenges/attempts/:attemptId/results" element={<ChallengeResultsPage />} />
+          <Route path="/challenges/attempts/:attemptId" element={<ChallengeAttemptPage />} />
+        </Route>
         <Route element={<ProjectOwnerRoute />}>
           <Route path="/projects/new" element={<NewProjectPage />} />
           <Route path="/projects/:projectId/edit" element={<NewProjectPage />} />
