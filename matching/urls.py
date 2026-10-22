@@ -11,11 +11,17 @@ from .views import (
     ProjectTeamView,
     RecommendationRespondView,
     RecommendedProjectListView,
+    SmartProjectMatchView,
 )
 
 app_name = "matching"
 
 urlpatterns = [
+    path(
+        "projects/<int:pk>/smart-match/",
+        SmartProjectMatchView.as_view(),
+        name="project-smart-match",
+    ),
     path(
         "projects/<int:pk>/freelancers/",
         ProjectFreelancerMatchView.as_view(),

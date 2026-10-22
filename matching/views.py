@@ -33,6 +33,7 @@ from .serializers import (
 from .services import engine
 from .services.quiz_scoring import load_quiz_profile
 from .services.team_builder import build_team
+from .services import smart_matching
 
 logger = logging.getLogger(__name__)
 
@@ -134,6 +135,46 @@ class ProjectFreelancerMatchView(GenericAPIView):
         page = paginator.paginate_queryset(results, request, view=self)
         serializer = self.get_serializer(page, many=True)
         return paginator.get_paginated_response(serializer.data)
+
+
+class SmartProjectMatchView(GenericAPIView):
+    """Classement ponctuel depuis un brief libre, sans modifier le projet."""
+
+    permission_classes = (IsApprovedProjectOwner,)
+    serializer_class = FreelancerMatchSerializer
+
+    def post(self, request, pk: int):
+        project = _owned_project(request, pk)
+        if not isinstance(request.data, dict):
+            raise ValidationError({"description": "Objet JSON attendu."})
+        description = request.data.get("description")
+        if not isinstance(description, str) or not description.strip() or len(description) > 3000:
+            raise ValidationError({"description": "Description requise (3000 caractères maximum)."})
+        try:
+            criteria = smart_matching.extract_criteria(description)
+            analysis = smart_matching.criteria_as_analysis(criteria)
+            criteria_available = True
+        except Exception as error:
+            logger.info("Extraction du matching intelligent indisponible: %s", type(error).__name__)
+            analysis = engine.latest_analysis_result(project)
+            criteria = None
+            criteria_available = False
+            if analysis is None:
+                return Response(
+                    {"detail": "Extraction IA indisponible et aucune analyse existante pour le repli.",
+                     "code": "smart_matching_unavailable"},
+                    status=status.HTTP_503_SERVICE_UNAVAILABLE,
+                )
+
+        results = engine.rank_freelancers(project, analysis, limit=50)
+        if criteria_available:
+            for item in results[:3]:
+                item["smart_explanation"] = smart_matching.safe_explain(
+                    description, criteria, item
+                )
+        serializer = self.get_serializer(results, many=True)
+        return Response({"criteria": criteria, "criteria_available": criteria_available,
+                         "results": serializer.data}, status=status.HTTP_200_OK)
 
 
 class ProjectMatchScoreListView(GenericAPIView):

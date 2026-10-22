@@ -206,3 +206,19 @@ Les poids sont surchargeables par le réglage `MATCHING_WEIGHTS`.
 | `matching/tests/test_team_builder.py` | 8 | OK |
 
 Suite complète du dépôt : `python manage.py test`, 509 tests, OK le 2026-10-17.
+
+---
+
+## MATCH-EXP-003 — Assistant de matching depuis un brief libre
+
+- **Date** : 2026-10-22.
+- **Statut** : implémenté ; deux tests backend ciblés et compilation TypeScript OK.
+- **Objectif** : extraire les critères explicites d'une description libre, classer les profils existants et expliquer les trois premiers résultats.
+- **Client LLM** : `projects.ai.client.call_llm`, avec le fournisseur configuré par `PROJECT_LLM_PROVIDER` ; aucun client ni fournisseur ajouté.
+- **Service ajouté** : `matching/services/smart_matching.py` pour l'extraction, la validation et les explications.
+- **Endpoint ajouté** : `POST /api/matching/projects/<id>/smart-match/` ; il réutilise les permissions existantes et `engine.rank_freelancers`, ne persiste pas les critères et explique au plus trois profils.
+- **Interface** : champ de brief et affichage des critères et explications dans la page existante des recommandations.
+- **Fichiers modifiés** : fichiers matching listés ci-dessus, les types, l'API, la carte et la page dans `IA_Projet_frontend/src/features/matching/`, et ce journal.
+- **Tests** : deux tests API ciblés OK ; `npx tsc -b` OK. Vitest n'a pas démarré à cause de Node/Undici (`Cannot read properties of undefined (reading 'bind')`) au démarrage du worker.
+- **Repli et limites** : si l'extraction échoue, l'API utilise l'analyse existante si disponible ; les explications peuvent être absentes si le LLM est indisponible. Le fournisseur `mock` ne garantit pas de critères structurés pour cette tâche.
+- **Préservation** : algorithme, poids, schéma de base et autres modules inchangés ; routes existantes disponibles.

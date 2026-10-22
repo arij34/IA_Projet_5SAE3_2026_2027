@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "projects",
     "challenges",
     "matching",
+    "planning",
 ]
 
 MIDDLEWARE = [

@@ -131,6 +131,39 @@ class MatchingApiTests(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["results"][0]["mode"], "DETERMINISTIC")
 
+    def test_smart_match_extracts_criteria_ranks_profiles_and_explains_top_match(self):
+        self.authenticate(self.owner)
+        criteria = json.dumps({"skills": ["Python", "Django"], "budget": 1000,
+                               "duration_weeks": 4, "level": "CONFIRME"})
+        explanation = json.dumps({"strengths": ["Python et Django déclarés"],
+                                  "missing_or_unverified": ["Disponibilité non vérifiée"],
+                                  "recommendation": "Profil pertinent."})
+        with patch("matching.services.smart_matching.call_llm",
+                   side_effect=[criteria, explanation]):
+            response = self.client.post(
+                f"/api/matching/projects/{self.project.pk}/smart-match/",
+                {"description": "Besoin Python Django, 1000 euros sur 4 semaines."},
+                format="json",
+            )
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertTrue(payload["criteria_available"])
+        self.assertEqual(payload["criteria"]["skills"], ["Python", "Django"])
+        self.assertEqual(payload["results"][0]["freelancer_id"], self.strong.pk)
+        self.assertIn("smart_explanation", payload["results"][0])
+
+    def test_smart_match_falls_back_to_existing_analysis_if_llm_fails(self):
+        self.authenticate(self.owner)
+        with patch("matching.services.smart_matching.call_llm",
+                   side_effect=RuntimeError("unavailable")):
+            response = self.client.post(
+                f"/api/matching/projects/{self.project.pk}/smart-match/",
+                {"description": "Build a Python service"}, format="json",
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.json()["criteria_available"])
+        self.assertTrue(response.json()["results"])
+
     # --- Persistance -------------------------------------------------------
 
     def test_refresh_persists_scores(self):

@@ -43,6 +43,7 @@ class FreelancerMatchSerializer(serializers.Serializer):
     speciality_scores = serializers.ListField(child=serializers.DictField())
     explanations = serializers.ListField(child=serializers.CharField())
     algorithm_version = serializers.CharField()
+    smart_explanation = serializers.DictField(allow_null=True, required=False)
 
 
 class RecommendedProjectSerializer(serializers.Serializer):
