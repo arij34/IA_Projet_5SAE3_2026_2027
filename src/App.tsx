@@ -13,6 +13,7 @@ import LoginPage from './pages/LoginPage'
 import NewProjectPage from './pages/NewProjectPage'
 import MyProjectsPage from './pages/MyProjectsPage'
 import ProfilePage from './pages/ProfilePage'
+import PlanningPage from './features/planning/PlanningPage'
 import PublishedProjectsPage from './pages/PublishedProjectsPage'
 import RegisterPage from './pages/RegisterPage'
 import FreelancerProjectRecommendations from './features/matching/pages/FreelancerProjectRecommendations'
@@ -61,6 +62,7 @@ function App() {
           <Route path="/challenges/attempts/:attemptId" element={<ChallengeAttemptPage />} />
         </Route>
         <Route element={<ProjectOwnerRoute />}>
+          <Route path="/planning" element={<PlanningPage />} />
           <Route path="/projects/new" element={<NewProjectPage />} />
           <Route path="/projects/:projectId/edit" element={<NewProjectPage />} />
           <Route path="/projects" element={<MyProjectsPage />} />

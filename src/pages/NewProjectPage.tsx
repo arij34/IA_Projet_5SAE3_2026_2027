@@ -147,7 +147,8 @@ function NewProjectPage() {
   const analyzeWithTimeout = async (id: number): Promise<AnalysisResponse> => {
     let timeoutId: number | undefined
     const timeout = new Promise<never>((_, reject) => {
-      timeoutId = window.setTimeout(() => reject(new Error('ANALYSIS_TIMEOUT')), 40_000)
+      // Gemini peut faire deux tentatives de 20 s ; garder une marge pour la réponse HTTP.
+      timeoutId = window.setTimeout(() => reject(new Error('ANALYSIS_TIMEOUT')), 55_000)
     })
 
     try {
@@ -221,7 +222,7 @@ function NewProjectPage() {
       } else if (error instanceof ApiError && error.code === 429) {
         setApiError('Trop d’analyses, réessayez plus tard.')
       } else if (error instanceof Error && error.message === 'ANALYSIS_TIMEOUT') {
-        setApiError('L’analyse prend trop de temps. Vous pouvez réessayer.')
+        setApiError('L’analyse prend plus de temps que prévu. Vous pouvez réessayer.')
       } else if (error instanceof Error) {
         setApiError(error.message)
       } else {
@@ -330,7 +331,7 @@ function NewProjectPage() {
           <p>Décrivez votre besoin pour obtenir une analyse assistée par IA.</p>
         </div>
 
-        {apiError && <p className="alert alert-error" role="alert">{apiError}</p>}
+        {apiError && !analysis?.error && <p className="alert alert-error" role="alert">{apiError}</p>}
 
         {isLoadingProject ? <p className="loading-state"><Loader2 className="spin" aria-hidden="true" size={18} /> Chargement du projet...</p> : <form onSubmit={handleSubmit} noValidate>
           <div className="form-group">
@@ -368,7 +369,7 @@ function NewProjectPage() {
         <section className="card page-card" aria-live="polite">
           <div className="loading-state" aria-busy="true">
             <Loader2 className="spin" aria-hidden="true" size={20} />
-            <p>Analyse en cours, cela peut prendre jusqu’à 40 secondes...</p>
+            <p>Analyse en cours, cela peut prendre jusqu’à une minute...</p>
             <div style={{ height: '0.8rem', margin: '0.75rem auto', maxWidth: '32rem', background: '#e8e6f7', borderRadius: '999px' }} />
             <div style={{ height: '0.8rem', margin: '0.75rem auto', maxWidth: '24rem', background: '#e8e6f7', borderRadius: '999px' }} />
           </div>

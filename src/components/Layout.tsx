@@ -82,6 +82,9 @@ function Layout() {
                 </NavLink>
                 {user?.role === 'PROJECT_OWNER' && (
                   <>
+                    <NavLink className={navClassName} to="/planning" onClick={closeMenu}>
+                      Planning
+                    </NavLink>
                     <NavLink className={navClassName} to="/gestion-projets" onClick={closeMenu}>
                       Gestion de projet
                     </NavLink>
@@ -89,7 +92,7 @@ function Layout() {
                       Assistant
                     </NavLink>
                     <NavLink className={navClassName} to="/matching/projects" onClick={closeMenu}>
-                      Trouver des freelances
+                      Recommandations
                     </NavLink>
                     <NavLink className={navClassName} to="/matching/equipes" onClick={closeMenu}>
                       Composer une équipe

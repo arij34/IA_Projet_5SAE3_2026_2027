@@ -46,6 +46,18 @@ export interface FreelancerMatch {
   speciality_scores: SpecialityScore[]
   explanations: string[]
   algorithm_version: string
+  smart_explanation?: {
+    strengths: string[]
+    missing_or_unverified: string[]
+    recommendation: string
+  } | null
+}
+
+export interface SmartMatchCriteria {
+  skills: string[]
+  budget: number | null
+  duration_weeks: number | null
+  level: string | null
 }
 
 export interface RequiredSpeciality {

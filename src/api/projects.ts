@@ -28,7 +28,9 @@ export class ApiError extends Error {
 
 function getErrorMessage(code: number, data: unknown): string {
   if (typeof data === 'object' && data !== null && 'detail' in data && typeof data.detail === 'string') {
-    return data.detail
+    return data.detail === 'ANALYSIS_TIMEOUT'
+      ? 'L’analyse du projet prend plus de temps que prévu. Vous pouvez réessayer.'
+      : data.detail
   }
   switch (code) {
     case 404:

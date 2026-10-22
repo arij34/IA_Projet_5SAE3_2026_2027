@@ -69,6 +69,15 @@ function MatchScoreCard({
         declared={match.skills}
       />
 
+      {match.smart_explanation ? (
+        <div className="skill-match-group">
+          <h4>Assistant de matching</h4>
+          <p><strong>Points forts :</strong> {match.smart_explanation.strengths.join(', ') || 'Aucun confirmé.'}</p>
+          <p><strong>Manquant ou non vérifié :</strong> {match.smart_explanation.missing_or_unverified.join(', ') || 'Aucun signalé.'}</p>
+          <p>{match.smart_explanation.recommendation}</p>
+        </div>
+      ) : null}
+
       {quiz?.available && quiz.categories && quiz.categories.length > 0 ? (
         <div className="skill-match-group">
           <h4>Résultats de quiz pris en compte</h4>

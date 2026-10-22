@@ -12,9 +12,20 @@ import type {
   Recommendation,
   RecommendedProject,
   TeamProposal,
+  SmartMatchCriteria,
 } from '../types'
 
 const BASE = '/api/matching'
+
+export function smartMatchProject(
+  projectId: number,
+  description: string,
+): Promise<{ criteria: SmartMatchCriteria | null; criteria_available: boolean; results: FreelancerMatch[] }> {
+  return apiFetch(`${BASE}/projects/${projectId}/smart-match/`, {
+    method: 'POST',
+    body: { description },
+  })
+}
 
 interface ListOptions {
   page?: number
