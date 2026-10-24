@@ -21,6 +21,14 @@ from .ai.sanitizer import sanitize_project_text
 from .permissions import IsProjectOwner
 from .serializers import PublicProjectSerializer, ProjectSerializer
 from .services.analysis import analyze_project
+from .ai.test_cases import (
+    TestCaseGenerationError,
+    TestCaseProviderConfigurationError,
+    TestCaseProviderRateLimitError,
+    TestCaseProviderTimeoutError,
+    TestCaseResponseValidationError,
+    generate_test_cases,
+)
 from users.permissions import IsApprovedUser
 
 
@@ -154,6 +162,64 @@ class ProjectAnalyzeView(generics.GenericAPIView):
             )
         payload = analyze_project(project)
         return Response(payload, status=status.HTTP_200_OK)
+
+
+class ProjectTestCaseThrottle(SimpleRateThrottle):
+    """Limit external test-case generation per authenticated project owner."""
+
+    scope = "project-test-cases"
+
+    def get_cache_key(self, request, view):
+        if not request.user or not request.user.is_authenticated:
+            return None
+        return self.cache_format % {"scope": self.scope, "ident": request.user.pk}
+
+    def get_rate(self):
+        return getattr(settings, "MISTRAL_TEST_CASE_THROTTLE_RATE", "5/hour")
+
+
+class ProjectTestCasesView(generics.GenericAPIView):
+    """Generate validated QA test cases for a project owned by the caller."""
+
+    permission_classes = (IsProjectOwner,)
+    throttle_classes = (ProjectTestCaseThrottle,)
+
+    def post(self, request, pk: int):
+        project = Project.objects.filter(pk=pk, owner=request.user).first()
+        if project is None:
+            raise Http404
+        if not project.description.strip():
+            return Response(
+                {"detail": "Ajoutez une description au projet avant de générer des cas de test."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        try:
+            cases = generate_test_cases(project.name, project.description)
+        except TestCaseGenerationError as error:
+            if isinstance(error, TestCaseProviderRateLimitError):
+                status_code = status.HTTP_429_TOO_MANY_REQUESTS
+            elif isinstance(error, TestCaseProviderTimeoutError):
+                status_code = status.HTTP_504_GATEWAY_TIMEOUT
+            elif isinstance(error, TestCaseProviderConfigurationError):
+                status_code = status.HTTP_503_SERVICE_UNAVAILABLE
+            elif isinstance(error, TestCaseResponseValidationError):
+                status_code = status.HTTP_502_BAD_GATEWAY
+            else:
+                status_code = status.HTTP_503_SERVICE_UNAVAILABLE
+            return Response(
+                {"detail": "La génération des cas de test est indisponible.", "code": error.code},
+                status=status_code,
+            )
+        return Response(
+            {
+                "project_id": project.pk,
+                "project_name": project.name,
+                "provider": "mistral",
+                "model": getattr(settings, "MISTRAL_TEST_CASE_MODEL", "ministral-14b-2512"),
+                "test_cases": cases,
+            },
+            status=status.HTTP_200_OK,
+        )
 
 
 class ProjectChatbotView(generics.GenericAPIView):

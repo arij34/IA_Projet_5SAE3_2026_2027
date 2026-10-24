@@ -1,0 +1,47 @@
+.planning-page { display: grid; gap: 1.25rem; }
+.planning-page .page-card { width: 100%; }
+.planning-page .form-group { max-width: 42rem; margin: 1.5rem auto 1rem; }
+.planning-page > .page-card > .btn-primary { display: flex; justify-content: center; align-items: center; gap: .5rem; width: min(100%, 42rem); margin: 0 auto; }
+.planning-draft { margin-top: 2rem; }
+.planning-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+.planning-section-heading h2, .planning-saved h2 { margin: 0; }
+.planning-section-heading p, .planning-saved-item p { margin: .35rem 0 0; color: var(--color-text-muted); }
+.planning-task-list, .planning-saved-list { display: grid; gap: .85rem; }
+.planning-task-card, .planning-saved-item { display: flex; align-items: flex-start; justify-content: space-between; gap: 1.25rem; padding: 1rem; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: #fff; }
+.planning-saved-item { display: grid; gap: .85rem; }
+.planning-saved-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.planning-task-number { color: var(--color-primary); font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+.planning-task-copy h3, .planning-saved-item h3 { margin: .3rem 0; }
+.planning-task-copy p { margin: .4rem 0; color: var(--color-text-muted); line-height: 1.55; }
+.planning-task-dates { font-size: .9rem; font-weight: 600; }
+.planning-task-actions, .planning-saved-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.planning-delete { color: #9e3344; }
+.planning-save { display: flex; align-items: center; justify-content: center; gap: .5rem; width: 100%; margin-top: 1.1rem; }
+.planning-simulated { margin: 1rem 0 0; padding: .8rem 1rem; border: 1px solid #f2d08b; border-radius: var(--radius-sm); color: #865500; background: #fff7e6; font-weight: 700; }
+.planning-saved { display: grid; gap: 1rem; }
+.planning-saved-task-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--color-border); }
+.planning-saved-task-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .7rem .25rem; }
+.planning-saved-task-row + .planning-saved-task-row { border-top: 1px solid var(--color-border); }
+.planning-saved-task-info { display: flex; align-items: baseline; flex-wrap: wrap; gap: .35rem .7rem; min-width: 0; }
+.planning-saved-task-title { color: var(--color-text); font-weight: 600; }
+.planning-saved-task-dates { color: var(--color-text-muted); font-size: .9rem; }
+.planning-saved-task-actions { display: flex; flex: 0 0 auto; gap: .35rem; }
+.planning-saved-empty { margin: 0; color: var(--color-text-muted); }
+.planning-icon-button { display: inline-grid; place-items: center; width: 2rem; height: 2rem; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: #fff; cursor: pointer; }
+.planning-icon-button:hover, .planning-icon-button:focus-visible { border-color: var(--color-primary); color: var(--color-primary); }
+.planning-muted { margin: 0; color: var(--color-text-muted); }
+.planning-modal-backdrop { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; padding: 1rem; background: rgb(18 20 38 / 55%); }
+.planning-modal { width: min(100%, 38rem); max-height: min(90vh, 52rem); overflow-y: auto; padding: 1.5rem; border-radius: var(--radius-md); background: #fff; box-shadow: var(--shadow-md); }
+.planning-modal h2 { margin: 0 0 1rem; }
+.planning-modal form { display: grid; gap: .5rem; }
+.planning-modal label { margin-top: .5rem; font-weight: 600; }
+.planning-date-fields { display: grid; grid-template-columns: 1fr 1fr; gap: .85rem; }
+.planning-date-fields > div { display: grid; gap: .45rem; }
+.planning-modal-actions { display: flex; justify-content: flex-end; gap: .65rem; margin-top: 1rem; }
+@media (max-width: 680px) {
+  .planning-section-heading, .planning-task-card { flex-direction: column; }
+  .planning-saved-header { align-items: flex-start; flex-direction: column; }
+  .planning-saved-task-row { align-items: flex-start; }
+  .planning-task-actions { justify-content: flex-start; }
+  .planning-date-fields { grid-template-columns: 1fr; }
+}

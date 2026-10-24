@@ -8,6 +8,7 @@ from .views import (
     ProjectDecisionView,
     ProjectDetailView,
     ProjectListCreateView,
+    ProjectTestCasesView,
     PublishedProjectListView,
 )
 
@@ -21,6 +22,11 @@ urlpatterns = [
         "projects/<int:pk>/analyze/",
         ProjectAnalyzeView.as_view(),
         name="project-analyze",
+    ),
+    path(
+        "projects/<int:pk>/test-cases/",
+        ProjectTestCasesView.as_view(),
+        name="project-test-cases",
     ),
     path(
         "projects/<int:pk>/publish/",

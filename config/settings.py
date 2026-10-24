@@ -225,5 +225,14 @@ CHALLENGE_RAG_ENABLED = os.getenv("CHALLENGE_RAG_ENABLED", "false").lower() in (
 CHALLENGE_RAG_TOP_K = int(os.getenv("CHALLENGE_RAG_TOP_K", "3"))
 CHALLENGE_RAG_MAX_CHARS = int(os.getenv("CHALLENGE_RAG_MAX_CHARS", "3000"))
 
+# --- Génération de cas de test logiciel (module QA Freelancy) --------------
+MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY", "")
+MISTRAL_TEST_CASE_MODEL = os.getenv("MISTRAL_TEST_CASE_MODEL", "ministral-14b-2512")
+MISTRAL_TEST_CASE_TIMEOUT = int(os.getenv("MISTRAL_TEST_CASE_TIMEOUT", "45"))
+MISTRAL_TEST_CASE_THROTTLE_RATE = os.getenv(
+    "MISTRAL_TEST_CASE_THROTTLE_RATE",
+    "5/hour",
+)
+
 if "test" in sys.argv:
     PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
