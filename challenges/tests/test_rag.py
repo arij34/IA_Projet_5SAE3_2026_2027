@@ -164,7 +164,7 @@ def _valid_payload():
                 "correct_index": i % 4,
                 "explanation": f"Explication {i}.",
             }
-            for i in range(5)
+            for i in range(20)
         ],
     }
 

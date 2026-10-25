@@ -119,6 +119,18 @@ class SupervisorMessageServiceTests(TestCase):
             message,
         )
 
+    def test_new_interaction_triggers_have_deterministic_mock_and_fallback_messages(self):
+        for trigger in (
+            SupervisorEvent.TriggerType.REPEATED_ANSWER_CHANGES,
+            SupervisorEvent.TriggerType.LONG_RESPONSE,
+            SupervisorEvent.TriggerType.MULTIPLE_TIMEOUTS,
+        ):
+            with self.subTest(trigger=trigger):
+                self.assertTrue(FALLBACK_MESSAGES[trigger])
+                self.assertTrue(MOCK_MESSAGES[trigger])
+                self.assertLessEqual(len(FALLBACK_MESSAGES[trigger]), MAX_MESSAGE_LENGTH)
+                self.assertLessEqual(len(MOCK_MESSAGES[trigger]), MAX_MESSAGE_LENGTH)
+
     def test_parser_rejects_invalid_schema_and_unsafe_content(self):
         invalid_outputs = (
             ("not json", "invalid_json"),
@@ -221,6 +233,9 @@ class SupervisorMessageServiceTests(TestCase):
             generated.generation_status,
             SupervisorEvent.GenerationStatus.GENERATED,
         )
+        self.assertEqual(generated.llm_provider, "openai")
+        self.assertEqual(generated.llm_model, "test-model")
+        self.assertEqual(generated.message, "Avancez étape par étape.")
         self.assertEqual(
             post.call_args.kwargs["timeout"],
             SUPERVISOR_TIMEOUT_SECONDS,
@@ -234,6 +249,10 @@ class SupervisorMessageServiceTests(TestCase):
         self.assertIn("tu ne décides jamais si une intervention", system_prompt)
         self.assertIn("Ne révèle, ne devine et n'explique aucune réponse", system_prompt)
         self.assertIn("objet JSON valide", system_prompt)
+        user_prompt = post.call_args.kwargs["json"]["messages"][1]["content"]
+        self.assertIn("Signal : Repeated errors", user_prompt)
+        self.assertIn("Catégorie (identifiant) : message-category", user_prompt)
+        self.assertIn("Progression enregistrée : 3/3", user_prompt)
 
     @override_settings(
         CHALLENGE_LLM_PROVIDER="openai",
@@ -269,6 +288,12 @@ class SupervisorMessageServiceTests(TestCase):
             SupervisorEvent.GenerationStatus.FALLBACK,
         )
         self.assertEqual(generated.generation_error_code, "provider_unavailable")
+        self.assertEqual(generated.llm_provider, "openai")
+        self.assertEqual(
+            generated.message,
+            FALLBACK_MESSAGES[SupervisorEvent.TriggerType.REPEATED_ERRORS],
+        )
+        self.assertNotIn("Message simulé", generated.message)
 
     @override_settings(CHALLENGE_LLM_PROVIDER="openai", OPENAI_API_KEY="test-key")
     def test_unsafe_provider_output_uses_fallback(self):

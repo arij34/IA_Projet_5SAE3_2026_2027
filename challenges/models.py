@@ -223,6 +223,9 @@ class SupervisorEvent(models.Model):
         REPEATED_ERRORS = "repeated_errors", "Repeated errors"
         POSITIVE_FEEDBACK = "positive_feedback", "Positive feedback"
         SLOW_PROGRESS = "slow_progress", "Slow progress"
+        REPEATED_ANSWER_CHANGES = "repeated_answer_changes", "Repeated answer changes"
+        LONG_RESPONSE = "long_response", "Long response"
+        MULTIPLE_TIMEOUTS = "multiple_timeouts", "Multiple timeouts"
 
     class GenerationStatus(models.TextChoices):
         PENDING = "PENDING", "En attente"
@@ -307,3 +310,32 @@ class SupervisorConnectionTicket(models.Model):
 
     def __str__(self) -> str:
         return f"Supervisor ticket for attempt {self.attempt_id}"
+
+
+class QuestionInteraction(models.Model):
+    """Server-timestamped interaction facts for one question of one attempt."""
+
+    attempt = models.ForeignKey(
+        QuizAttempt,
+        on_delete=models.CASCADE,
+        related_name="interactions",
+    )
+    question = models.ForeignKey(
+        Question,
+        on_delete=models.CASCADE,
+        related_name="interactions",
+    )
+    displayed_at = models.DateTimeField()
+    first_selected_at = models.DateTimeField(null=True, blank=True)
+    last_selected_choice_id = models.PositiveIntegerField(null=True, blank=True)
+    answer_changes = models.PositiveSmallIntegerField(default=0)
+    timed_out = models.BooleanField(default=False)
+    timed_out_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=("attempt", "question"),
+                name="unique_interaction_per_attempt_question",
+            )
+        ]

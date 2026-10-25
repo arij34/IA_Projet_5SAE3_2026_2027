@@ -49,6 +49,8 @@ class QuizAttemptApiTests(TestCase):
             User.ModerationStatus.OK,
         )
         self.quiz = Quiz.objects.get(title="Python : les fondamentaux")
+        # Legacy 3-question fixture, unpublished by migration 0008; republished only to test attempt logic.
+        Quiz.objects.filter(pk=self.quiz.pk).update(status=Quiz.Status.PUBLISHED)
         self.questions = list(
             self.quiz.questions.prefetch_related("choices").order_by("position")
         )

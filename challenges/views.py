@@ -6,6 +6,7 @@ from django.conf import settings
 from django.db import DatabaseError
 from django.db.models import Count
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from rest_framework import generics, status
 from rest_framework.exceptions import APIException, ValidationError
 from rest_framework.response import Response
@@ -27,6 +28,7 @@ from .serializers import (
     SubmitAnswerSerializer,
     SubmittedAnswerReceiptSerializer,
 )
+from .services.interactions import compute_metrics, record_event
 from .services.generation import QuizGenerationError, generate_quiz
 from .services.attempts import (
     AttemptConflict,
@@ -254,6 +256,47 @@ class QuizAttemptAnswerView(APIView):
             payload,
             status=status.HTTP_201_CREATED if created else status.HTTP_200_OK,
         )
+
+
+class QuizAttemptInteractionView(APIView):
+    """Record idempotent question interaction events (view, select, timeout)."""
+
+    permission_classes = CHALLENGE_PERMISSION_CLASSES
+
+    def post(self, request, pk: int):
+        attempt = get_owned_attempt(request.user, pk)
+        event = request.data.get("event")
+        if event not in ("view", "select", "timeout"):
+            raise ValidationError({"event": "Événement invalide."})
+        question = get_object_or_404(
+            attempt.quiz.questions, pk=_int_or_400(request.data.get("question_id"))
+        )
+        choice = None
+        if event == "select":
+            choice = get_object_or_404(
+                question.choices, pk=_int_or_400(request.data.get("choice_id"))
+            )
+        interaction = record_event(attempt, question, event, choice)
+        metrics = compute_metrics(attempt)
+        metrics["question_elapsed_seconds"] = max(
+            0, int((timezone.now() - interaction.displayed_at).total_seconds())
+        )
+        return Response(metrics)
+
+
+class QuizAttemptMetricsView(APIView):
+    """Return metrics computed from persisted attempt data only."""
+
+    permission_classes = CHALLENGE_PERMISSION_CLASSES
+
+    def get(self, request, pk: int):
+        return Response(compute_metrics(get_owned_attempt(request.user, pk)))
+
+
+def _int_or_400(value):
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise ValidationError({"detail": "Identifiant invalide."})
+    return value
 
 
 class QuizAttemptCompleteView(APIView):

@@ -11,6 +11,7 @@ from challenges.models import (
     Question,
     Quiz,
     QuizAttempt,
+    QuestionInteraction,
     SubmittedAnswer,
 )
 from challenges.services.attempts import complete_attempt, submit_answer
@@ -289,3 +290,54 @@ class PersistedAnswerEvaluationTests(TestCase):
             )
         decision = evaluate_answer_event(*self.answer(0, False, 10))
         self.assertIsNone(decision.trigger)
+
+    def test_repeated_changes_trigger_from_persisted_interaction(self):
+        answer, created = self.answer(0, True, 50)
+        QuestionInteraction.objects.create(
+            attempt=self.attempt, question=self.questions[0],
+            displayed_at=T0, first_selected_at=T0, answer_changes=3,
+            last_selected_choice_id=self.questions[0].choices.first().pk,
+        )
+        decision = evaluate_answer_event(answer, created)
+        self.assertEqual(decision.trigger, SupervisorTrigger.REPEATED_ANSWER_CHANGES)
+
+    def test_long_response_and_multiple_timeouts_trigger_from_persisted_rows(self):
+        answer, created = self.answer(0, True, 50)
+        QuestionInteraction.objects.create(
+            attempt=self.attempt, question=self.questions[0], displayed_at=T0,
+        )
+        QuestionInteraction.objects.create(
+            attempt=self.attempt, question=self.questions[1], displayed_at=T0,
+            timed_out=True, timed_out_at=T0,
+        )
+        QuestionInteraction.objects.create(
+            attempt=self.attempt, question=self.questions[2], displayed_at=T0,
+            timed_out=True, timed_out_at=T0,
+        )
+        decision = evaluate_answer_event(answer, created)
+        self.assertEqual(decision.trigger, SupervisorTrigger.MULTIPLE_TIMEOUTS)
+
+    def test_multiple_timeouts_trigger_when_response_is_not_long(self):
+        answer, created = self.answer(0, True, 20)
+        QuestionInteraction.objects.create(
+            attempt=self.attempt, question=self.questions[0], displayed_at=T0,
+        )
+        for question in self.questions[1:3]:
+            QuestionInteraction.objects.create(
+                attempt=self.attempt, question=question, displayed_at=T0,
+                timed_out=True, timed_out_at=T0,
+            )
+        decision = evaluate_answer_event(answer, created)
+        self.assertEqual(decision.trigger, SupervisorTrigger.MULTIPLE_TIMEOUTS)
+
+    def test_repeated_error_rule_keeps_priority_over_interaction_signals(self):
+        decisions = []
+        for index in range(3):
+            answer, created = self.answer(index, False, 20 * (index + 1))
+            if index == 2:
+                QuestionInteraction.objects.create(
+                    attempt=self.attempt, question=self.questions[index],
+                    displayed_at=T0, answer_changes=3,
+                )
+            decisions.append(evaluate_answer_event(answer, created))
+        self.assertEqual(decisions[-1].trigger, SupervisorTrigger.REPEATED_ERRORS)

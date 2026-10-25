@@ -18,7 +18,7 @@ User = get_user_model()
 URL = "/api/challenges/quizzes/generate/"
 
 
-def valid_payload(count=5):
+def valid_payload(count=20):
     return {
         "title": "Python : itérables",
         "questions": [
@@ -80,15 +80,17 @@ class QuizGenerationApiTests(TestCase):
         self.assertEqual(Quiz.objects.filter(source="AI_GENERATED").count(), 0)
 
     @override_settings(CHALLENGE_LLM_PROVIDER="mock")
-    def test_mock_generation_publishes_quiz_without_answer_key(self):
+    def test_mock_generation_creates_unpublished_quiz_without_answer_key(self):
         self.auth()
         response = self.client.post(URL, self.body, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data["question_count"], 5)
+        self.assertEqual(response.data["question_count"], 20)
         self.assertNotIn("is_correct", json.dumps(response.data))
         self.assertNotIn("explanation", json.dumps(response.data))
         quiz = Quiz.objects.get(pk=response.data["id"])
-        self.assertEqual(quiz.status, Quiz.Status.PUBLISHED)
+        self.assertEqual(quiz.status, Quiz.Status.DRAFT)
+        self.assertEqual(quiz.category, self.category)
+        self.assertEqual(quiz.difficulty, "BEGINNER")
         self.assertEqual(quiz.source, Quiz.Source.AI_GENERATED)
         self.assertEqual(quiz.generated_by, self.user)
         self.assertEqual(quiz.prompt_version, generation.PROMPT_VERSION)
@@ -101,6 +103,8 @@ class QuizGenerationApiTests(TestCase):
         generated = self.client.post(URL, self.body, format="json")
         self.assertEqual(generated.status_code, status.HTTP_201_CREATED)
         quiz_id = generated.data["id"]
+        # Mock output is a draft; publish it explicitly to exercise the attempt flow.
+        Quiz.objects.filter(pk=quiz_id).update(status=Quiz.Status.PUBLISHED)
 
         listed = self.client.get(
             "/api/challenges/quizzes/?category=python&difficulty=BEGINNER"
@@ -108,7 +112,7 @@ class QuizGenerationApiTests(TestCase):
         self.assertIn(quiz_id, [item["id"] for item in listed.data])
         detail = self.client.get(f"/api/challenges/quizzes/{quiz_id}/")
         self.assertEqual(detail.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(detail.data["questions"]), 5)
+        self.assertEqual(len(detail.data["questions"]), 20)
         self.assertNotIn("explanation", json.dumps(detail.data))
 
         started = self.client.post(
@@ -136,10 +140,10 @@ class QuizGenerationApiTests(TestCase):
             f"/api/challenges/attempts/{attempt_id}/results/"
         )
         self.assertEqual(completed.status_code, status.HTTP_200_OK)
-        self.assertEqual(completed.data["correct_answers"], 5)
+        self.assertEqual(completed.data["correct_answers"], 20)
         self.assertEqual(completed.data["score_percent"], 100)
         self.assertEqual(results.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(results.data["answers"]), 5)
+        self.assertEqual(len(results.data["answers"]), 20)
         self.assertTrue(all(item["is_correct"] for item in results.data["answers"]))
         self.assertTrue(all(item["explanation"] for item in results.data["answers"]))
 
@@ -195,7 +199,8 @@ class QuizGenerationApiTests(TestCase):
             self.assertEqual(response.status_code, expected)
         self.assertEqual(Quiz.objects.count(), before)
 
-    @override_settings(CHALLENGE_GENERATION_THROTTLE_RATE="1/hour")
+    # The provider is pinned to the mock: .env may select the real provider.
+    @override_settings(CHALLENGE_GENERATION_THROTTLE_RATE="1/hour", CHALLENGE_LLM_PROVIDER="mock")
     def test_generation_is_throttled_per_user(self):
         self.auth()
         self.assertEqual(self.client.post(URL, self.body, format="json").status_code, 201)
@@ -210,11 +215,13 @@ class GeneratedQuizValidationTests(TestCase):
 
     def test_valid_payload_is_accepted(self):
         parsed = generation.parse_generated_quiz(json.dumps(valid_payload()))
-        self.assertEqual(len(parsed["questions"]), 5)
+        self.assertEqual(len(parsed["questions"]), 20)
 
     def test_malformed_payloads_are_rejected(self):
         self.assert_rejected("{")
         self.assert_rejected(valid_payload(count=4))
+        self.assert_rejected(valid_payload(count=19))
+        self.assert_rejected(valid_payload(count=21))
         mutations = {
             "three choices": lambda q: q.update(choices=q["choices"][:3]),
             "duplicate choices": lambda q: q.update(choices=["x", "x", "y", "z"]),
@@ -233,6 +240,31 @@ class GeneratedQuizValidationTests(TestCase):
         payload = valid_payload()
         payload["questions"][1]["text"] = payload["questions"][0]["text"]
         self.assert_rejected(payload)
+
+    def test_accents_case_and_punctuation_do_not_hide_duplicates(self):
+        payload = valid_payload()
+        payload["questions"][0]["text"] = "Que renvoie `len([2, 4, 6])` ?"
+        payload["questions"][1]["text"] = "QUE RENVOIE len([2,4,6])"
+        self.assert_rejected(payload)
+
+    def test_near_identical_rewording_is_rejected(self):
+        payload = valid_payload()
+        payload["questions"][0]["text"] = "Quelle est la valeur renvoyée par la fonction len appliquée à une liste de trois éléments ?"
+        payload["questions"][1]["text"] = "Quelle est la valeur renvoyée par la fonction len appliquée à une liste de trois éléments"
+        self.assert_rejected(payload)
+
+    def test_distinct_questions_are_not_flagged_as_duplicates(self):
+        payload = valid_payload()
+        payload["questions"][0]["text"] = "Que renvoie `len([2, 4, 6])` dans Python 3 ?"
+        payload["questions"][1]["text"] = "Quelle exception lève `int(\"abc\")` dans Python 3 ?"
+        self.assertEqual(len(generation.parse_generated_quiz(json.dumps(payload))["questions"]), 20)
+
+    def test_prompt_requests_exactly_twenty_questions(self):
+        category = ChallengeCategory.objects.get(slug="python")
+        prompt = generation.build_user_prompt(category, "BEGINNER")
+        self.assertEqual(generation.QUESTION_COUNT, 20)
+        self.assertIn("Nombre de questions : 20", prompt)
+        self.assertIn("exactement 20 questions", prompt)
 
     def test_invalid_output_creates_no_choices(self):
         before = AnswerChoice.objects.count()

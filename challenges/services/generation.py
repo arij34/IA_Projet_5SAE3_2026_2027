@@ -2,6 +2,8 @@
 
 import json
 import logging
+import re
+import unicodedata
 
 import requests
 from django.conf import settings
@@ -12,14 +14,15 @@ from challenges.services import retrieval
 
 logger = logging.getLogger(__name__)
 
-PROMPT_VERSION = "quiz-gen-v1"
+PROMPT_VERSION = "quiz-gen-v2"
 OPENAI_URL = "https://api.openai.com/v1/chat/completions"
-QUESTION_COUNT = 5
+QUESTION_COUNT = 20
 CHOICE_COUNT = 4
 MAX_TITLE = 180
 MAX_CHOICE = 500
 MAX_TEXT = 1000
 MAX_EXPLANATION = 1000
+NEAR_DUPLICATE_THRESHOLD = 0.85
 
 DIFFICULTY_GUIDANCE = {
     Quiz.Difficulty.BEGINNER: "notions fondamentales, vocabulaire de base, cas simples",
@@ -57,10 +60,15 @@ Format JSON exact :
 
 Règles : "correct_index" est l'indice (à partir de 0) de l'unique bonne réponse ; \
 varie sa position d'une question à l'autre ; les choix sont tous distincts ; \
-aucune question ne se répète."""
+produis exactement {questions} questions, ni plus ni moins ; \
+chaque question porte sur une notion différente du sujet, sans reformuler une autre question ; \
+les distracteurs sont techniquement plausibles (erreurs courantes), jamais absurdes ni partiellement corrects ; \
+la difficulté correspond au niveau demandé ; \
+l'explication justifie exactement la bonne réponse sans affirmer de fait non établi ; \
+si tu n'es pas certain d'un fait technique, choisis une autre question."""
 
 
-RAG_PROMPT_VERSION = "quiz-gen-v1-rag"
+RAG_PROMPT_VERSION = "quiz-gen-v2-rag"
 
 RAG_SOURCES_TEMPLATE = """
 
@@ -97,7 +105,7 @@ def build_user_prompt(category: ChallengeCategory, difficulty: str) -> str:
 
 
 def build_rag_user_prompt(category: ChallengeCategory, difficulty: str, selected: list[dict]) -> str:
-    """Production user prompt (quiz-gen-v1) followed by the retrieved, attributed sources."""
+    """Production user prompt (quiz-gen-v2) followed by the retrieved, attributed sources."""
     return build_user_prompt(category, difficulty) + RAG_SOURCES_TEMPLATE.format(
         sources=retrieval.format_sources(selected)
     )
@@ -180,6 +188,19 @@ def _call_openai(
         raise QuizGenerationError("Réponse du service de génération inutilisable.") from None
 
 
+def _normalize(text: str) -> str:
+    decomposed = unicodedata.normalize("NFKD", text.casefold())
+    stripped = "".join(c for c in decomposed if not unicodedata.combining(c))
+    return " ".join(re.sub(r"[^\w]+", " ", stripped).split())
+
+
+def _is_near_duplicate(first: str, second: str) -> bool:
+    if first == second:
+        return True
+    a, b = set(first.split()), set(second.split())
+    return len(a | b) >= 6 and len(a & b) / len(a | b) >= NEAR_DUPLICATE_THRESHOLD
+
+
 def _clean_text(value, limit: int, label: str) -> str:
     if not isinstance(value, str) or not value.strip():
         raise QuizGenerationError(f"Contenu généré invalide : {label}.")
@@ -195,20 +216,28 @@ def parse_generated_quiz(raw: str) -> dict:
         data = json.loads(raw)
     except (TypeError, ValueError):
         raise QuizGenerationError("Contenu généré invalide : JSON illisible.") from None
+    return validate_quiz_data(data)
+
+
+def validate_quiz_data(data) -> dict:
+    """Validate a quiz payload (generated or curated): exactly QUESTION_COUNT questions."""
     if not isinstance(data, dict) or not isinstance(data.get("questions"), list):
         raise QuizGenerationError("Contenu généré invalide : structure inattendue.")
     if len(data["questions"]) != QUESTION_COUNT:
-        raise QuizGenerationError("Contenu généré invalide : nombre de questions.")
+        raise QuizGenerationError(
+            f"Contenu généré invalide : {QUESTION_COUNT} questions exactement sont requises."
+        )
 
     questions = []
-    seen_texts = set()
+    seen_texts = []
     for item in data["questions"]:
         if not isinstance(item, dict) or not isinstance(item.get("choices"), list):
             raise QuizGenerationError("Contenu généré invalide : question.")
         text = _clean_text(item.get("text"), MAX_TEXT, "énoncé")
-        if text.casefold() in seen_texts:
+        normalized = _normalize(text)
+        if any(_is_near_duplicate(normalized, seen) for seen in seen_texts):
             raise QuizGenerationError("Contenu généré invalide : question dupliquée.")
-        seen_texts.add(text.casefold())
+        seen_texts.append(normalized)
         choices = [_clean_text(c, MAX_CHOICE, "choix") for c in item["choices"]]
         if len(choices) != CHOICE_COUNT or len({c.casefold() for c in choices}) != CHOICE_COUNT:
             raise QuizGenerationError("Contenu généré invalide : choix.")
@@ -235,12 +264,14 @@ def generate_quiz(user, category: ChallengeCategory, difficulty: str) -> Quiz:
         raise QuizGenerationError("Fournisseur de génération inconnu.", 503)
 
     payload = parse_generated_quiz(raw)
+    # Mock output is placeholder content and must never reach learners.
+    publication_status = Quiz.Status.DRAFT if provider == "mock" else Quiz.Status.PUBLISHED
     with transaction.atomic():
         quiz = Quiz.objects.create(
             category=category,
             title=payload["title"],
             difficulty=difficulty,
-            status=Quiz.Status.PUBLISHED,
+            status=publication_status,
             source=Quiz.Source.AI_GENERATED,
             generated_by=user,
             llm_provider=provider,

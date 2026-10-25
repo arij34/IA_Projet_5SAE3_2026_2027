@@ -36,7 +36,7 @@ class SupervisorConsumer(JsonWebsocketConsumer):
             self.channel_name,
         )
         self.accept(subprotocol=SUPERVISOR_WEBSOCKET_PROTOCOL)
-        self._replay_unacknowledged()
+        self._replay_history()
 
     def disconnect(self, close_code):
         group_name = getattr(self, "group_name", None)
@@ -84,26 +84,27 @@ class SupervisorConsumer(JsonWebsocketConsumer):
             status=QuizAttempt.Status.IN_PROGRESS,
         ).exists()
 
-    def _replay_unacknowledged(self):
+    def _replay_history(self):
         event_ids = SupervisorEvent.objects.filter(
             attempt_id=self.attempt_id,
             attempt__user_id=self.user_id,
             attempt__status=QuizAttempt.Status.IN_PROGRESS,
             generation_status__in=DELIVERABLE_STATUSES,
-            acknowledged_at__isnull=True,
         ).order_by("created_at", "pk").values_list("pk", flat=True)
         for event_id in event_ids:
-            self._send_event(event_id)
+            self._send_event(event_id, include_acknowledged=True)
 
-    def _send_event(self, event_id):
-        event = SupervisorEvent.objects.filter(
+    def _send_event(self, event_id, include_acknowledged=False):
+        events = SupervisorEvent.objects.filter(
             pk=event_id,
             attempt_id=self.attempt_id,
             attempt__user_id=self.user_id,
             attempt__status=QuizAttempt.Status.IN_PROGRESS,
             generation_status__in=DELIVERABLE_STATUSES,
-            acknowledged_at__isnull=True,
-        ).first()
+        )
+        if not include_acknowledged:
+            events = events.filter(acknowledged_at__isnull=True)
+        event = events.first()
         if event is None:
             return
 
@@ -117,6 +118,8 @@ class SupervisorConsumer(JsonWebsocketConsumer):
                     "message": event.message,
                     "prompt_version": event.prompt_version,
                     "generation_status": event.generation_status,
+                    "llm_provider": event.llm_provider,
+                    "generation_error_code": event.generation_error_code,
                     "created_at": event.created_at.isoformat(),
                 },
             }

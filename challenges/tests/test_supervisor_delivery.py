@@ -290,7 +290,8 @@ class SupervisorDeliveryWebsocketTests(TransactionTestCase):
         )()
         reconnect = self.communicator(reconnect_ticket.data["ticket"])
         self.assertTrue((await reconnect.connect())[0])
-        self.assertTrue(await reconnect.receive_nothing(timeout=0.05))
+        replayed = await reconnect.receive_json_from(timeout=1)
+        self.assertEqual(replayed["event"]["id"], event.pk)
         await reconnect.disconnect()
 
     async def test_unacknowledged_event_is_replayed_with_minimal_payload(self):
@@ -313,6 +314,8 @@ class SupervisorDeliveryWebsocketTests(TransactionTestCase):
                 "message",
                 "prompt_version",
                 "generation_status",
+                "llm_provider",
+                "generation_error_code",
                 "created_at",
             },
         )
@@ -325,7 +328,6 @@ class SupervisorDeliveryWebsocketTests(TransactionTestCase):
         )
         self.assertEqual(delivered["event"]["id"], event.pk)
         self.assertNotIn("is_correct", delivered["event"])
-        self.assertNotIn("provider", delivered["event"])
         self.assertNotIn("error", delivered["event"])
         await communicator.disconnect()
 

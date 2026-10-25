@@ -155,6 +155,8 @@ REST_FRAMEWORK = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
 ]
 
 ASGI_APPLICATION = "config.asgi.application"
@@ -212,7 +214,7 @@ PROJECT_CHATBOT_THROTTLE_RATE = os.getenv(
 
 # --- Génération de quiz Challenges (clé OpenAI uniquement côté serveur) -----
 
-CHALLENGE_LLM_PROVIDER = os.getenv("CHALLENGE_LLM_PROVIDER", "mock")  # "mock" ou "openai"
+CHALLENGE_LLM_PROVIDER = os.getenv("CHALLENGE_LLM_PROVIDER", "openai")  # "mock" ou "openai"
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 OPENAI_TIMEOUT_SECONDS = int(os.getenv("OPENAI_TIMEOUT_SECONDS", "45"))
@@ -236,3 +238,10 @@ MISTRAL_TEST_CASE_THROTTLE_RATE = os.getenv(
 
 if "test" in sys.argv:
     PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
+
+# Challenge supervision thresholds (seconds / counts).
+CHALLENGE_QUESTION_TIME_LIMIT_SECONDS = int(os.getenv('CHALLENGE_QUESTION_TIME_LIMIT_SECONDS', '60'))
+CHALLENGE_HESITATION_FIRST_SELECTION_SECONDS = int(os.getenv('CHALLENGE_HESITATION_FIRST_SELECTION_SECONDS', '20'))
+CHALLENGE_HESITATION_ANSWER_CHANGES = int(os.getenv('CHALLENGE_HESITATION_ANSWER_CHANGES', '3'))
+CHALLENGE_LONG_RESPONSE_SECONDS = int(os.getenv('CHALLENGE_LONG_RESPONSE_SECONDS', '45'))
+CHALLENGE_SUPERVISOR_MULTIPLE_TIMEOUTS = int(os.getenv('CHALLENGE_SUPERVISOR_MULTIPLE_TIMEOUTS', '2'))

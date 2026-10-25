@@ -61,7 +61,7 @@ class PromptTests(unittest.TestCase):
         messages = build_production_messages(self.case)
         self.assertEqual(messages[0]["content"], generation.SYSTEM_PROMPT)
         self.assertIn("Sujet : Python (", messages[1]["content"])
-        self.assertEqual(generation.PROMPT_VERSION, "quiz-gen-v1")
+        self.assertEqual(generation.PROMPT_VERSION, "quiz-gen-v2")
         self.assertNotEqual(BASELINE_VERSION, generation.PROMPT_VERSION)
 
 

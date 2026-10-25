@@ -3590,3 +3590,133 @@ Exactitude technique, pertinence, difficulté, clarté, réponse unique, distrac
 - Étiquettes de pertinence IA, non confirmées ; KB non relue par un humain.
 - Coût, exactitude factuelle, pertinence, difficulté : non mesurés. Aucun nouvel appel réel sans nouvelle autorisation.
 
+
+
+## CH-16 — Quiz de 20 questions, catalogue corrigé, retrait de la génération côté UI (2026-10-17)
+
+### A. Objectif et périmètre
+
+Exiger exactement 20 questions par quiz publié, remplacer les quiz défectueux, retirer le bouton « Générer un quiz IA » de la page d'accueil Challenges. Aucun appel réel à OpenAI (fournisseur `mock` ou requêtes simulées uniquement).
+
+### B. Prompt de la demande
+
+Prompt d'origine de CH-01 à CH-15 : voir entrées précédentes (inchangées). Prompt de cette tâche : « Freelancy Challenges — Final Quiz Quality and UI Update » (exactement 20 questions par quiz, audit et correction des quiz existants, prompt/validation à 20 questions, retrait du bouton Generate Quiz, progression « Question N sur 20 », tests, contraintes Git/secrets). Le texte intégral n'est pas recopié ici ; il est disponible dans la conversation.
+
+### C. Version de prompt
+
+- `quiz-gen-v2` (production) et `quiz-gen-v2-rag` (RAG), définis dans `challenges/services/generation.py` (`PROMPT_VERSION`, `RAG_PROMPT_VERSION`, `SYSTEM_PROMPT`, constructeur du message utilisateur).
+- Changement par rapport à v1 : `QUESTION_COUNT` 5 → 20 ; règles ajoutées : exactement N questions, sous-thèmes distincts, distracteurs plausibles, difficulté conforme, explication justifiant la réponse sans inventer de faits.
+- v1 est conservée dans l'historique (CH-01 à CH-15) ; les expériences antérieures (`final_v2_run.json`, résultats RAG) n'ont pas été modifiées.
+- Aucune comparaison contrôlée v1/v2 : aucune affirmation d'optimisation.
+
+### D. Techniques
+
+Présentes dans le code : prompt de rôle, contraintes explicites, sortie JSON structurée, validation côté serveur (nombre exact, 4 choix distincts, `correct_index` valide, détection de quasi-doublons : égalité normalisée ou Jaccard ≥ 0,85), RAG (existant). Prévues seulement : revue humaine/sources, tier ADVANCED.
+
+### E. Changements
+
+Backend : `challenges/services/generation.py` (v2, 20 questions, `validate_quiz_data`, doublons ; les quiz du fournisseur mock sont enregistrés en DRAFT) ; nouveaux `challenges/curated_quizzes_base.py`, `_python.py`, `_django.py`, `_react.py`, `_typescript.py`, `curated_quizzes.py` (8 quiz × 20 = 160 questions rédigées) ; migration `0008_curated_twenty_question_quizzes.py` (dépublie les quiz publiés dont le nombre de questions ≠ 20 en DRAFT sans suppression, puis crée les 8 quiz curés) ; tests : `test_generation.py`, `test_api.py`, `test_attempts_api.py`, `test_rag.py` (20 questions, fournisseur épinglé), `experiments/quiz_generation/test_runner.py` (assertion v2), nouveau `test_curated_quizzes.py`.
+Frontend : `ChallengesPage.tsx` (bouton, états, gestionnaire de génération retirés ; texte du catalogue ajusté), nouveau test `ChallengesTwentyQuestions.test.tsx`. Le point d'accès de génération reste disponible via l'API pour les freelancers authentifiés (non supprimé).
+
+### F. Tests (réellement exécutés)
+
+- Backend : `manage.py test challenges experiments` → 131 tests OK ; `test_curated_quizzes` → 9 tests OK.
+- Frontend : `npm test -- --run` → 6 tests OK (2 fichiers) ; `npx tsc -b` → 0 ; eslint sur les fichiers modifiés → 0 ; build Vite OK (dossier temporaire).
+- `manage.py migrate` appliqué sur la base de dev : 8 quiz publiés de 20 questions, anciens quiz en DRAFT.
+- Tests automatisés uniquement ; pas de vérification navigateur pour cette tâche.
+
+### G. Évaluation du prompt
+
+Validité de sortie réelle, exactitude factuelle, latence, tokens, coût : Not evaluated / Not measured (aucun appel réel).
+
+### H. Problèmes et corrections
+
+- Audit : 7 quiz publiés (1 quiz curé de 3 questions, 6 quiz mock « Question simulée N » à 5 questions) ; aucun quiz React/TypeScript. Tous dépubliés ; remplacés par 160 questions.
+- Collision de titre : le titre « Python : les fondamentaux » aurait fait ignorer le seed via `get_or_create` ; nouveau titre « Python : maîtriser les fondamentaux ».
+- Fuite de configuration : `.env` sélectionne le fournisseur `openai`. Des tests sans `override_settings` (test de limitation de débit, tests RAG) ne pinnaient pas le fournisseur ; ils renvoyaient 502 après ~15 s, ce qui laisse penser qu'un appel réseau réel a pu être tenté lors de certaines exécutions. Le nombre exact d'appels (éventuellement 1 à 2) est inconnu et n'a pas été vérifié auprès du fournisseur. Correction : fournisseur épinglé sur `mock` dans le test de débit ; les tests RAG patchent `requests.post`. Les exécutions suivantes (5,8 s) n'ont fait aucun appel réseau.
+
+### I. Sécurité et limites
+
+- Aucune clé affichée ni copiée ; clé uniquement dans l'environnement backend.
+- Limitation de débit de la génération inchangée ; clé de réponse toujours absente des réponses API.
+- Les 160 questions ont été rédigées à partir de connaissances générales et n'ont PAS été vérifiées contre les documentations officielles ni relues par un humain : l'exactitude technique reste à confirmer. Une question structurellement valide peut être fausse.
+- Seuls BEGINNER et INTERMEDIATE existent (ADVANCED : « Aucun quiz publié »).
+- Le filtre « exactement 20 questions » n'est pas appliqué dans les vues ; l'invariant repose sur la migration et les tests.
+
+### J. Prochaines étapes (non réalisées)
+
+Relecture humaine des 160 questions avec sources ; ajout du niveau ADVANCED ; vérification navigateur du parcours complet ; isoler le fournisseur dans tous les tests via les réglages de test.
+
+### K. Utilisation pour le rapport académique
+
+Cette entrée documente la démarche : audit mesuré (7 quiz, 6 factices), décision de conception (validation stricte à 20 questions), versionnage de prompt (v1 → v2), effectifs de tests réels et limites explicites (non-vérification des sources, absence d'évaluation réelle). Elle peut étayer les sections méthodologie, validation et menaces à la validité.
+
+
+## CH-17 — AI Supervisor 2.0 adaptatif et intégration du quiz (2026-10-24)
+
+### A. Demande et périmètre
+
+Prompt exact fourni : pièce jointe utilisateur `Pasted text.txt`, intitulée « Freelancy — Continue and Complete AI Supervisor 2.0 ». La pièce jointe contient le brief complet (audit de l'existant, règles adaptatives backend, intégration quiz et timer frontend, tests et documentation) ; le prompt n'a pas été reconstitué. Fournisseur mock pour les tests, aucun appel réel à OpenAI demandé ou effectué par cette implémentation.
+
+### B. Architecture conservée et complétée
+
+- Conservation de `QuestionInteraction`, de la migration `0009_question_interactions`, des services d'interaction, des endpoints propriétaires `/interactions/` et `/metrics/`, du cycle de réponse et du socket existant à ticket à usage unique.
+- Le service de politique reste déterministe et séparé de la génération de texte. À la création d'une réponse, il lit les réponses et interactions persistées, sélectionne au plus un déclencheur éligible, puis utilise les événements existants et leurs contraintes d'idempotence.
+- Déclencheurs : trois réponses incorrectes consécutives, trois réponses correctes consécutives (feedback positif), changements répétés sur la question (seuil 3), réponse longue (45 s), plusieurs timeouts (2) et progression lente existante (120 s entre soumissions).
+- Cooldown existant conservé : maximum de deux événements par tentative, un événement par type et au moins 120 s entre deux interventions. Les signaux concurrents suivent une priorité déterministe ; les règles de répétition d'erreurs et de feedback positif restent prioritaires.
+- Les messages mock et les messages de secours sont déterministes et bornés. L'échec du superviseur ne fait pas échouer l'enregistrement d'une réponse.
+- Frontend : disposition quiz/superviseur en deux colonnes, panneau sticky sur écran large et empilé sur mobile ; timer piloté par l'heure serveur et synchronisé au retour dans la question ; vue, sélection et timeout envoyés via l'API existante. Les événements sont sérialisés côté client, les choix identiques ignorés, les timeouts envoyés une fois et aucun choix n'est soumis automatiquement.
+- Revue QA finale : le timer est suspendu dès le début de la sauvegarde d'une réponse ; l'achèvement annule les requêtes d'interaction et de métriques en attente ; l'échec du chargement des métriques affiche un état indisponible sans bloquer les réponses.
+- Le panneau expose l'état réel du socket, les conseils, l'activité locale récente et les métriques renvoyées par le backend. Aucun second socket n'a été ajouté.
+
+### C. Modifications
+
+Backend : `challenges/models.py`, nouvelle migration `0010_supervisor_interaction_triggers.py`, `challenges/services/supervisor_policy.py`, `challenges/services/supervisor_messages.py`, `challenges/views.py`, `config/settings.py`, tests `test_supervisor_policy.py` et `test_supervisor_messages.py`.
+
+Frontend : `src/pages/ChallengeAttemptPage.tsx`, `src/pages/ChallengePlay.css`, `src/components/SupervisorFeedback.tsx`, `src/hooks/useSupervisorChannel.ts`, `src/api/challenges.ts`, `src/types/challenges.ts`, tests `ChallengeAttemptSupervisor.test.tsx` et `ChallengesTwentyQuestions.test.tsx`.
+
+### D. Vérification automatisée réellement exécutée
+
+- Backend `manage.py test challenges experiments` avec `DEBUG=True` et `CHALLENGE_LLM_PROVIDER=mock` : 154 tests réussis.
+- `makemigrations --check --dry-run challenges` : aucune migration supplémentaire détectée.
+- Frontend `npm test -- --run` : 10 tests réussis sur 2 fichiers après la revue QA finale.
+- Frontend `npm run build` : TypeScript et build Vite réussis.
+- ESLint sur les fichiers TypeScript modifiés : réussi sans avertissement après correction. Le lint global a signalé une erreur préexistante dans `src/pages/PublishedProjectsPage.tsx`; ce module hors périmètre n'a pas été modifié.
+- Vérification visuelle dans un navigateur : non effectuée. Les tests React/jsdom vérifient les interactions mais ne prouvent pas le rendu réel desktop/mobile ni l'E2E WebSocket.
+
+### E. Migrations et limites
+
+- La base de développement indiquait `0009_question_interactions` appliquée. La migration `0010_supervisor_interaction_triggers` étend les choix de type d'événement et a été appliquée après les tests.
+- Le timeout compte depuis le premier affichage enregistré ; revenir à une question reprend le délai calculé depuis cet affichage. Les métriques ne diagnostiquent pas l'état psychologique de la personne.
+- Le panneau montre l'activité récente de l'interface et les métriques effectivement reçues ; il ne peut pas garantir la livraison d'un conseil si l'API ou le socket est indisponible.
+- Aucune évaluation de qualité par modèle réel, aucun appel OpenAI, aucune vérification visuelle navigateur ou test E2E du socket n'est revendiqué.
+
+### F. Vérification finale navigateur et corrections (2026-10-24)
+
+Cette vérification réelle complète et remplace les limites de navigateur indiquées ci-dessus pour cette passe QA. Chrome 146 headless a piloté le frontend Vite, le backend Django du workspace, la base SQLite de développement et le vrai endpoint WebSocket Channels/Daphne. Aucun WebSocket ni endpoint API n'a été remplacé par un mock. Le fournisseur de texte était `mock` ; aucun appel OpenAI réel n'a été effectué.
+
+- Cause de l'indisponibilité initiale des métriques : deux vues initiales concurrentes pouvaient rencontrer `sqlite3.OperationalError: database is locked` dans SQLite au `get_or_create` de l'interaction. Le service d'interaction réessaie désormais les verrous transitoires avec un délai borné. Après redémarrage du processus Django du workspace, le POST navigateur `/interactions/` a répondu 200 et les métriques ont répondu 200.
+- Une tentative du premier serveur sur le port 8000 renvoyait 404 pour l'endpoint attendu ; le processus actif ne servait pas la version du workspace. Il a été remplacé par le serveur Django du workspace, lancé avec le fournisseur mock. La configuration de production n'a pas été modifiée.
+- Les événements déjà acquittés n'étaient pas rejoués après reconnexion ; le consommateur WebSocket rejoue maintenant l'historique livrable de la tentative active. Le payload minimal inclut le fournisseur afin d'indiquer explicitement les messages mock dans l'interface. Un test backend vérifie le rejeu d'un événement acquitté.
+- Plusieurs timeouts pouvaient être masqués par le signal de réponse longue. La politique donne maintenant priorité au signal `multiple_timeouts` devant `long_response` lorsque les deux sont présents.
+- Une reprise sur une question déjà enregistrée ne déclenchait pas de requête de métriques : le panneau restait indéfiniment en chargement. Le frontend charge maintenant les métriques persistées à l'ouverture/reprise de la tentative et annule cette requête au démontage. Un test React couvre la reprise sur réponse enregistrée.
+- Le compteur affiché est la somme persistée des changements de toutes les questions. L'E2E a observé 3 changements après la première question puis 4 après un changement sur la suivante ; la sélection initiale et la répétition d'un choix identique n'ont pas augmenté le total.
+
+### G. Résultats automatisés réellement exécutés
+
+- Backend `manage.py test challenges experiments` (`DEBUG=True`, fournisseur mock) : 155 tests réussis ; aucune erreur de système Django.
+- Frontend `npm test -- --run` : 11 tests réussis sur 2 fichiers.
+- `npm run build` : `tsc -b` et build Vite réussis.
+- ESLint sur les fichiers TypeScript/TSX modifiés : réussi sans erreur ni avertissement. ESLint ne prend pas en charge le fichier CSS dans cette configuration ; aucun outil de lint Python n'est configuré ou installé dans l'environnement.
+- `manage.py makemigrations --check --dry-run challenges` : aucune migration en attente. `showmigrations challenges` confirme l'application de `0008`, `0009` et `0010`.
+- Une première exécution backend après la correction du rejeu a révélé trois erreurs dues à une variable locale mal nommée dans le consommateur ; le correctif a été appliqué et l'exécution complète suivante a réussi.
+
+### H. Parcours navigateur/WebSocket et captures
+
+- Tentative réelle 9 : création 201, détails 200, tickets WebSocket 201, interactions 200, réponses 201 et métriques 200. Le vrai handshake `freelancy.supervisor.v1` a renvoyé 101. Les frames ont livré deux messages mock distincts (`repeated_answer_changes`, puis `multiple_timeouts`), chacun acquitté. Deux timeouts ont été persistés une seule fois chacun ; aucune réponse n'a été créée par le timeout. La tentative a reçu 20 réponses, a été complétée (200), et sa page de résultats détaillés s'est affichée.
+- Tentative réelle 10 : après rechargement de la page, l'événement déjà acquitté a été rejoué sur un nouveau handshake 101 et affiché une seule fois. Une seconde réponse lente a déclenché un deuxième message `slow_progress`; la capture montre les deux messages et les métriques cumulatives.
+- Largeurs réelles 1440 px et 390 px : aucun débordement horizontal (`scrollWidth` égal à la largeur de la fenêtre). Sur mobile le panneau est empilé sous la question ; sa capture dédiée a été prise après défilement jusqu'au panneau.
+- Captures conservées dans `e2e-screenshots-20261024/` : `quiz-initial-fixed.png`, `quiz-mobile-live.png`, `quiz-mobile-supervisor-history.png`, `quiz-supervisor-reconnect.png`, `quiz-timeout-state.png`, `quiz-two-supervisor-messages.png`, `quiz-completed.png`. Une capture antérieure `quiz-initial-desktop.png` documente la réponse 404 du serveur qui ne servait pas le workspace et n'est pas un résultat QA réussi.
+- La relecture de page et le rejeu d'historique ont été vérifiés dans Chrome. Une coupure réseau forcée dans Chrome n'a pas fait passer visiblement le panneau par l'état « reconnecting » ; le rejeu après rechargement est vérifié, tandis que la transition de reconnexion après perte réseau reste couverte uniquement par le test React simulant une fermeture inattendue.
+
+Les tentatives et l'utilisateur QA de la base locale ont été conservés pour ne pas supprimer de données de travail. Les limites restantes sont l'absence de test navigateur de la panne réelle du service superviseur et de la transition visuelle reconnecting, ainsi que l'absence d'évaluation avec un fournisseur de modèle réel.

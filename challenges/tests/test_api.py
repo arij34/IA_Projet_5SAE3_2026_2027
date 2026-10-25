@@ -137,11 +137,10 @@ class ChallengeCatalogApiTests(TestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 2)
-        self.assertEqual(
-            {item["title"] for item in response.data},
-            {"Quiz PUBLISHED", "Python : les fondamentaux"},
-        )
+        titles = {item["title"] for item in response.data}
+        self.assertIn("Quiz PUBLISHED", titles)
+        self.assertNotIn("Quiz DRAFT", titles)
+        self.assertNotIn("Python : les fondamentaux", titles)
         self.assertTrue(all(item["category"] == "python" for item in response.data))
         self.assertTrue(all(item["question_count"] >= 1 for item in response.data))
 

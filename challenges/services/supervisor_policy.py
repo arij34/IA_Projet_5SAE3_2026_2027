@@ -14,7 +14,9 @@ from datetime import datetime, timedelta
 from enum import Enum
 from typing import Sequence
 
-from challenges.models import QuizAttempt, SubmittedAnswer
+from django.conf import settings
+
+from challenges.models import QuestionInteraction, QuizAttempt, SubmittedAnswer
 
 SLOW_PROGRESS_SECONDS = 120
 STREAK_LENGTH = 3
@@ -28,6 +30,9 @@ class SupervisorTrigger(str, Enum):
     REPEATED_ERRORS = "repeated_errors"
     POSITIVE_FEEDBACK = "positive_feedback"
     SLOW_PROGRESS = "slow_progress"
+    REPEATED_ANSWER_CHANGES = "repeated_answer_changes"
+    LONG_RESPONSE = "long_response"
+    MULTIPLE_TIMEOUTS = "multiple_timeouts"
 
 
 class Suppression(str, Enum):
@@ -103,6 +108,7 @@ def evaluate_trigger(
     created: bool,
     attempt_completed: bool,
     prior_interventions: Sequence[PriorIntervention] = (),
+    contextual_triggers: Sequence[SupervisorTrigger] = (),
 ) -> TriggerDecision:
     """Decide the eligible intervention for the newest answer in ``answers``.
 
@@ -118,6 +124,9 @@ def evaluate_trigger(
         return TriggerDecision(None, suppressed_by=(Suppression.NO_QUALIFYING_PATTERN,))
 
     candidates = _qualifying_triggers(answers)
+    # Correctness retains priority; contextual signals are evaluated from the
+    # persisted interaction rows associated with the latest answer.
+    candidates.extend(trigger for trigger in contextual_triggers if trigger not in candidates)
     if not candidates:
         return TriggerDecision(None, suppressed_by=(Suppression.NO_QUALIFYING_PATTERN,))
     if len(prior_interventions) >= MAX_INTERVENTIONS_PER_ATTEMPT:
@@ -166,10 +175,26 @@ def evaluate_answer_event(
         events.append(AnswerEvent(pk, is_correct, submitted_at))
         if pk == answer.pk:
             break
+    interaction = QuestionInteraction.objects.filter(
+        attempt_id=attempt_id, question_id=answer.question_id
+    ).first()
+    contextual_triggers: list[SupervisorTrigger] = []
+    if interaction is not None:
+        change_limit = int(getattr(settings, "CHALLENGE_HESITATION_ANSWER_CHANGES", 3))
+        long_limit = int(getattr(settings, "CHALLENGE_LONG_RESPONSE_SECONDS", 45))
+        elapsed = (answer.submitted_at - interaction.displayed_at).total_seconds()
+        if interaction.answer_changes >= change_limit:
+            contextual_triggers.append(SupervisorTrigger.REPEATED_ANSWER_CHANGES)
+    timeout_limit = int(getattr(settings, "CHALLENGE_SUPERVISOR_MULTIPLE_TIMEOUTS", 2))
+    if QuestionInteraction.objects.filter(attempt_id=attempt_id, timed_out=True).count() >= timeout_limit:
+        contextual_triggers.append(SupervisorTrigger.MULTIPLE_TIMEOUTS)
+    if interaction is not None and elapsed >= long_limit:
+        contextual_triggers.append(SupervisorTrigger.LONG_RESPONSE)
     return evaluate_trigger(
         attempt_id,
         events,
         created=created,
         attempt_completed=status == QuizAttempt.Status.COMPLETED,
         prior_interventions=prior_interventions,
+        contextual_triggers=contextual_triggers,
     )
