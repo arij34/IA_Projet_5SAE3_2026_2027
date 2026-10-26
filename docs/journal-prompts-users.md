@@ -749,3 +749,82 @@ de tests automatisés avec assertions.
 
 Les essais avec Gemini et les essais qualitatifs du modèle local sont
 documentés séparément dans les Entrées 4, 5 et 7.
+
+---
+
+## Entrée 9 — Mise à jour finale avant validation
+
+Cette entrée corrige et précise certains éléments historiques des entrées
+précédentes, afin que le journal corresponde au fonctionnement final du
+module `users`.
+
+### 1. Correction de l'Entrée 3 : déclenchement de la modération
+
+La modération n'est plus lancée automatiquement lors de l'inscription. La
+requête `POST /api/auth/register/` crée le compte avec le statut `PENDING`,
+sans appeler le LLM.
+
+La modération est déclenchée ensuite par l'administrateur avec le bouton
+« Analyser », correspondant à l'endpoint
+`POST /api/admin/moderation/<id>/analyze/`. L'IA produit une proposition et un
+journal de modération, mais ne change pas automatiquement le statut du compte.
+L'administrateur décide ensuite d'accepter ou de supprimer le compte. Cette
+décision est appliquée par les vues d'administration du fichier
+`users/views.py`.
+
+### 2. Correction de l'Entrée 7 : « RAG simulé »
+
+Ce qui avait été appelé « RAG simulé » est en réalité une injection de
+conseils de référence définis dans la constante `CONSEILS` du fichier
+`users/ai/profile_analysis.py`.
+
+Ces conseils sont utilisés comme garde-fou lorsque les suggestions du modèle
+sont invalides, ainsi que comme repli lorsque le modèle est indisponible ou
+renvoie une réponse inutilisable. Il n'y a pas de retriever ni de base
+documentaire RAG dans le module `users`.
+
+### 3. Tests actuels
+
+Le module `users` compte actuellement **170 tests**, tous OK avec la commande :
+
+```text
+python manage.py test users
+```
+
+Cette suite couvre notamment l'inscription, la connexion, les permissions,
+l'anonymisation, la validation des réponses LLM, la modération, l'analyse de
+profil, le CV et l'administration.
+
+### 4. Configuration réelle du fournisseur LLM
+
+La configuration par défaut est :
+
+```text
+LLM_PROVIDER=mock
+```
+
+Le mode mock est donc utilisé si aucun fournisseur réel n'est configuré.
+Gemini n'est utilisé que si les trois éléments suivants sont définis dans
+`.env` :
+
+```text
+LLM_PROVIDER=gemini
+GEMINI_API_KEY=...
+GEMINI_MODEL=...
+```
+
+Les réglages sont lus dans `config/settings.py`, puis utilisés par
+`users/ai/llm_client.py`. Les clés et valeurs sensibles ne doivent pas être
+écrites dans le journal.
+
+### 5. Choix final d'optimisation
+
+Le choix final est de conserver la version **FP32** du modèle
+`Qwen/Qwen2.5-0.5B-Instruct`.
+
+La quantification INT8 et le pruning ont été testés dans
+`experiments/compression/`, mais ne sont pas déployés dans le module
+`users`. Ils ont été écartés car ils dégradent la perplexité et n'ont pas
+apporté de gain de latence démontré dans les mesures réalisées. La baseline
+FP32 conserve donc la meilleure qualité mesurée, tandis que les variantes
+compressées restent des résultats expérimentaux.

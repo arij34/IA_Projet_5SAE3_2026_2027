@@ -1455,3 +1455,69 @@ python -m coverage report -m --include="projects/*"
 | Global | Couverture | Non mesurée (`coverage` à installer) |
 | Global | Suite complète, cassures volontaires, essai réel avec Claude | Non fait |
 | Global | Fichiers `users/` modifiés non commités | À vérifier (`git diff -- users/`) |
+
+---
+
+## Entrée 15 : Mise à jour finale avant validation
+
+### Nombre de tests
+
+Le module `projects` compte actuellement **137 tests, tous OK** avec la
+commande :
+
+```text
+python manage.py test projects
+```
+
+Les nombres précédents — 71, 82 et 127 — sont historiques et correspondent à
+des états antérieurs du module.
+
+### Fournisseurs LLM
+
+- Pour l'analyse de projet, `PROJECT_LLM_PROVIDER` accepte `mock`,
+  `anthropic` et `gemini`. La valeur par défaut est `mock`.
+- En mode `anthropic`, le code exige `PROJECT_LLM_MODEL`. Il n'utilise pas
+  `LLM_MODEL` pour choisir le modèle de l'analyse Projects.
+- Le chatbot accepte `mock` et `gemini`. Sa valeur par défaut est `mock`.
+- La génération de cas de test QA utilise le fournisseur Mistral.
+
+### RAG
+
+Le module utilise un RAG lexical local comprenant :
+
+- la tokenisation ;
+- la suppression de mots vides ;
+- le calcul TF-IDF ;
+- la similarité cosinus ;
+- un seuil de similarité de `0.12` ;
+- la sélection des trois meilleurs blocs (`top 3`).
+
+La recherche porte sur des blocs JSON provenant de la FAQ, des références
+métier et des analyses du propriétaire. Il n'y a ni embeddings, ni base
+vectorielle, ni découpage en fenêtres de tokens.
+
+### Techniques réellement présentes dans le code
+
+Les techniques effectivement utilisées dans `projects` sont :
+
+- le prompt engineering ;
+- le RAG lexical local ;
+- la validation des réponses LLM ;
+- le nettoyage des textes, notamment des e-mails, téléphones, liens et
+  chevrons ;
+- le throttling ;
+- le mode mock ;
+- les réponses d'erreur contrôlées.
+
+### Techniques absentes de `projects`
+
+Le module `projects` n'implémente pas :
+
+- le fine-tuning ;
+- la quantization ;
+- le pruning ;
+- le cache des résultats LLM.
+
+La génération de cas de test QA ne possède pas de mode mock. Sans clé Mistral,
+la fonction renvoie une erreur de configuration au lieu de générer un résultat
+simulé.
