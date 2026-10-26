@@ -19,6 +19,7 @@ import RegisterPage from './pages/RegisterPage'
 import FreelancerProjectRecommendations from './features/matching/pages/FreelancerProjectRecommendations'
 import ProjectFreelancerRecommendations from './features/matching/pages/ProjectFreelancerRecommendations'
 import TeamRecommendations from './features/matching/pages/TeamRecommendations'
+import ProjectTestCasesPage from './pages/ProjectTestCasesPage'
 
 function ProjectOwnerRoute() {
   const location = useLocation()
@@ -65,6 +66,7 @@ function App() {
           <Route path="/planning" element={<PlanningPage />} />
           <Route path="/projects/new" element={<NewProjectPage />} />
           <Route path="/projects/:projectId/edit" element={<NewProjectPage />} />
+          <Route path="/projects/:projectId/test-cases" element={<ProjectTestCasesPage />} />
           <Route path="/projects" element={<MyProjectsPage />} />
           <Route path="/gestion-projets" element={<MyProjectsPage />} />
           <Route path="/assistant" element={<AssistantPage />} />

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Loader2, Pencil, Plus, Trash2 } from 'lucide-react'
+import { ClipboardCheck, Loader2, Pencil, Plus, Trash2 } from 'lucide-react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { deleteProject, listProjects } from '../api/projects'
 import type { Project, ProjectStatus } from '../types/project'
@@ -132,6 +132,15 @@ function MyProjectsPage() {
                       disabled={isPublished || isBusy}
                     >
                       <Pencil aria-hidden="true" size={16} /> Modifier
+                    </button>
+                    <button
+                      className="btn btn-secondary"
+                      type="button"
+                      aria-label={`Générer des cas de test pour ${project.name}`}
+                      onClick={() => navigate(`/projects/${project.id}/test-cases`)}
+                      disabled={isBusy}
+                    >
+                      <ClipboardCheck aria-hidden="true" size={16} /> Cas de test IA
                     </button>
                     <button
                       className="btn btn-danger"
